@@ -10,8 +10,6 @@
 - [Usage](#usage)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
 
 ## Features
 
