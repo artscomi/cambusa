@@ -4,30 +4,74 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { mealsPerDay, days, dietaryPreferences, people } = req.body;
+  const { days, dietaryPreferences, people } = req.body;
 
-  // Genera il prompt per l'AI
-  const prompt = `Crea una list della spesa per ${mealsPerDay} pasti al giorno per ${days} giorni per ${people} persone. 
-    Preferenze alimentari include: ${dietaryPreferences}. Fornisci una lista in un elenco puntato con ogni alimento e le quantità su ogni riga. Attenzione: se è un pasto questa è la cena, se sono due pasti è pranzo e cena, se sono tre pasti allora colazione, pranzo e cena.`;
+  // Generate the prompt for the AI
+  const prompt = `Crea una lista della spesa per 3 pasti al giorno per ${days} giorni per ${people} persone.
+Preferenze alimentari includono: ${dietaryPreferences}.
+Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento di un'array e per ogni giorno il pasto ("Colazione", "Pranzo", "Cena") è una chiave che contiene un array di oggetti. 
+Ogni oggetto deve avere le chiavi "item" e "quantity".
+Esempio:
+[
+  {
+    "Colazione": [
+      { "item": "uova", "quantity": "12" },
+      { "item": "latte", "quantity": "1 litro" }
+    ],
+    "Pranzo": [
+      { "item": "pane", "quantity": "2 kg" },
+      { "item": "pomodori", "quantity": "1 kg" }
+    ],
+    "Cena": [
+      { "item": "pasta", "quantity": "500g" },
+      { "item": "olio", "quantity": "1 litro" }
+    ]
+  }, 
+  {
+    "Colazione": [
+      { "item": "uova", "quantity": "12" },
+      { "item": "latte", "quantity": "1 litro" }
+    ],
+    "Pranzo": [
+      { "item": "pane", "quantity": "2 kg" },
+      { "item": "pomodori", "quantity": "1 kg" }
+    ],
+    "Cena": [
+      { "item": "pasta", "quantity": "500g" },
+      { "item": "olio", "quantity": "1 litro" }
+    ]
+  }, 
+].
+Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. Non includere codice commentato.
+`;
 
-  // Chiamata all'API di OpenAI (o altro servizio AI)
-  const response = await fetch("https://api.openai.com/v1/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo-instruct",
-      prompt,
-      max_tokens: 500, // Puoi regolare il numero di token in base alla risposta desiderata
-    }),
-  });
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4",
+        messages: [{ role: "system", content: prompt }],
+      }),
+    });
 
-  const data = await response.json();
-  const shoppingList = data.choices[0].text.trim();
+    if (!response.ok) {
+      throw new Error(`OpenAI API error: ${response.statusText}`);
+    }
 
-  console.log(data, prompt);
+    const data = await response.json();
+    const shoppingList = data.choices[0].message.content.trim();
 
-  res.status(200).json({ shoppingList });
+
+    console.log({prompt})
+
+    // Send the generated shopping list back to the client
+    res.status(200).json({ shoppingList });
+  } catch (error) {
+    console.error("Error generating shopping list:", error);
+    res.status(500).json({ error: "Failed to generate shopping list" });
+  }
 }

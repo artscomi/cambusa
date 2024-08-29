@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { getInputConfig, mockShoppingList } from "./data";
+import { TextInput } from "./TextInput";
+import { MealMenu } from "./MealMenu";
 
 export const MealPlanner = () => {
-  const [mealsPerDay, setMealsPerDay] = useState("");
-  const [days, setDays] = useState("");
-  const [people, setPeople] = useState("");
-  const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [days, setDays] = useState("7");
+  const [people, setPeople] = useState("5");
   const [dietaryPreferences, setDietaryPreferences] = useState("");
   const [shoppingList, setShoppingList] = useState([]);
 
@@ -17,108 +18,49 @@ export const MealPlanner = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        mealsPerDay,
         days,
         dietaryPreferences,
         people,
       }),
     });
     const data = await response.json();
-    setShoppingList(data.shoppingList);
+    const shoppingList = JSON.parse(data.shoppingList);
+
+    setShoppingList(shoppingList);
   };
 
-  const handleFocus = (fieldName: string) => {
-    setFocusedField(fieldName);
-  };
+  console.log({ mockShoppingList });
+  console.log({ shoppingList });
 
-  const labelStyle = (field: string) =>
-    `block absolute ${
-      focusedField === field
-        ? "-translate-y-6 text-sm"
-        : "translate-y-0 text-xs left-3"
-    } transition-all`;
-
-  const inputStyle = (field: string) =>
-    `block mb-10 h-10 rounded w-1/3 p-4 ${
-      focusedField === field ? "pt-4" : "pt-7"
-    } outline-none`;
+  const inputConfig = getInputConfig({
+    days,
+    setDays,
+    people,
+    setPeople,
+    dietaryPreferences,
+    setDietaryPreferences,
+  });
 
   return (
     <>
-      <h1 className="mb-10 text-2xl">Crea la tua cambusa ⛵</h1>
-      <div className="mb-10">
-        <div className="relative">
-          <label
-            className={labelStyle("meals-per-day")}
-            htmlFor="meals-per-day"
+      <div className="rounded-lg p-10 bg-white border-solid border border-current">
+        <div className="md:w-2/3">
+          <h1 className="mb-10 text-2xl font-bold">Crea la tua cambusa ⛵</h1>
+          <div className="mb-10">
+            {inputConfig.map((config) => (
+              <TextInput key={config.id} {...config} />
+            ))}
+          </div>
+          <button
+            className="bg-black rounded h-15 text-white p-2 hover:bg-gray-800"
+            onClick={handleGeneratePlan}
           >
-            Quanti pasti al giorno?
-          </label>
-          <input
-            className={inputStyle("meals-per-day")}
-            id="meals-per-day"
-            type="text"
-            value={mealsPerDay}
-            onChange={(e) => setMealsPerDay(e.target.value)}
-            onFocus={(e) => handleFocus(e.target.id)}
-            placeholder="3"
-          />
-        </div>
-        <div className="relative">
-          <label className={labelStyle("days")} htmlFor="days">
-            Per quanti giorni?
-          </label>
-          <input
-            id="days"
-            className={inputStyle("days")}
-            type="text"
-            value={days}
-            onChange={(e) => setDays(e.target.value)}
-            onFocus={(e) => handleFocus(e.target.id)}
-            placeholder="7"
-          />
-        </div>
-        <div className="relative">
-          <label className={labelStyle("people")} htmlFor="people">
-            Per quante persone?
-          </label>
-          <input
-            id="people"
-            className={inputStyle("people")}
-            type="text"
-            value={people}
-            onChange={(e) => setPeople(e.target.value)}
-            onFocus={(e) => handleFocus(e.target.id)}
-            placeholder="5"
-          />
-        </div>
-        <div className="relative">
-          <label
-            className={labelStyle("dietary-preferences")}
-            htmlFor="dietary-preferences"
-          >
-            Aggiungi le tue preferenze alimentari
-          </label>
-          <input
-            id="dietary-preferences"
-            className={inputStyle("dietary-preferences")}
-            type="text"
-            value={dietaryPreferences}
-            onChange={(e) => setDietaryPreferences(e.target.value)}
-            placeholder="vegan, gluten-free"
-            onFocus={(e) => handleFocus(e.target.id)}
-            inputMode="text"
-          />
+            Genera il menu! 😍
+          </button>
         </div>
       </div>
-      <button
-        className="bg-black rounded h-15 text-white p-2"
-        onClick={handleGeneratePlan}
-      >
-        Genera il menu! 😍
-      </button>
 
-      <div className="mt-10 whitespace-pre-line">{shoppingList}</div>
+      <MealMenu shoppingList={shoppingList} />
     </>
   );
 };
