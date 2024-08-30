@@ -7,8 +7,9 @@ export default async function handler(
   const { days, dietaryPreferences, people } = req.body;
 
   // Generate the prompt for the AI
-  const prompt = `Crea una lista della spesa per 3 pasti al giorno per ${days} giorni per ${people} persone.
-Preferenze alimentari includono: ${dietaryPreferences}.
+  const prompt = `Crea una proposta di menu per 3 pasti al giorno per ${days} giorni per ${people} persone.
+Preferenze alimentari includono: pasta circa 100 grammi a testa, frutta a colazione 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
+I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
 Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento di un'array e per ogni giorno il pasto ("Colazione", "Pranzo", "Cena") è una chiave che contiene un array di oggetti. 
 Ogni oggetto deve avere le chiavi "item" e "quantity".
 Esempio:
@@ -65,8 +66,7 @@ Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. 
     const data = await response.json();
     const shoppingList = data.choices[0].message.content.trim();
 
-
-    console.log({prompt})
+    console.log({ prompt });
 
     // Send the generated shopping list back to the client
     res.status(200).json({ shoppingList });
