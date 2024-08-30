@@ -8,7 +8,7 @@ export default async function handler(
 
   // Generate the prompt for the AI
   const prompt = `Crea una proposta di menu per 3 pasti al giorno per ${days} giorni per ${people} persone.
-Preferenze alimentari includono: pasta circa 100 grammi a testa, frutta a colazione 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
+Preferenze alimentari includono: pasta circa 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
 I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
 Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento di un'array e per ogni giorno il pasto ("Colazione", "Pranzo", "Cena") è una chiave che contiene un array di oggetti. 
 Ogni oggetto deve avere le chiavi "item" e "quantity".
