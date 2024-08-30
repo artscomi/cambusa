@@ -14,35 +14,71 @@ Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento 
 Ogni oggetto deve avere le chiavi "item" e "quantity".
 Esempio:
 [
-  {
-    "Colazione": [
-      { "item": "uova", "quantity": "12" },
-      { "item": "latte", "quantity": "1 litro" }
-    ],
-    "Pranzo": [
-      { "item": "pane", "quantity": "2 kg" },
-      { "item": "pomodori", "quantity": "1 kg" }
-    ],
-    "Cena": [
-      { "item": "pasta", "quantity": "500g" },
-      { "item": "olio", "quantity": "1 litro" }
-    ]
-  }, 
-  {
-    "Colazione": [
-      { "item": "uova", "quantity": "12" },
-      { "item": "latte", "quantity": "1 litro" }
-    ],
-    "Pranzo": [
-      { "item": "pane", "quantity": "2 kg" },
-      { "item": "pomodori", "quantity": "1 kg" }
-    ],
-    "Cena": [
-      { "item": "pasta", "quantity": "500g" },
-      { "item": "olio", "quantity": "1 litro" }
-    ]
-  }, 
-].
+    {
+        "Colazione": [
+            {
+                "item": "uova",
+                "quantity": "12"
+            },
+            {
+                "item": "latte",
+                "quantity": "1 litro"
+            }
+        ],
+        "Pranzo": [
+            {
+                "item": "pane",
+                "quantity": "2 kg"
+            },
+            {
+                "item": "pomodori",
+                "quantity": "1 kg"
+            }
+        ],
+        "Cena": [
+            {
+                "item": "pasta",
+                "quantity": "500g"
+            },
+            {
+                "item": "olio",
+                "quantity": "1 litro"
+            }
+        ]
+    },
+    {
+        "Colazione": [
+            {
+                "item": "uova",
+                "quantity": "12"
+            },
+            {
+                "item": "latte",
+                "quantity": "1 litro"
+            }
+        ],
+        "Pranzo": [
+            {
+                "item": "pane",
+                "quantity": "2 kg"
+            },
+            {
+                "item": "pomodori",
+                "quantity": "1 kg"
+            }
+        ],
+        "Cena": [
+            {
+                "item": "pasta",
+                "quantity": "500g"
+            },
+            {
+                "item": "olio",
+                "quantity": "1 litro"
+            }
+        ]
+    }
+]
 Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. Non includere codice commentato.
 `;
 
