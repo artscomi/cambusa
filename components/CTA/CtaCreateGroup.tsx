@@ -1,7 +1,9 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export const CtaCreateGroup = () => {
   const [groupId, setGroupId] = useState("");
+  const router = useRouter();
 
   const createGroup = async () => {
     try {
@@ -15,6 +17,7 @@ export const CtaCreateGroup = () => {
       if (response.ok) {
         const data = await response.json();
         setGroupId(data.groupId);
+        router.push(`/group/${data.groupId}`);
       } else {
         console.error("Error creating group:", response.status);
       }

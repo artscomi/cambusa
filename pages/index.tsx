@@ -1,5 +1,4 @@
 import { MainPage } from "@/components/MainPage";
-import { MealPlanner } from "@/components/MealPlanner";
 
 export default function Home() {
   return (

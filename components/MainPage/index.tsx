@@ -4,9 +4,9 @@ import { useState } from "react";
 import { getInputConfig } from "../MealPlanner/data";
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
-import { CtaCreateGroup } from "../CTA/CreateGroup";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
 import { GroupData } from "@/pages/group/[groupId]/menu";
+import { CreateGroupBox } from "./CreateGroupBox";
 
 export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
   const [days, setDays] = useState("7");
@@ -44,20 +44,7 @@ export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
               />
             </div>
 
-            {!groupData && (
-              <div className="p-8 rounded-lg flex-1 flex flex-col">
-                <div>
-                  <span role="img" className="text-center block mb-3 text-2xl">
-                    👫👬👭
-                  </span>
-                  <p className="mb-5 text-center">
-                    Crea il tuo gruppo per raccogliere le preferenze alimentari
-                    di tutta la ciurma!
-                  </p>
-                </div>
-                <CtaCreateGroup />
-              </div>
-            )}
+            {!groupData && <CreateGroupBox />}
           </div>
 
           {dietaryPreferences}
