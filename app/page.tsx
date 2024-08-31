@@ -1,10 +1,11 @@
+import { MainPage } from "@/components/MainPage";
 import { MealPlanner } from "@/components/MealPlanner";
 
 export default function Home() {
   return (
-    <main className="p-6 lg:p-24 h-full overflow-auto">
+    <main className="m-4 md:mt-32 md:mx-20 lg:mx-30 xl:mx-60 2xl:mx-96 h-full overflow-auto">
       <div className="w-full items-end">
-        <MealPlanner />
+        <MainPage />
       </div>
     </main>
   );

@@ -1,87 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getPrompt } from "../prompt";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { days, dietaryPreferences, people } = req.body;
-
-  // Generate the prompt for the AI
-  const prompt = `Crea una proposta di menu per 3 pasti al giorno per ${days} giorni per ${people} persone.
-Preferenze alimentari includono: pasta circa 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
-I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
-Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento di un'array e per ogni giorno il pasto ("Colazione", "Pranzo", "Cena") è una chiave che contiene un array di oggetti. 
-Ogni oggetto deve avere le chiavi "item" e "quantity".
-Esempio:
-[
-    {
-        "Colazione": [
-            {
-                "item": "uova",
-                "quantity": "12"
-            },
-            {
-                "item": "latte",
-                "quantity": "1 litro"
-            }
-        ],
-        "Pranzo": [
-            {
-                "item": "pane",
-                "quantity": "2 kg"
-            },
-            {
-                "item": "pomodori",
-                "quantity": "1 kg"
-            }
-        ],
-        "Cena": [
-            {
-                "item": "pasta",
-                "quantity": "500g"
-            },
-            {
-                "item": "olio",
-                "quantity": "1 litro"
-            }
-        ]
-    },
-    {
-        "Colazione": [
-            {
-                "item": "uova",
-                "quantity": "12"
-            },
-            {
-                "item": "latte",
-                "quantity": "1 litro"
-            }
-        ],
-        "Pranzo": [
-            {
-                "item": "pane",
-                "quantity": "2 kg"
-            },
-            {
-                "item": "pomodori",
-                "quantity": "1 kg"
-            }
-        ],
-        "Cena": [
-            {
-                "item": "pasta",
-                "quantity": "500g"
-            },
-            {
-                "item": "olio",
-                "quantity": "1 litro"
-            }
-        ]
-    }
-]
-Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. Non includere codice commentato.
-`;
-
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -91,7 +14,12 @@ Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. 
       },
       body: JSON.stringify({
         model: "gpt-4",
-        messages: [{ role: "system", content: prompt }],
+        messages: [
+          {
+            role: "system",
+            content: getPrompt(req.body),
+          },
+        ],
       }),
     });
 
@@ -101,8 +29,6 @@ Ritorna solo un JSON che posso parsare in un oggetto JavaScript con JSON.parse. 
 
     const data = await response.json();
     const shoppingList = data.choices[0].message.content.trim();
-
-    console.log({ prompt });
 
     // Send the generated shopping list back to the client
     res.status(200).json({ shoppingList });
