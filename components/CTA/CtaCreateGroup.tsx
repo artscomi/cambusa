@@ -34,7 +34,6 @@ export const CtaCreateGroup = () => {
       >
         Crea un gruppo
       </button>
-      {groupId && <p>Created group with ID: {groupId}</p>}
     </>
   );
 };
