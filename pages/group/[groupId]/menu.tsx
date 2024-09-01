@@ -4,7 +4,7 @@ import { MainPage } from "@/components/MainPage";
 
 export interface GroupData {
   id: string;
-  dietaryPreferences: string;
+  dietaryPreferences: string[][];
 }
 
 const GroupMenu = ({ groupData }: { groupData: GroupData }) => (

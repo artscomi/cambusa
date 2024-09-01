@@ -9,4 +9,4 @@ export type Meals = {
   Cena: MealItem[];
 };
 
-export type ShoppingList = Meals[];
+export type MealList = Meals[];

@@ -10,12 +10,10 @@ export default function GroupPage() {
 
   const handleSubmit = async () => {
     try {
-     
-
       const response = await fetch(`/api/update-group/${groupId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ dietaryPreferences }),
+        body: JSON.stringify([dietaryPreferences.split(", ")]),
       });
 
       if (response.ok) router.push(`/group/${groupId}/menu`);

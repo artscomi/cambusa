@@ -1,6 +1,6 @@
-import { MealItem, ShoppingList } from "@/types/types";
+import { MealItem, MealList } from "@/types/types";
 
-export const MealMenu = ({ shoppingList }: { shoppingList: ShoppingList }) => {
+export const MealMenu = ({ menu }: { menu: MealList }) => {
   const renderMealItems = (items: MealItem[]) => {
     return (
       <ul className="indent-3">
@@ -15,13 +15,13 @@ export const MealMenu = ({ shoppingList }: { shoppingList: ShoppingList }) => {
 
   return (
     <div className="mt-10 gap-5 grid lg:grid-cols-3">
-      {shoppingList.map((mealPlan, index: number) => (
+      {menu.map((day, index: number) => (
         <div
           key={index}
-          className="bg-white p-6 rounded-lg flex-1  border-solid border border-current"
+          className="bg-white p-6 rounded-lg flex-1"
         >
           <p className="text-xl font-bold mb-5">Giorno {index + 1}</p>
-          {Object.entries(mealPlan).map(([meal, items]) => (
+          {Object.entries(day).map(([meal, items]) => (
             <div key={meal} className="mb-10 indent-3 ">
               <h2 className="text-lg font-bold mb-1">{meal}</h2>
               {renderMealItems(items)}

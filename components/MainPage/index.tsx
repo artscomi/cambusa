@@ -1,19 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { getInputConfig } from "../MealPlanner/data";
+import { getInputConfig, mockShoppingList } from "../MealPlanner/data";
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
 import { GroupData } from "@/pages/group/[groupId]/menu";
 import { CreateGroupBox } from "./CreateGroupBox";
+import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
+import { MealList } from "@/types/types";
 
 export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
   const [days, setDays] = useState("7");
   const [people, setPeople] = useState("5");
-  const [dietaryPreferences, setDietaryPreferences] = useState(
-    groupData ? groupData.dietaryPreferences : ""
-  );
+  const [dietaryPreferences, setDietaryPreferences] = useState("");
+  const [mealList, setMealList] = useState([]);
   const [shoppingList, setShoppingList] = useState([]);
 
   const inputConfig = getInputConfig({
@@ -38,20 +39,36 @@ export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
               {inputConfig.map((config) => (
                 <TextInput key={config.id} {...config} />
               ))}
-              <CtaCreateMenu
-                setShoppingList={setShoppingList}
-                inputData={{ days, people, dietaryPreferences }}
-              />
+              {groupData ? (
+                <CtaCreateMenuGroup
+                  setShoppingList={setMealList}
+                  inputData={{
+                    days,
+                    people,
+                    groupDataDietaryPreferences: groupData.dietaryPreferences
+                      .map(
+                        (pref) =>
+                          `una persona ha le seguenti preferenze: ${pref.join(
+                            ", "
+                          )}`
+                      )
+                      .join(", "),
+                  }}
+                />
+              ) : (
+                <CtaCreateMenu
+                  setShoppingList={setMealList}
+                  inputData={{ days, people, dietaryPreferences }}
+                />
+              )}
             </div>
 
             {!groupData && <CreateGroupBox />}
           </div>
-
-          {dietaryPreferences}
         </div>
       </div>
 
-      <MealMenu shoppingList={shoppingList} />
+      <MealMenu menu={mockShoppingList} />
     </>
   );
 };

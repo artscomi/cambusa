@@ -6,30 +6,25 @@ import { GroupData } from "@/pages/group/[groupId]/menu";
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const { groupId } = req.query;
-    const { dietaryPreferences } = req.body;
 
     const dataDir = path.join(process.cwd(), "data");
     const filePath = path.join(dataDir, `${groupId}.json`);
 
     let groupData: GroupData = {
       id: groupId as string,
-      dietaryPreferences: dietaryPreferences,
+      dietaryPreferences: JSON.parse(JSON.stringify(req.body)),
     };
-    groupData.dietaryPreferences = groupData.dietaryPreferences || "";
+    groupData.dietaryPreferences = groupData.dietaryPreferences || [];
 
     if (fs.existsSync(filePath)) {
       const existingData = fs.readFileSync(filePath, "utf-8");
-      groupData = JSON.parse(existingData);
+      const existingPreferences = JSON.parse(existingData)
+        .dietaryPreferences as [][];
+      groupData.dietaryPreferences = [
+        ...existingPreferences,
+        ...groupData.dietaryPreferences,
+      ];
     }
-
-    const newPreferences = Array.isArray(dietaryPreferences)
-      ? dietaryPreferences
-      : [dietaryPreferences];
-    groupData.dietaryPreferences = Array.from(
-      new Set([...groupData.dietaryPreferences.split(","), ...newPreferences])
-    )
-      .filter((item) => item.trim() !== "")
-      .join(", ");
 
     try {
       fs.writeFileSync(filePath, JSON.stringify(groupData));

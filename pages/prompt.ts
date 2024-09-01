@@ -6,7 +6,7 @@ export const getPrompt = ({
   days: string;
   dietaryPreferences: string;
   people: string;
-}): string => `Crea una proposta di menu per 3 pasti al giorno per ${days} giorni per ${people} persone.
+}): string => `Crea una proposta di menu in italiano per 3 pasti al giorno per ${days} giorni per ${people} persone.
 Preferenze alimentari includono: pasta circa 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
 I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
 Ritorna solo la lista in formato JSON, dove ogni giorno rappresenta un elemento di un'array e per ogni giorno il pasto ("Colazione", "Pranzo", "Cena") è una chiave che contiene un array di oggetti. 
