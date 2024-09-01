@@ -3,9 +3,9 @@ export const CtaCreateMenuGroup = ({
   inputData,
 }: {
   setShoppingList: any;
-  inputData: { days: string; groupDataDietaryPreferences: string; people: string };
+  inputData: { groupDataDietaryPreferences: string; people: string };
 }) => {
-  const { days, groupDataDietaryPreferences, people } = inputData;
+  const { groupDataDietaryPreferences, people } = inputData;
 
   const handleGeneratePlan = async () => {
     const response = await fetch("/api/generate-shopping-list", {
@@ -14,7 +14,6 @@ export const CtaCreateMenuGroup = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        days,
         dietaryPreferences: groupDataDietaryPreferences,
         people,
       }),

@@ -1,5 +1,5 @@
 "use client";
 
-import { MainPage } from "../MainPage";
+import { MainForm } from "../MainForm";
 
-export const MealPlanner = () => <MainPage />;
+export const MealPlanner = () => <MainForm />;

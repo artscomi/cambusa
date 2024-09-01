@@ -1,11 +1,13 @@
+import { FormState } from "@/hooks/useInputConfig";
+
 export const CtaCreateMenu = ({
-  setShoppingList,
+  setMealList,
   inputData,
 }: {
-  setShoppingList: any;
-  inputData: { days: string; dietaryPreferences: string; people: string };
+  setMealList: any;
+  inputData: FormState;
 }) => {
-  const { days, dietaryPreferences, people } = inputData;
+  const { breakfast, lunch, dinner, dietaryPreferences, people } = inputData;
 
   const handleGeneratePlan = async () => {
     const response = await fetch("/api/generate-shopping-list", {
@@ -14,7 +16,9 @@ export const CtaCreateMenu = ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        days,
+        breakfast,
+        lunch,
+        dinner,
         dietaryPreferences,
         people,
       }),
@@ -22,7 +26,7 @@ export const CtaCreateMenu = ({
     const data = await response.json();
     const shoppingList = JSON.parse(data.shoppingList);
 
-    setShoppingList(shoppingList);
+    setMealList(shoppingList);
   };
 
   return (

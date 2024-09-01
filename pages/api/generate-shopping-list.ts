@@ -1,5 +1,5 @@
+import { getPrompt } from "@/utils/getPrompt";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getPrompt } from "../prompt";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,6 +29,9 @@ export default async function handler(
 
     const data = await response.json();
     const shoppingList = data.choices[0].message.content.trim();
+
+    console.log(getPrompt(req.body),)
+    console.log(shoppingList)
 
     // Send the generated shopping list back to the client
     res.status(200).json({ shoppingList });

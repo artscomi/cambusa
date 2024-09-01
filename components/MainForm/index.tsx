@@ -1,34 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { getInputConfig, mockShoppingList } from "../MealPlanner/data";
+import { mockShoppingList } from "../MealPlanner/data";
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
 import { GroupData } from "@/pages/group/[groupId]/menu";
 import { CreateGroupBox } from "./CreateGroupBox";
 import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
-import { MealList } from "@/types/types";
+import { useFormConfig } from "@/hooks/useInputConfig";
+import { MenuData } from "@/types/types";
 
-export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
-  const [days, setDays] = useState("7");
-  const [people, setPeople] = useState("5");
-  const [dietaryPreferences, setDietaryPreferences] = useState("");
-  const [mealList, setMealList] = useState([]);
-  const [shoppingList, setShoppingList] = useState([]);
+export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
+  const [mealList, setMealList] = useState<MenuData | {}>();
 
-  const inputConfig = getInputConfig({
-    days,
-    setDays,
-    people,
-    setPeople,
-    dietaryPreferences,
-    setDietaryPreferences,
-  });
+  const { inputConfig, formState } = useFormConfig();
 
   return (
     <>
-      <div className="rounded-lg p-14 bg-white">
+      <div className="rounded-lg p-14 bg-white mb-10">
         <div className="">
           <h1 className="mb-10 text-2xl font-bold">{`Crea la tua cambusa ⛵ ${
             groupData ? `per il gruppo ${groupData.id}` : ""
@@ -43,8 +33,7 @@ export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
                 <CtaCreateMenuGroup
                   setShoppingList={setMealList}
                   inputData={{
-                    days,
-                    people,
+                    people: formState.people,
                     groupDataDietaryPreferences: groupData.dietaryPreferences
                       .map(
                         (pref) =>
@@ -57,8 +46,8 @@ export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
                 />
               ) : (
                 <CtaCreateMenu
-                  setShoppingList={setMealList}
-                  inputData={{ days, people, dietaryPreferences }}
+                  setMealList={setMealList}
+                  inputData={formState}
                 />
               )}
             </div>
@@ -68,7 +57,7 @@ export const MainPage = ({ groupData }: { groupData?: GroupData }) => {
         </div>
       </div>
 
-      <MealMenu menu={mockShoppingList} />
+      {mealList && <MealMenu menu={mealList as MenuData} />}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { MainPage } from "@/components/MainPage";
+import { MainForm } from "@/components/MainForm";
 
 export interface GroupData {
   id: string;
@@ -8,7 +8,7 @@ export interface GroupData {
 }
 
 const GroupMenu = ({ groupData }: { groupData: GroupData }) => (
-  <MainPage groupData={groupData} />
+  <MainForm groupData={groupData} />
 );
 
 export default GroupMenu;

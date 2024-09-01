@@ -1,34 +1,43 @@
-import { MealItem, MealList } from "@/types/types";
+import { Ingredient, MenuData } from "@/types/types";
 
-export const MealMenu = ({ menu }: { menu: MealList }) => {
-  const renderMealItems = (items: MealItem[]) => {
+export const MealMenu = ({ menu }: { menu: MenuData }) => {
+  const renderList = (category: keyof MenuData) => {
     return (
-      <ul className="indent-3">
-        {items.map((item, index) => (
-          <li key={index}>
-            {item.item}: {item.quantity}
-          </li>
+      <div className="mt-10 gap-5 grid lg:grid-cols-3">
+        {Object.keys(menu[category]).map((meal, mealIndex) => (
+          <div key={mealIndex} className="bg-white p-6 rounded-lg flex-1 mb-10">
+            <ul>
+              {Object.keys(menu[category][meal]).map((dish, dishIndex) => (
+                <li key={dishIndex} className="mb-10 indent-3">
+                  <p className="mb-2 font-bold">{dish}</p>
+                  <ul>
+                    {menu[category][meal][dish].map(
+                      (ingredient, ingredientIndex) => (
+                        <li key={ingredientIndex} className="mb-2">
+                          {ingredient.item}: {ingredient.quantity}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     );
   };
 
   return (
-    <div className="mt-10 gap-5 grid lg:grid-cols-3">
-      {menu.map((day, index: number) => (
-        <div
-          key={index}
-          className="bg-white p-6 rounded-lg flex-1"
-        >
-          <p className="text-xl font-bold mb-5">Giorno {index + 1}</p>
-          {Object.entries(day).map(([meal, items]) => (
-            <div key={meal} className="mb-10 indent-3 ">
-              <h2 className="text-lg font-bold mb-1">{meal}</h2>
-              {renderMealItems(items)}
-            </div>
-          ))}
-        </div>
-      ))}
+    <div>
+      <h2 className="text-xl font-bold mb-5">Colazioni</h2>
+      {renderList("Colazioni")}
+
+      <h2 className="text-xl font-bold mb-5">Pranzi</h2>
+      {renderList("Pranzi")}
+
+      <h2 className="text-xl font-bold mb-5">Cene</h2>
+      {renderList("Cene")}
     </div>
   );
 };
