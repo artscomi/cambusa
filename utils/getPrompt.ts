@@ -10,7 +10,7 @@ export const getPrompt = ({
   Preferenze alimentari includono: pasta circa 100 grammi a testa, ${dietaryPreferences}. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
   I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
  Genera un file JSON che rappresenta proposte di colazione, pranzo e cena. Il JSON deve essere strutturato come segue:
-
+  Genera un emoji accanto a ogni ingrediente.
 1. **Colazioni**: 
    - Ogni colazione deve essere un oggetto con il nome della colazione come chiave.
    - Ogni colazione deve contenere vari piatti, e ogni piatto deve avere una lista di ingredienti.
