@@ -3,15 +3,21 @@ import { AddMealFormState } from "@/hooks/useAddMealInputConfig";
 
 export const CtaAddMenu = ({ formData }: { formData: AddMealFormState }) => {
   const { mealList, setMealList } = useMealContext();
+
   const handleAddMenu = () => {
     const { "meal-name": mealName, ingredient, quantity } = formData;
-    const updatedMealList = { ...mealList };
 
-    updatedMealList.Colazioni["Colazione 4"] = {
-      [mealName]: [{ item: ingredient, quantity: quantity }],
-    };
+    if (mealList && !mealList?.Colazioni) {
+      mealList.Colazioni = {};
+    }
 
-    setMealList(updatedMealList);
+    if (mealList && mealList.Colazioni) {
+      mealList.Colazioni["Colazione 4"] = {
+        [mealName]: [{ item: ingredient, quantity: quantity }],
+      };
+    }
+
+    setMealList(mealList);
   };
 
   console.log({ mealList });
