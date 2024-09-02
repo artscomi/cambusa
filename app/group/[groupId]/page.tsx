@@ -1,11 +1,12 @@
 "use client";
 
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupPage() {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const { groupId } = router.query;
+  const groupId = searchParams.get("groupId");
   const [dietaryPreferences, setDietaryPreferences] = useState("");
 
   const handleSubmit = async () => {

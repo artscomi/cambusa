@@ -3,11 +3,11 @@
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
-import { GroupData } from "@/app/group/[groupId]/menu";
 import { CreateGroupBox } from "./CreateGroupBox";
 import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
+import { GroupData } from "@/app/group/[groupId]/menu/page";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
