@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import fs from "fs";
 import path from "path";
-import { GroupData } from "@/pages/group/[groupId]/menu";
+import { GroupData } from "@/app/group/[groupId]/menu";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {

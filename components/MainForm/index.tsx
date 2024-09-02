@@ -3,7 +3,7 @@
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
-import { GroupData } from "@/pages/group/[groupId]/menu";
+import { GroupData } from "@/app/group/[groupId]/menu";
 import { CreateGroupBox } from "./CreateGroupBox";
 import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
 import { useFormConfig } from "@/hooks/useInputConfig";
