@@ -1,13 +1,9 @@
+import { useMealContext } from "@/context/useMealContext";
 import { FormState } from "@/hooks/useInputConfig";
 
-export const CtaCreateMenu = ({
-  setMealList,
-  inputData,
-}: {
-  setMealList: any;
-  inputData: FormState;
-}) => {
+export const CtaCreateMenu = ({ inputData }: { inputData: FormState }) => {
   const { breakfast, lunch, dinner, dietaryPreferences, people } = inputData;
+  const { setMealList } = useMealContext();
 
   const handleGeneratePlan = async () => {
     const response = await fetch("/api/generate-shopping-list", {

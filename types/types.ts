@@ -1,6 +1,6 @@
 export type Ingredient = {
-  item: string; // Nome dell'ingrediente
-  quantity: string; // Quantità dell'ingrediente
+  item: string; 
+  quantity: string;
 };
 
 export type Dish = {
@@ -8,7 +8,7 @@ export type Dish = {
 };
 
 export type Meal = {
-  [mealOption: string]: Dish;
+  [mealName: string]: Dish;
 };
 
 export type MenuData = {

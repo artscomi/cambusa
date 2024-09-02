@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { mockShoppingList } from "../MealPlanner/data";
 import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
 import { CtaCreateMenu } from "../CTA/CtaCreateMenu";
@@ -9,12 +7,11 @@ import { GroupData } from "@/pages/group/[groupId]/menu";
 import { CreateGroupBox } from "./CreateGroupBox";
 import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
 import { useFormConfig } from "@/hooks/useInputConfig";
-import { MenuData } from "@/types/types";
+import { useMealContext } from "@/context/useMealContext";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
-  const [mealList, setMealList] = useState<MenuData | {}>();
-
   const { inputConfig, formState } = useFormConfig();
+  const { mealList, setMealList } = useMealContext();
 
   return (
     <>
@@ -45,10 +42,7 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
                   }}
                 />
               ) : (
-                <CtaCreateMenu
-                  setMealList={setMealList}
-                  inputData={formState}
-                />
+                <CtaCreateMenu inputData={formState} />
               )}
             </div>
 
@@ -57,7 +51,7 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
         </div>
       </div>
 
-      {mealList && <MealMenu menu={mealList as MenuData} />}
+      {mealList && <MealMenu />}
     </>
   );
 };
