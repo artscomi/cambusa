@@ -1,23 +1,24 @@
 import { useMealContext } from "@/context/useMealContext";
 import { AddMealFormState } from "@/hooks/useAddMealInputConfig";
+import { Meal, MenuData } from "@/types/types";
 
 export const CtaAddMenu = ({ formData }: { formData: AddMealFormState }) => {
   const { mealList, setMealList } = useMealContext();
 
   const handleAddMenu = () => {
     const { "meal-name": mealName, ingredient, quantity } = formData;
-
-    if (mealList && !mealList?.Colazioni) {
-      mealList.Colazioni = {};
-    }
-
-    if (mealList && mealList.Colazioni) {
-      mealList.Colazioni["Colazione 4"] = {
-        [mealName]: [{ item: ingredient, quantity: quantity }],
-      };
-    }
-
-    setMealList(mealList);
+  
+    const updatedMenu: MenuData = {
+      ...mealList, // Copy the current state
+      Colazioni: {
+        ...(mealList?.Colazioni || {}), 
+        [mealName]: {
+          [mealName]: [{ item: ingredient, quantity: quantity }]
+        }
+      }
+    };
+  
+    setMealList(updatedMenu);
   };
 
   console.log({ mealList });

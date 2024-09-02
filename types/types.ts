@@ -12,7 +12,7 @@ export type Meal = {
 };
 
 export type MenuData = {
-  Colazioni: Meal;
-  Pranzi: Meal;
-  Cene: Meal;
+  Colazioni?: Meal;
+  Pranzi?: Meal;
+  Cene?: Meal;
 };

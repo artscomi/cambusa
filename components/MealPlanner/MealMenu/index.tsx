@@ -3,21 +3,27 @@ import { Meal, MenuData } from "@/types/types";
 
 export const MealMenu = () => {
   const { mealList, setMealList } = useMealContext();
-  const handleDeleteMeal = (category: keyof MenuData, meal: Meal) => {
-    setMealList((prevMenu: MenuData) => {
-      const updatedMenu: MenuData = { ...prevMenu } as MenuData;
 
-      delete updatedMenu[category][
-        meal as unknown as keyof MenuData[keyof MenuData]
-      ];
+  const handleDeleteMeal = (category: keyof MenuData, meal: string) => {
+    const updatedMenu: MenuData = {
+      ...mealList,
+      [category]: {
+        ...(mealList?.[category] || {}), 
+      },
+    };
+
+    if (updatedMenu[category]) {
+      delete updatedMenu[category][meal];
 
       if (Object.keys(updatedMenu[category]).length === 0) {
         delete updatedMenu[category];
       }
+    }
 
-      return updatedMenu;
-    });
+    setMealList(updatedMenu);
   };
+
+  console.log({ mealList });
 
   const renderList = (category: keyof MenuData) => {
     return (
@@ -31,18 +37,18 @@ export const MealMenu = () => {
             >
               <button
                 onClick={() =>
-                  handleDeleteMeal(category, meal as unknown as Meal)
+                  handleDeleteMeal(category, meal)
                 }
               >
                 Delete
               </button>
               <ul>
-                {Object.keys(mealList[category][meal]).map(
+                {mealList[category] && Object.keys(mealList[category][meal]).map(
                   (dish, dishIndex) => (
                     <li key={dishIndex} className="mb-10 indent-3">
                       <p className="mb-2 font-bold">{dish}</p>
                       <ul>
-                        {mealList[category][meal][dish].map(
+                        {mealList[category] && mealList[category][meal][dish].map(
                           (ingredient, ingredientIndex) => (
                             <li key={ingredientIndex} className="mb-2">
                               {ingredient.item}: {ingredient.quantity}
