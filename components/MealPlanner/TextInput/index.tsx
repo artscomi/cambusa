@@ -1,10 +1,4 @@
-type TextInputProps = {
-  id: string;
-  label: string;
-  value: string;
-  placeholder: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import { TextInputConfig } from "@/hooks/useInputConfig";
 
 export const TextInput = ({
   id,
@@ -12,23 +6,24 @@ export const TextInput = ({
   value,
   placeholder,
   onChange,
-}: TextInputProps) => (
-  <div className="relative mb-8 last:mb-0">
-    <label
-      className="block absolute text-xs left-4 top-1"
-      htmlFor={id}
-    >
+  type,
+  max,
+  className, 
+}: TextInputConfig) => (
+  <div className={`relative last:mb-0 ${className}`}>
+    <label className="block absolute text-xs left-4 top-1" htmlFor={id}>
       {label}
     </label>
     <input
       id={id}
       className="block h-12 rounded p-4 pt-7 outline-none w-full bg-[#a5c8fa]/[0.1]"
-      type="text"
+      type={type}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      inputMode="text"
+      inputMode={type === "number" ? "numeric" : "text"}
       autoComplete="off"
+      max={max}
     />
   </div>
 );

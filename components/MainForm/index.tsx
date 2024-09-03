@@ -22,10 +22,13 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
           }`}</h1>
 
           <div className="flex flex-col md:flex-row justify-items-center gap-16">
-            <div className="flex-1 flex flex-col">
-              {inputConfig.map((config) => (
-                <TextInput key={config.id} {...config} />
-              ))}
+            <div className="flex-1">
+              <div className="flex flex-col gap-4 mb-10">
+                {inputConfig.map((config) => (
+                  <TextInput key={config.id} {...config} />
+                ))}
+              </div>
+
               {groupData ? (
                 <CtaCreateMenuGroup
                   setShoppingList={setMealList}
@@ -46,7 +49,7 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
               )}
             </div>
 
-            {!groupData && <CreateGroupBox />}
+            <div className="flex-1">{!groupData && <CreateGroupBox />}</div>
           </div>
         </div>
       </div>

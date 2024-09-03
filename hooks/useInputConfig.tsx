@@ -1,11 +1,14 @@
 import { useState } from "react";
 
-type InputConfig = {
+export type TextInputConfig = {
   id: string;
   label: string;
   value: string;
+  type: "number" | "text";
+  max?: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 };
 
 export type FormState = {
@@ -13,10 +16,12 @@ export type FormState = {
   dietaryPreferences: string;
   breakfast: string;
   lunch: string;
+  type: "number" | "text";
+  max?: string;
   dinner: string;
 };
 
-export type FormStateKeys = keyof FormState
+export type FormStateKeys = keyof FormState;
 
 const initialState: FormState = {
   people: "",
@@ -24,6 +29,8 @@ const initialState: FormState = {
   breakfast: "",
   lunch: "",
   dinner: "",
+  type: "number",
+  max: "7",
 };
 
 export const useFormConfig = () => {
@@ -37,12 +44,14 @@ export const useFormConfig = () => {
       }));
     };
 
-  const inputConfig: InputConfig[] = [
+  const inputConfig: TextInputConfig[] = [
     {
       id: "breakfast",
       label: "Quante colazioni?",
       value: formState.breakfast,
       placeholder: "7",
+      type: "number",
+      max: "7",
       onChange: handleChange("breakfast"),
     },
     {
@@ -50,6 +59,8 @@ export const useFormConfig = () => {
       label: "Quanti pranzi?",
       value: formState.lunch,
       placeholder: "7",
+      type: "number",
+      max: "7",
       onChange: handleChange("lunch"),
     },
     {
@@ -57,6 +68,8 @@ export const useFormConfig = () => {
       label: "Quante cene?",
       value: formState.dinner,
       placeholder: "7",
+      type: "number",
+      max: "7",
       onChange: handleChange("dinner"),
     },
     {
@@ -64,6 +77,8 @@ export const useFormConfig = () => {
       label: "Per quante persone?",
       value: formState.people,
       placeholder: "5",
+      type: "number",
+      max: "7",
       onChange: handleChange("people"),
     },
     {
@@ -71,9 +86,10 @@ export const useFormConfig = () => {
       label: "Aggiungi le tue preferenze alimentari",
       value: formState.dietaryPreferences,
       placeholder: "vegan, gluten-free",
+      type: "text",
       onChange: handleChange("dietaryPreferences"),
     },
   ];
 
-  return {inputConfig, formState};
+  return { inputConfig, formState };
 };

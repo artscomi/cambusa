@@ -38,6 +38,7 @@ export const CreateGroupBox = () => {
             id="group-name"
             label="Nome del gruppo"
             value={groupName}
+            type="text"
             placeholder="Capraia 2024"
             onChange={(e) => setGroupName(e.target.value)}
           />

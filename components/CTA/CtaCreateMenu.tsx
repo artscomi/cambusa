@@ -27,7 +27,7 @@ export const CtaCreateMenu = ({ inputData }: { inputData: FormState }) => {
 
   return (
     <button
-      className="bg-black rounded h-15 text-white p-2 hover:bg-gray-800"
+      className="bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full"
       onClick={handleGeneratePlan}
     >
       Genera il menu! 😍
