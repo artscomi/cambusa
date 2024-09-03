@@ -21,6 +21,11 @@ body {
   background: rgba(var(--background-start-rgb), 0.6);
 }
 
+input::placeholder,
+textarea::placeholder {
+  font-size: 12px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

@@ -15,7 +15,7 @@ export const TextInput = ({
 }: TextInputProps) => (
   <div className="relative mb-8 last:mb-0">
     <label
-      className="block absolute translate-y-1 text-xs left-3 transition-all"
+      className="block absolute text-xs left-4 top-1"
       htmlFor={id}
     >
       {label}
