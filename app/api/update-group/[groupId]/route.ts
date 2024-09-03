@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
-import { GroupData } from "@/app/group/[groupId]/menu/page";
+import { GroupData } from "@/types/types";
 
 export async function POST(req: Request) {
   const { searchParams } = new URL(req.url);

@@ -1,5 +1,5 @@
 export type Ingredient = {
-  item: string; 
+  item: string;
   quantity: string;
 };
 
@@ -16,3 +16,8 @@ export type MenuData = {
   Pranzi?: Meal;
   Cene?: Meal;
 };
+
+export interface GroupData {
+  id: string;
+  dietaryPreferences: string[][];
+}

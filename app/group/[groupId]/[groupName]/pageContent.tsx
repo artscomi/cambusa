@@ -1,12 +1,10 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-export default function GroupPage() {
-  const searchParams = useSearchParams();
+export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
   const router = useRouter();
-  const groupId = searchParams.get("groupId");
   const [dietaryPreferences, setDietaryPreferences] = useState("");
 
   const handleSubmit = async () => {
@@ -26,7 +24,6 @@ export default function GroupPage() {
 
   return (
     <div>
-      <h1>Group {groupId}</h1>
       <input
         type="text"
         value={dietaryPreferences}
@@ -36,4 +33,4 @@ export default function GroupPage() {
       <button onClick={handleSubmit}>Submit</button>
     </div>
   );
-}
+};

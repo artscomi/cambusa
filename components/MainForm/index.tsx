@@ -7,7 +7,7 @@ import { CreateGroupBox } from "./CreateGroupBox";
 import { CtaCreateMenuGroup } from "../CTA/CtaCreateMenuGroup";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
-import { GroupData } from "@/app/group/[groupId]/menu/page";
+import { GroupData } from "@/types/types";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
