@@ -44,7 +44,7 @@ export const CreateGroupBox = () => {
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            className="h-15 p-2 underline underline-offset-8 block mr-auto"
+            className="h-15 p-2 underline underline-offset-8 block m-auto"
           >
             Crea un gruppo
           </button>
