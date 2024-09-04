@@ -35,6 +35,7 @@ export const CreateGroupBox = () => {
         </p>
         <form onSubmit={handleSubmit}>
           <TextInput
+            className="bg-white"
             id="group-name"
             label="Nome del gruppo"
             value={groupName}
