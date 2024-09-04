@@ -5,7 +5,6 @@ export type TextInputConfig = {
   label: string;
   value: string;
   type: "number" | "text";
-  max?: string;
   placeholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
@@ -17,7 +16,6 @@ export type FormState = {
   breakfast: string;
   lunch: string;
   type: "number" | "text";
-  max?: string;
   dinner: string;
 };
 
@@ -29,8 +27,7 @@ const initialState: FormState = {
   breakfast: "",
   lunch: "",
   dinner: "",
-  type: "number",
-  max: "7",
+  type: "text",
 };
 
 export const useFormConfig = () => {
@@ -38,9 +35,27 @@ export const useFormConfig = () => {
 
   const handleChange =
     (field: FormStateKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      const maxValue = field === "people" ? 20 : 7;
+
+      const numericValue = Number(value);
+      if (field === "dietaryPreferences") {
+        if (numericValue) {
+          return;
+        }
+      } else {
+        if (
+          isNaN(numericValue) ||
+          numericValue < 1 ||
+          numericValue > maxValue
+        ) {
+          return;
+        }
+      }
+
       setFormState((prevState) => ({
         ...prevState,
-        [field]: e.target.value,
+        [field]: value,
       }));
     };
 
@@ -50,8 +65,7 @@ export const useFormConfig = () => {
       label: "Quante colazioni?",
       value: formState.breakfast,
       placeholder: "7",
-      type: "number",
-      max: "7",
+      type: "text",
       onChange: handleChange("breakfast"),
     },
     {
@@ -59,8 +73,7 @@ export const useFormConfig = () => {
       label: "Quanti pranzi?",
       value: formState.lunch,
       placeholder: "7",
-      type: "number",
-      max: "7",
+      type: "text",
       onChange: handleChange("lunch"),
     },
     {
@@ -68,8 +81,7 @@ export const useFormConfig = () => {
       label: "Quante cene?",
       value: formState.dinner,
       placeholder: "7",
-      type: "number",
-      max: "7",
+      type: "text",
       onChange: handleChange("dinner"),
     },
     {
@@ -77,8 +89,7 @@ export const useFormConfig = () => {
       label: "Per quante persone?",
       value: formState.people,
       placeholder: "5",
-      type: "number",
-      max: "7",
+      type: "text",
       onChange: handleChange("people"),
     },
     {
