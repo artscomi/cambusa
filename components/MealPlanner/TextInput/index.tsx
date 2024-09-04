@@ -7,7 +7,6 @@ export const TextInput = ({
   placeholder,
   onChange,
   type,
-  max,
   className, 
 }: TextInputConfig) => (
   <div className={`relative last:mb-0 ${className}`}>
@@ -23,7 +22,6 @@ export const TextInput = ({
       placeholder={placeholder}
       inputMode={type === "number" ? "numeric" : "text"}
       autoComplete="off"
-      max={max}
     />
   </div>
 );
