@@ -1,12 +1,5 @@
 import { useState } from "react";
-
-type InputConfig = {
-  id: string;
-  label: string;
-  value: string;
-  placeholder: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import { TextInputConfig } from "./useInputConfig";
 
 export type AddMealFormState = {
   ["meal-name"]: string;
@@ -33,19 +26,21 @@ export const useAddMealInputConfig = () => {
       }));
     };
 
-  const inputConfig: InputConfig[] = [
+  const inputConfig: TextInputConfig[] = [
     {
       id: "meal-name",
       label: "Nome pasto",
       value: formState["meal-name"],
       placeholder: "7",
+      type: 'text',
       onChange: handleChange("meal-name"),
     },
     {
       id: "ingredient",
       label: "Ingredienti",
       value: formState.ingredient,
-      placeholder: "7",
+      placeholder: "ingrediente",
+      type: 'text',
       onChange: handleChange("ingredient"),
     },
     {
@@ -53,6 +48,7 @@ export const useAddMealInputConfig = () => {
       label: "Quantità",
       value: formState.quantity,
       placeholder: "7",
+      type: 'text',
       onChange: handleChange("quantity"),
     },
   ];
