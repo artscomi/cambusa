@@ -9,6 +9,8 @@ export type TextInputConfig = {
   inputType: "numeric" | "text";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  onFocus?: () => void; 
+  onBlur?: () => void; 
 };
 
 export type FormState = {

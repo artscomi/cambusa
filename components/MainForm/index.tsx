@@ -4,14 +4,24 @@ import { TextInput } from "../MealPlanner/TextInput";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData } from "@/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { mockShoppingList } from "../MealPlanner/data";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
   const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const handleInputFocus = () => setIsInputFocused(true);
+  const handleInputBlur = () => setIsInputFocused(false);
+
+  useEffect(() => {
+    setError(false);
+  }, [isInputFocused]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,12 +43,13 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
       });
       const data = await response.json();
       const mealList = JSON.parse(data.shoppingList);
-      // await new Promise((resolve) =>
-      //   setTimeout(() => resolve("Simulated response"), 1000)
+      // await new Promise((resolve, reject) =>
+      //   setTimeout(() => reject("error"), 1000)
       // );
 
       setMealList(mockShoppingList);
     } catch (e) {
+      setError(true);
       console.error(e);
     } finally {
       setIsLoading(false);
@@ -56,7 +67,12 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
           <form className="flex-1" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4 mb-10">
               {inputConfig.map((config) => (
-                <TextInput key={config.id} {...config} />
+                <TextInput
+                  key={config.id}
+                  {...config}
+                  onFocus={handleInputFocus}
+                  onBlur={handleInputBlur}
+                />
               ))}
             </div>
             <button
@@ -66,8 +82,29 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isLoading ? "Loading..." : "Genera il menu! 😍"}{" "}
+              {isLoading ? "Loading..." : "Genera il menu! 😍"}
             </button>
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  initial={{
+                    opacity: 0,
+                    y: 50,
+                    scale: 0.8,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                  }}
+                  exit={{ y: 300 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="rounded text-white p-2 bg-red-500 fixed bottom-20 left-1/2 transform -translate-x-1/2 w-auto"
+                >
+                  Oops.. qualcosa è andato storto, riprova
+                </motion.p>
+              )}
+            </AnimatePresence>
           </form>
         </div>
       </div>

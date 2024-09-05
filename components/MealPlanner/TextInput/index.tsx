@@ -8,6 +8,8 @@ export const TextInput = ({
   onChange,
   type,
   className,
+  onFocus,
+  onBlur,
 }: TextInputConfig) => (
   <div className={`relative last:mb-0 `}>
     <label className="block absolute text-xs left-4 top-1" htmlFor={id}>
@@ -22,6 +24,8 @@ export const TextInput = ({
       placeholder={placeholder}
       inputMode={type === "number" ? "numeric" : "text"}
       autoComplete="off"
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   </div>
 );
