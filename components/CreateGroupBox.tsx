@@ -8,7 +8,7 @@ import { TextInput } from "./MealPlanner/TextInput";
 export const CreateGroupBox = () => {
   const [groupName, setGroupName] = useState("");
   const [error, setError] = useState("");
-  const router = useRouter(); // Initialize router using useRouter
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

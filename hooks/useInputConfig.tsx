@@ -45,9 +45,8 @@ export const useFormConfig = () => {
         }
       } else {
         if (
-          isNaN(numericValue) ||
-          numericValue < 1 ||
-          numericValue > maxValue
+          value !== "" &&
+          (isNaN(numericValue) || numericValue < 1 || numericValue > maxValue)
         ) {
           return;
         }
