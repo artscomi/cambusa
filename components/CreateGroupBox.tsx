@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { TextInput } from "../MealPlanner/TextInput";
 import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
+import { TextInput } from "./MealPlanner/TextInput";
 
 export const CreateGroupBox = () => {
   const [groupName, setGroupName] = useState("");
@@ -24,7 +24,7 @@ export const CreateGroupBox = () => {
   };
 
   return (
-    <div className="p-8 rounded-lg flex-1 flex flex-col">
+    <form className="p-8 md:rounded-lg flex-1 flex flex-col onSubmit={handleSubmit} justify-center" onSubmit={handleSubmit}>
       <div className="mb-5">
         <span role="img" className="text-center block mb-3 text-2xl">
           👫👬👭
@@ -33,25 +33,25 @@ export const CreateGroupBox = () => {
           Crea il tuo gruppo per raccogliere le preferenze alimentari di tutta
           la ciurma!
         </p>
-        <form onSubmit={handleSubmit}>
-          <TextInput
-            className="bg-white"
-            id="group-name"
-            label="Nome del gruppo"
-            value={groupName}
-            type="text"
-            placeholder="Capraia 2024"
-            onChange={(e) => setGroupName(e.target.value)}
-          />
-          {error && <p className="text-red-500">{error}</p>}
-          <button
-            type="submit"
-            className="h-15 p-2 underline underline-offset-8 block m-auto"
-          >
-            Crea un gruppo
-          </button>
-        </form>
+        <TextInput
+          className="max-md:bg-white"
+          id="group-name"
+          label="Nome del gruppo"
+          value={groupName}
+          type="text"
+          placeholder="Capraia 2024"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setGroupName(e.target.value)
+          }
+        />
+        {error && <p className="text-red-500">{error}</p>}
+        <button
+          type="submit"
+          className="h-15 p-2 underline underline-offset-8 block m-auto"
+        >
+          Crea un gruppo
+        </button>
       </div>
-    </div>
+    </form>
   );
 };

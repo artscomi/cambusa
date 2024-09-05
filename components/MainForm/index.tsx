@@ -1,8 +1,6 @@
 "use client";
 
-import { MealMenu } from "../MealPlanner/MealMenu";
 import { TextInput } from "../MealPlanner/TextInput";
-import { CreateGroupBox } from "./CreateGroupBox";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData } from "@/types/types";
@@ -11,7 +9,7 @@ import { mockShoppingList } from "../MealPlanner/data";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
-  const { mealList, setMealList } = useMealContext();
+  const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,24 +53,22 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
             groupData ? `per il gruppo ${groupData.id}` : ""
           }`}</h1>
 
-          <div className="flex flex-col md:flex-row justify-items-center gap-16">
-            <form className="flex-1" onSubmit={handleSubmit}>
-              <div className="flex flex-col gap-4 mb-10">
-                {inputConfig.map((config) => (
-                  <TextInput key={config.id} {...config} />
-                ))}
-              </div>
-              <button
-                disabled={isLoading}
-                type="submit"
-                className={`bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                {isLoading ? "Loading..." : "Genera il menu! 😍"}{" "}
-              </button>
-            </form>
-          </div>
+          <form className="flex-1" onSubmit={handleSubmit}>
+            <div className="flex flex-col gap-4 mb-10">
+              {inputConfig.map((config) => (
+                <TextInput key={config.id} {...config} />
+              ))}
+            </div>
+            <button
+              disabled={isLoading}
+              type="submit"
+              className={`bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Loading..." : "Genera il menu! 😍"}{" "}
+            </button>
+          </form>
         </div>
       </div>
     </>
