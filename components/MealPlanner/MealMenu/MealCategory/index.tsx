@@ -2,6 +2,7 @@ import { useMealContext } from "@/context/useMealContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { Meal, MenuData } from "@/types/types";
 import { MealItem } from "./MealItem";
+import { Icon } from "@/components/Icons";
 
 interface MealCategoryProps {
   category: keyof MenuData;
@@ -42,9 +43,11 @@ export const MealCategory = ({ category, meals }: MealCategoryProps) => {
             exit={{ scale: 0.8, opacity: 0 }}
             initial={{ scale: 0.8, opacity: 0 }}
           >
-            <div className="bg-white p-6 rounded-lg flex-1 h-full min-h-[400px]">
-              <button onClick={() => handleDeleteMeal(meal)}>Delete</button>
+            <div className="bg-white p-6 rounded-lg flex-1 h-full min-h-[400px] flex justify-between flex-col group">
               <MealItem meal={meals[meal]} />
+              <button onClick={() => handleDeleteMeal(meal)} className="ml-auto p-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
+                <Icon.Delete className="text-red-500"/>
+              </button>
             </div>
           </motion.div>
         ))}

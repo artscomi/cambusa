@@ -6,7 +6,7 @@ import { useMealContext } from "@/context/useMealContext";
 import { GroupData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { mockShoppingList } from "../MealPlanner/data";
-import { AnimatePresence, motion } from "framer-motion";
+import { ToastError } from "../ToastError";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
@@ -28,24 +28,24 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
 
     try {
       setIsLoading(true);
-      const response = await fetch("/api/generate-shopping-list", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          breakfast,
-          lunch,
-          dinner,
-          dietaryPreferences,
-          people,
-        }),
-      });
-      const data = await response.json();
-      const mealList = JSON.parse(data.shoppingList);
-      // await new Promise((resolve, reject) =>
-      //   setTimeout(() => reject("error"), 1000)
-      // );
+      // const response = await fetch("/api/generate-shopping-list", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     breakfast,
+      //     lunch,
+      //     dinner,
+      //     dietaryPreferences,
+      //     people,
+      //   }),
+      // });
+      // const data = await response.json();
+      // const mealList = JSON.parse(data.shoppingList);
+      await new Promise((resolve, reject) =>
+        setTimeout(() => resolve("resolve"), 1000)
+      );
 
       setMealList(mockShoppingList);
     } catch (e) {
@@ -84,27 +84,8 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
             >
               {isLoading ? "Loading..." : "Genera il menu! 😍"}
             </button>
-            <AnimatePresence>
-              {error && (
-                <motion.p
-                  initial={{
-                    opacity: 0,
-                    y: 50,
-                    scale: 0.8,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }}
-                  exit={{ y: 300 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="rounded text-white p-2 bg-red-500 fixed bottom-20 left-1/2 transform -translate-x-1/2 w-auto"
-                >
-                  Oops.. qualcosa è andato storto, riprova
-                </motion.p>
-              )}
-            </AnimatePresence>
+
+            <ToastError error={error} />
           </form>
         </div>
       </div>
