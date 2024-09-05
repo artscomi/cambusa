@@ -6,6 +6,7 @@ export type TextInputConfig = {
   value: string;
   type: "number" | "text";
   placeholder: string;
+  inputType: "numeric" | "text";
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 };
@@ -15,7 +16,6 @@ export type FormState = {
   dietaryPreferences: string;
   breakfast: string;
   lunch: string;
-  type: "number" | "text";
   dinner: string;
 };
 
@@ -27,7 +27,6 @@ const initialState: FormState = {
   breakfast: "",
   lunch: "",
   dinner: "",
-  type: "text",
 };
 
 export const useFormConfig = () => {
@@ -65,6 +64,7 @@ export const useFormConfig = () => {
       value: formState.breakfast,
       placeholder: "7",
       type: "text",
+      inputType: "numeric",
       onChange: handleChange("breakfast"),
     },
     {
@@ -73,6 +73,7 @@ export const useFormConfig = () => {
       value: formState.lunch,
       placeholder: "7",
       type: "text",
+      inputType: "numeric",
       onChange: handleChange("lunch"),
     },
     {
@@ -81,6 +82,7 @@ export const useFormConfig = () => {
       value: formState.dinner,
       placeholder: "7",
       type: "text",
+      inputType: "numeric",
       onChange: handleChange("dinner"),
     },
     {
@@ -89,6 +91,7 @@ export const useFormConfig = () => {
       value: formState.people,
       placeholder: "5",
       type: "text",
+      inputType: "numeric",
       onChange: handleChange("people"),
     },
     {
@@ -97,6 +100,7 @@ export const useFormConfig = () => {
       value: formState.dietaryPreferences,
       placeholder: "vegan, gluten-free",
       type: "text",
+      inputType: "text",
       onChange: handleChange("dietaryPreferences"),
     },
   ];

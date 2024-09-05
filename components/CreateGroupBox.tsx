@@ -24,7 +24,10 @@ export const CreateGroupBox = () => {
   };
 
   return (
-    <form className="p-8 md:rounded-lg flex-1 flex flex-col onSubmit={handleSubmit} justify-center" onSubmit={handleSubmit}>
+    <form
+      className="p-8 md:rounded-lg flex-1 flex flex-col onSubmit={handleSubmit} justify-center"
+      onSubmit={handleSubmit}
+    >
       <div className="mb-5">
         <span role="img" className="text-center block mb-3 text-2xl">
           👫👬👭
@@ -34,6 +37,7 @@ export const CreateGroupBox = () => {
           la ciurma!
         </p>
         <TextInput
+          inputType="text"
           className="max-md:bg-white"
           id="group-name"
           label="Nome del gruppo"
