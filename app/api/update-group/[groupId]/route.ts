@@ -3,9 +3,11 @@ import path from "path";
 import { NextResponse } from "next/server";
 import { GroupData } from "@/types/types";
 
-export async function POST(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const groupId = searchParams.get("groupId");
+export async function POST(
+  req: Request,
+  { params }: { params: { groupId: string } }
+) {
+  const { groupId } = params;
 
   if (groupId) {
     const dataDir = path.join(process.cwd(), "data");
@@ -19,7 +21,8 @@ export async function POST(req: Request) {
 
     if (fs.existsSync(filePath)) {
       const existingData = fs.readFileSync(filePath, "utf-8");
-      const existingPreferences = JSON.parse(existingData).dietaryPreferences || [];
+      const existingPreferences =
+        JSON.parse(existingData).dietaryPreferences || [];
       groupData.dietaryPreferences = [
         ...existingPreferences,
         ...groupData.dietaryPreferences,
@@ -28,12 +31,21 @@ export async function POST(req: Request) {
 
     try {
       fs.writeFileSync(filePath, JSON.stringify(groupData));
-      return NextResponse.json({ message: "Dietary preferences updated" }, { status: 200 });
+      return NextResponse.json(
+        { message: "Dietary preferences updated" },
+        { status: 200 }
+      );
     } catch (error) {
       console.error("Error writing file:", error);
-      return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal server error" },
+        { status: 500 }
+      );
     }
   } else {
-    return NextResponse.json({ message: "Group ID is required" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Group ID is required" },
+      { status: 400 }
+    );
   }
 }

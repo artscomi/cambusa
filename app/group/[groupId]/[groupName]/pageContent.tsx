@@ -1,5 +1,6 @@
 "use client";
 
+import { MealContextProvider } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -23,14 +24,14 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={dietaryPreferences}
-        onChange={(e) => setDietaryPreferences(e.target.value)}
-        placeholder="Enter dietary preferences"
-      />
-      <button onClick={handleSubmit}>Submit</button>
-    </div>
+      <div>
+        <input
+          type="text"
+          value={dietaryPreferences}
+          onChange={(e) => setDietaryPreferences(e.target.value)}
+          placeholder="Enter dietary preferences"
+        />
+        <button onClick={handleSubmit}>Submit</button>
+      </div>
   );
 };

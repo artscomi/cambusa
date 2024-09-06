@@ -1,3 +1,4 @@
+"use client"
 import { useMealContext } from "@/context/useMealContext";
 import { MealCategory } from "./MealCategory";
 

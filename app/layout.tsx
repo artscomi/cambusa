@@ -1,4 +1,5 @@
 import "/styles/globals.css";
+import ContextLayout from "./context-layout";
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ContextLayout>{children}</ContextLayout>
+      </body>
     </html>
   );
 }

@@ -5,7 +5,6 @@ import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData } from "@/types/types";
 import { useEffect, useState } from "react";
-import { mockShoppingList } from "../MealPlanner/data";
 import { ToastError } from "../ToastError";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
