@@ -1,8 +1,6 @@
-// app/api/generate-shopping-list/route.ts
 import { NextResponse } from 'next/server';
 import { getPrompt } from '@/utils/getPrompt';
 
-// Define the POST method to handle requests
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -25,7 +23,8 @@ export async function POST(req: Request) {
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+      const errorMessage = await response.text();
+      throw new Error(`OpenAI API error: ${errorMessage}`);
     }
 
     const data = await response.json();
@@ -34,7 +33,6 @@ export async function POST(req: Request) {
     console.log(getPrompt(body));
     console.log(shoppingList);
 
-    // Send the generated shopping list back to the client
     return NextResponse.json({ shoppingList });
   } catch (error) {
     console.error("Error generating shopping list:", error);

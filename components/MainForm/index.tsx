@@ -28,29 +28,29 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
 
     try {
       setIsLoading(true);
-      // const response = await fetch("/api/generate-shopping-list", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     breakfast,
-      //     lunch,
-      //     dinner,
-      //     dietaryPreferences,
-      //     people,
-      //   }),
-      // });
-      // const data = await response.json();
-      // const mealList = JSON.parse(data.shoppingList);
-      await new Promise((resolve, reject) =>
-        setTimeout(() => resolve("resolve"), 1000)
-      );
+      const response = await fetch("/api/generate-shopping-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          breakfast,
+          lunch,
+          dinner,
+          dietaryPreferences,
+          people,
+        }),
+      });
+      const data = await response.json();
+      const mealList = JSON.parse(data.shoppingList);
+      // await new Promise((resolve, reject) =>
+      //   setTimeout(() => resolve("resolve"), 1000)
+      // );
 
-      setMealList(mockShoppingList);
+      setMealList(mealList);
     } catch (e) {
       setError(true);
-      console.error(e);
+      console.error('Error fetching OpenAI response:', error);
     } finally {
       setIsLoading(false);
     }
