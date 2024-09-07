@@ -1,17 +1,18 @@
 "use client";
 
-import { TextInput } from "../MealPlanner/TextInput";
+import { TextInput } from "../TextInput";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { ToastError } from "../ToastError";
+import { experimental_useObject as useObject } from "ai/react";
+import { mealMenuSchema } from "@/app/api/generate-shopping-list/schema";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
-  const { setMealList } = useMealContext();
+  const { setMealList, mealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -22,38 +23,35 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
     setError(false);
   }, [isInputFocused]);
 
+  const { object, submit, isLoading, stop } = useObject({
+    api: "/api/generate-shopping-list",
+    schema: mealMenuSchema,
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/generate-shopping-list", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          breakfast,
-          lunch,
-          dinner,
-          dietaryPreferences,
-          people,
-        }),
-      });
-      const data = await response.json();
-      const mealList = JSON.parse(data.shoppingList);
-      // await new Promise((resolve, reject) =>
-      //   setTimeout(() => resolve("resolve"), 1000)
-      // );
+    submit({
+      breakfast,
+      lunch,
+      dinner,
+      dietaryPreferences,
+      people,
+    });
 
-      setMealList(mealList);
-    } catch (e) {
-      setError(true);
-      console.error('Error fetching OpenAI response:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    setMealList(object);
+
+    // await new Promise((resolve, reject) =>
+    //   setTimeout(() => resolve("resolve"), 1000)
+    // );
   };
+
+  useEffect(() => {
+    if (object) {
+      setMealList(object);
+    }
+  }, [object]);
+
 
   return (
     <>

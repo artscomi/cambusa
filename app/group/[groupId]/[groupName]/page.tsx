@@ -8,9 +8,8 @@ const GroupPage: NextPage<{
   const { groupId, groupName } = params;
   const displayedGroupName = groupName.replace(/-/g, " ");
   return (
-    <div>
-      <h1>Group {displayedGroupName}</h1>
-      <PageContent groupId={groupId} />
+    <div className="h-lvh flex justify-center items-center">
+      <PageContent groupId={groupId} groupName={displayedGroupName} />
     </div>
   );
 };

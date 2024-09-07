@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { MainForm } from "@/components/MainForm";
 import { GroupData } from "@/types/types";
-import { MealMenu } from "@/components/MealPlanner/MealMenu";
+import { MealMenu } from "@/components/MealMenu";
 
 async function getGroupData(groupId: string): Promise<GroupData> {
   const filePath = path.join(process.cwd(), "data", `${groupId}.json`);

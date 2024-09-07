@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { nanoid } from "nanoid";
-import { TextInput } from "./MealPlanner/TextInput";
+import { TextInput } from "./TextInput";
 
 export const CreateGroupBox = () => {
   const [groupName, setGroupName] = useState("");

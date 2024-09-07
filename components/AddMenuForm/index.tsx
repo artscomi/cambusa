@@ -1,5 +1,5 @@
 import { useAddMealInputConfig } from "@/hooks/useAddMealInputConfig";
-import { TextInput } from "../MealPlanner/TextInput";
+import { TextInput } from "../TextInput";
 import { useMealContext } from "@/context/useMealContext";
 import { MenuData } from "@/types/types";
 
