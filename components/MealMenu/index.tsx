@@ -3,6 +3,22 @@ import { Icon } from "@/components/Icons";
 import { useMealContext } from "@/context/useMealContext";
 import { AnimatePresence, motion } from "framer-motion";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: { scale: 1, opacity: 1 },
+  exit: { scale: 0.8, opacity: 0 },
+};
+
 export const MealMenu = () => {
   const { mealList, setMealList } = useMealContext();
 
@@ -26,25 +42,34 @@ export const MealMenu = () => {
 
   return (
     <AnimatePresence>
+      <p className="text-5xl mb-14 text-center">Et voilà! Ecco le proposte di menu</p>
+      {/* <p className="text-xl mb-6">
+       <span><Icon.Delete className="text-red-500" /></span> Elimina il pasto che non ti piace
+      </p> */}
       {mealList.menu?.map((mealType) => (
         <>
           {mealType.meals?.length > 0 && (
             <>
-              <h2 className="font-bold my-5 text-lg">{mealType.mealTypeName}</h2>
-              <div key={mealType.id} className="gap-5 grid lg:grid-cols-3 mb-5">
+              <h2 className="py-2 mb-5 text-2xl bg-white text-center">{mealType.mealTypeName}</h2>
+              <motion.div
+                key={mealType.id}
+                className="gap-5 grid lg:grid-cols-4 mb-5"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={containerVariants}
+              >
                 {mealType.meals?.map((meal) => (
                   <motion.div
                     layout
-                    transition={{ type: "spring" }}
                     key={meal.id}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.8, opacity: 0 }}
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    className="bg-white p-6 rounded-lg flex-1 h-full min-h-[350px] flex justify-between flex-col group"
+                    variants={itemVariants}
+                    transition={{ type: "spring" }}
+                    className="bg-white p-6 rounded-lg flex-1 h-full min-h-[300px] flex justify-between flex-col shadow-md group"
                   >
                     {meal.dishes?.map((dish) => (
-                      <ul key={dish.id} className="mb-5">
-                        <p className="mb-2 font-bold">{dish.dishName}</p>
+                      <ul key={dish.id} className="first:mb-5">
+                        <p className="mb-2 font-semibold">{dish.dishName}</p>
                         {dish.ingredients?.map(
                           (ingredient, ingredientIndex) => (
                             <li key={ingredientIndex}>
@@ -62,11 +87,20 @@ export const MealMenu = () => {
                     </button>
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </>
           )}
         </>
       ))}
+      <div className="text-center">
+        <p className="mt-16 mb-10 text-2xl">E adesso?</p>
+        <button
+          type="submit"
+          className="bg-black rounded h-14 text-white p-2 hover:bg-gray-800"
+        >
+          Genera la lista della spesa!
+        </button>
+      </div>
     </AnimatePresence>
   );
 };

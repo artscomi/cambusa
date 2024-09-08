@@ -15,7 +15,7 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
 
   return (
     <>
-      <MainForm groupData={groupData} />
+      {/* <MainForm groupData={groupData} /> */}
       <MealMenu />
     </>
   );

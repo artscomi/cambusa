@@ -1,10 +1,10 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
-import { Poppins } from '@next/font/google';
+import { Poppins } from "@next/font/google";
 
 const inter = Poppins({
-  subsets: ['latin'],      // Optional: specify subsets
-  weight: ['400', '700'],  // Optional: specify font weights
+  subsets: ["latin"], // Optional: specify subsets
+  weight: ["400", "700"], // Optional: specify font weights
 });
 
 export const metadata = {
@@ -20,7 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ContextLayout>{children}</ContextLayout>
+        <main className="md:py-24 px-5 md:px-10 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
+          <ContextLayout>{children}</ContextLayout>
+        </main>
       </body>
     </html>
   );

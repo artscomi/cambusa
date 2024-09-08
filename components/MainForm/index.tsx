@@ -4,77 +4,90 @@ import { TextInput } from "../TextInput";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData, MenuData } from "@/types/types";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { ToastError } from "../ToastError";
 import { experimental_useObject as useObject } from "ai/react";
 import { mealMenuSchema } from "@/app/api/generate-meal-menu/schema";
+import { mockMealList } from "@/utils/mockMealList";
 import { useRouter } from "next/navigation";
+import { Loading } from "../Loading";
+import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 
-export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
+export const MainForm = ({
+  groupData,
+  startTransition,
+}: {
+  groupData?: GroupData;
+  startTransition: (callback: () => void) => void;
+}) => {
   const { inputConfig, formState } = useFormConfig();
-  const { setMealList, mealList } = useMealContext();
+  const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isInputFocused, setIsInputFocused] = useState(false);
+
   const router = useRouter();
 
   const handleInputFocus = () => setIsInputFocused(true);
   const handleInputBlur = () => setIsInputFocused(false);
 
   useEffect(() => {
-    setError(false);
+    setError(null);
   }, [isInputFocused]);
 
-  const { object, submit, isLoading, stop } = useObject({
-    api: "/api/generate-meal-menu",
-    schema: mealMenuSchema,
-  });
+  // const { object, submit, isLoading, stop } = useObject({
+  //   api: "/api/generate-meal-menu",
+  //   schema: mealMenuSchema,
+  // });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    router.push('/meal-menu');
-    // submit({
-    //   breakfast,
-    //   lunch,
-    //   dinner,
-    //   dietaryPreferences,
-    //   people,
-    // });
 
+    setError(null);
 
-    // const parsedObj = object as MenuData;
-    // setMealList(parsedObj);
+    startTransition(async () => {
+      try {
+        const result = await getMealListFromAi({
+          breakfast,
+          lunch,
+          dinner,
+          dietaryPreferences,
+          people,
+        });
 
-    // if (object) {
-    //   const parsedObj = object as MenuData;
+        // const result = await new Promise<
+        //   | { type: "success"; menu: MenuData }
+        //   | { type: "parse-error"; text: string }
+        //   | { type: "validation-error"; value: unknown }
+        //   | { type: "unknown-error"; error: unknown }
+        // >((resolve, reject) => {
+        //   setTimeout(() => {
+        //     if (Math.random() > 0.2) {
+        //       resolve({
+        //         type: "success",
+        //         menu: mockMealList,
+        //       });
+        //     } else {
+        //       reject(new Error("Simulated API error"));
+        //     }
+        //   }, 10000);
+        // });
 
-    //   console.log('passa')
-
-    //   setMealList(parsedObj);
-    // }
-
-    // await new Promise((resolve, reject) =>
-    //   setTimeout(() => resolve("resolve"), 1000)
-    // );
-
-    // if (object) {
-    //   const parsedObj = object as MenuData;
-    //   setMealList(parsedObj);
-
-    //   router.push('/meal-menu');
-    // }
+        if (result.type === "success") {
+          setMealList(result.menu);
+          router.push("/meal-menu");
+        } else if (result.type === "validation-error") {
+          setError("Recipe format is invalid.");
+        } else if (result.type === "parse-error") {
+          setError('"Failed to parse recipe data."');
+        } else {
+          setError("An unknown error occurred.");
+        }
+      } catch (e) {
+        setError("An unexpected error occurred while fetching the meal list.");
+      }
+    });
   };
-
-  // useEffect(() => {
-  //   if (object) {
-  //     const parsedObj = object as MenuData;
-  //     setMealList(parsedObj);
-
-  //     // Redirect after state update
-  //     router.push("/meal-menu");
-  //   }
-  // }, [object, setMealList]);
- 
 
   return (
     <>
@@ -96,13 +109,10 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
               ))}
             </div>
             <button
-              disabled={isLoading}
               type="submit"
-              className={`bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className="bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full"
             >
-              {isLoading ? "Loading..." : "Genera il menu! 😍"}
+              Genera il menu! 😍
             </button>
 
             <ToastError error={error} />
@@ -112,3 +122,4 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
     </>
   );
 };
+

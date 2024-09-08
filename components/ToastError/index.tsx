@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
-export const ToastError: React.FC<{ error: boolean }> = ({ error }) => (
+export const ToastError: React.FC<{ error: string | null }> = ({ error }) => (
   <AnimatePresence>
     {error && (
       <motion.p
@@ -18,7 +18,7 @@ export const ToastError: React.FC<{ error: boolean }> = ({ error }) => (
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className="rounded text-white p-2 bg-red-500 fixed bottom-20 left-1/2 transform -translate-x-1/2 w-auto"
       >
-        Oops.. qualcosa è andato storto, riprova
+        {error}
       </motion.p>
     )}
   </AnimatePresence>
