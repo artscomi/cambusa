@@ -1,5 +1,5 @@
+import { TextInputConfig } from "@/components/TextInput";
 import { useState } from "react";
-import { TextInputConfig } from "./useInputConfig";
 
 export type AddMealFormState = {
   ["meal-name"]: string;
