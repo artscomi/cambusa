@@ -10,7 +10,7 @@ export const MealMenu = () => {
     return;
   }
 
-  const handleDeleteMeal = (mealTypeId: number, mealId: number) => {
+  const handleDeleteMeal = (mealTypeId: string, mealId: string) => {
     const updatedMealList = mealList.menu.map((mealType) => {
       if (mealType.id === mealTypeId) {
         return {
