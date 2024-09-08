@@ -29,26 +29,29 @@ export const CreateGroupBox = () => {
       onSubmit={handleSubmit}
     >
       <div className="mb-5">
-        <span role="img" className="text-center block mb-3 text-2xl">
+        <span role="img" className="text-center block mb-2 text-2xl">
           👫👬👭
         </span>
-        <p className="mb-8 text-center">
+        <p className="mb-8 text-center text-pretty">
           Crea il tuo gruppo per raccogliere le preferenze alimentari di tutta
           la ciurma!
         </p>
-        <TextInput
-          inputType="text"
-          className="max-md:bg-white"
-          id="group-name"
-          label="Nome del gruppo"
-          value={groupName}
-          type="text"
-          placeholder="Capraia 2024"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setGroupName(e.target.value)
-          }
-        />
-        {error && <p className="text-red-500">{error}</p>}
+        <div className="mb-4">
+          <TextInput
+            center
+            inputType="text"
+            className="bg-white min-w-[250px]"
+            id="group-name"
+            label="Nome del gruppo"
+            value={groupName}
+            type="text"
+            placeholder="Capraia 2024"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setGroupName(e.target.value)
+            }
+          />
+          {error && <p className="text-red-500">{error}</p>}
+        </div>
         <button
           type="submit"
           className="h-15 p-2 underline underline-offset-8 block m-auto"

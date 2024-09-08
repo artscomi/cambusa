@@ -16,12 +16,12 @@ export const AddMenu = () => {
 
     const updatedMenu: MenuData = {
       ...mealList,
-      Colazioni: {
-        ...(mealList?.Colazioni || {}),
-        [mealName]: {
-          [mealName]: [{ item: ingredient, quantity: quantity }],
-        },
-      },
+      // Colazioni: {
+      //   ...(mealList?.Colazioni || {}),
+      //   [mealName]: {
+      //     [mealName]: [{ item: ingredient, quantity: quantity }],
+      //   },
+      // },
     };
 
     setMealList(updatedMenu);

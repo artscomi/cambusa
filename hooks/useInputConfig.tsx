@@ -1,17 +1,5 @@
+import { TextInputConfig } from "@/components/TextInput";
 import { useState } from "react";
-
-export type TextInputConfig = {
-  id: string;
-  label: string;
-  value: string;
-  type: "number" | "text";
-  placeholder: string;
-  inputType: "numeric" | "text";
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
-  onFocus?: () => void; 
-  onBlur?: () => void; 
-};
 
 export type FormState = {
   people: string;

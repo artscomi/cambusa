@@ -1,5 +1,11 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
+import { Poppins } from '@next/font/google';
+
+const inter = Poppins({
+  subsets: ['latin'],      // Optional: specify subsets
+  weight: ['400', '700'],  // Optional: specify font weights
+});
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -13,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={inter.className}>
         <ContextLayout>{children}</ContextLayout>
       </body>
     </html>

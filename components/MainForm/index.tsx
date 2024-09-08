@@ -55,9 +55,9 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
 
   return (
     <>
-      <div className="md:rounded-lg p-14 bg-white mb-10">
+      <div className="md:rounded-lg p-14 bg-white mb-10 shadow-md">
         <div className="">
-          <h1 className="mb-10 text-2xl font-bold">{`Crea la tua cambusa ⛵ ${
+          <h1 className="mb-10 text-3xl">{`Genera la tua cambusa ${
             groupData ? `per il gruppo ${groupData.id}` : ""
           }`}</h1>
 
