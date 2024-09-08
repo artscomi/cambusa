@@ -3,7 +3,7 @@
 import { TextInput } from "../TextInput";
 import { useFormConfig } from "@/hooks/useInputConfig";
 import { useMealContext } from "@/context/useMealContext";
-import { GroupData } from "@/types/types";
+import { GroupData, MenuData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { ToastError } from "../ToastError";
 import { experimental_useObject as useObject } from "ai/react";
@@ -39,7 +39,9 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
       people,
     });
 
-    setMealList(object);
+    const parsedObj = object as MenuData
+
+    setMealList(parsedObj);
 
     // await new Promise((resolve, reject) =>
     //   setTimeout(() => resolve("resolve"), 1000)
@@ -47,8 +49,10 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   };
 
   useEffect(() => {
+    const parsedObj = object as MenuData
+
     if (object) {
-      setMealList(object);
+      setMealList(parsedObj);
     }
   }, [object]);
 
