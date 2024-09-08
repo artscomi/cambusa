@@ -7,7 +7,8 @@ import { GroupData, MenuData } from "@/types/types";
 import { useEffect, useState } from "react";
 import { ToastError } from "../ToastError";
 import { experimental_useObject as useObject } from "ai/react";
-import { mealMenuSchema } from "@/app/api/generate-shopping-list/schema";
+import { mealMenuSchema } from "@/app/api/generate-meal-menu/schema";
+import { useRouter } from "next/navigation";
 
 export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { inputConfig, formState } = useFormConfig();
@@ -15,6 +16,7 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const [error, setError] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const router = useRouter();
 
   const handleInputFocus = () => setIsInputFocused(true);
   const handleInputBlur = () => setIsInputFocused(false);
@@ -24,38 +26,55 @@ export const MainForm = ({ groupData }: { groupData?: GroupData }) => {
   }, [isInputFocused]);
 
   const { object, submit, isLoading, stop } = useObject({
-    api: "/api/generate-shopping-list",
+    api: "/api/generate-meal-menu",
     schema: mealMenuSchema,
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    router.push('/meal-menu');
+    // submit({
+    //   breakfast,
+    //   lunch,
+    //   dinner,
+    //   dietaryPreferences,
+    //   people,
+    // });
 
-    submit({
-      breakfast,
-      lunch,
-      dinner,
-      dietaryPreferences,
-      people,
-    });
 
-    const parsedObj = object as MenuData
+    // const parsedObj = object as MenuData;
+    // setMealList(parsedObj);
 
-    setMealList(parsedObj);
+    // if (object) {
+    //   const parsedObj = object as MenuData;
+
+    //   console.log('passa')
+
+    //   setMealList(parsedObj);
+    // }
 
     // await new Promise((resolve, reject) =>
     //   setTimeout(() => resolve("resolve"), 1000)
     // );
+
+    // if (object) {
+    //   const parsedObj = object as MenuData;
+    //   setMealList(parsedObj);
+
+    //   router.push('/meal-menu');
+    // }
   };
 
-  useEffect(() => {
-    const parsedObj = object as MenuData
+  // useEffect(() => {
+  //   if (object) {
+  //     const parsedObj = object as MenuData;
+  //     setMealList(parsedObj);
 
-    if (object) {
-      setMealList(parsedObj);
-    }
-  }, [object]);
-
+  //     // Redirect after state update
+  //     router.push("/meal-menu");
+  //   }
+  // }, [object, setMealList]);
+ 
 
   return (
     <>
