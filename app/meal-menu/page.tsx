@@ -1,7 +1,10 @@
+
 import { MealMenu } from "@/components/MealMenu";
 
 const MealMenuPage = () => {
-  return <MealMenu />;
+  return (
+      <MealMenu />
+  );
 };
 
 export default MealMenuPage;

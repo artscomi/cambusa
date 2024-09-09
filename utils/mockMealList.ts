@@ -15,12 +15,14 @@ export const mockMealList = {
                 {
                   id: "ingrediente1",
                   item: "☕ Caffè",
-                  quantity: "5 tazze",
+                  quantity: 5,
+                  unit: "tazze",
                 },
                 {
                   id: "ingrediente2",
                   item: "🥐 Cornetti",
-                  quantity: "5 pezzi",
+                  quantity: 5,
+                  unit: "pezzi",
                 },
               ],
             },
@@ -30,13 +32,15 @@ export const mockMealList = {
               ingredients: [
                 {
                   id: "ingrediente3",
-                  item: "🍦 Yogurt",
-                  quantity: "5 vasetti",
+                  item: "🍓 Yogurt",
+                  quantity: 5,
+                  unit: "vasetti",
                 },
                 {
                   id: "ingrediente4",
-                  item: "🍌 Banane",
-                  quantity: "5 pezzi",
+                  item: "🍌 Frutta mista",
+                  quantity: 1,
+                  unit: "kg",
                 },
               ],
             },
@@ -44,32 +48,35 @@ export const mockMealList = {
         },
         {
           id: "colazione2",
-          mealName: "Colazione dolce",
+          mealName: "Colazione energetica",
           dishes: [
             {
               id: "piatto3",
-              dishName: "Pane tostato con marmellata",
+              dishName: "Pancake con sciroppo",
               ingredients: [
                 {
                   id: "ingrediente5",
-                  item: "🍞 Pane",
-                  quantity: "5 fette",
+                  item: "🥞 Pancake",
+                  quantity: 10,
+                  unit: "pezzi",
                 },
                 {
                   id: "ingrediente6",
-                  item: "🍓 Marmellata",
-                  quantity: "1 vasetto",
+                  item: "🍯 Sciroppo d'acero",
+                  quantity: 1,
+                  unit: "bottiglia",
                 },
               ],
             },
             {
               id: "piatto4",
-              dishName: "Frutta fresca",
+              dishName: "Frutta secca",
               ingredients: [
                 {
                   id: "ingrediente7",
-                  item: "🍏 Mele",
-                  quantity: "5 pezzi",
+                  item: "🌰 Frutta secca",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -77,32 +84,35 @@ export const mockMealList = {
         },
         {
           id: "colazione3",
-          mealName: "Colazione salata",
+          mealName: "Colazione dolce",
           dishes: [
             {
               id: "piatto5",
-              dishName: "Fette biscottate con formaggio spalmabile",
+              dishName: "Toast con marmellata",
               ingredients: [
                 {
                   id: "ingrediente8",
-                  item: "🍞 Fette biscottate",
-                  quantity: "5 fette",
+                  item: "🍞 Pane",
+                  quantity: 10,
+                  unit: "fette",
                 },
                 {
                   id: "ingrediente9",
-                  item: "🧀 Formaggio spalmabile",
-                  quantity: "1 confezione",
+                  item: "🍇 Marmellata",
+                  quantity: 1,
+                  unit: "vasetto",
                 },
               ],
             },
             {
               id: "piatto6",
-              dishName: "Succo d'arancia",
+              dishName: "Cappuccino",
               ingredients: [
                 {
                   id: "ingrediente10",
-                  item: "🍊 Succo d'arancia",
-                  quantity: "5 bicchieri",
+                  item: "☕ Cappuccino",
+                  quantity: 5,
+                  unit: "tazze",
                 },
               ],
             },
@@ -110,32 +120,35 @@ export const mockMealList = {
         },
         {
           id: "colazione4",
-          mealName: "Colazione energetica",
+          mealName: "Colazione salata",
           dishes: [
             {
               id: "piatto7",
-              dishName: "Porridge con frutta secca",
+              dishName: "Frittata di verdure",
               ingredients: [
                 {
                   id: "ingrediente11",
-                  item: "🌾 Avena",
-                  quantity: "250 g",
+                  item: "🥚 Uova",
+                  quantity: 10,
+                  unit: "pezzi",
                 },
                 {
                   id: "ingrediente12",
-                  item: "🥜 Frutta secca",
-                  quantity: "100 g",
+                  item: "🥬 Verdure miste",
+                  quantity: 300,
+                  unit: "g",
                 },
               ],
             },
             {
               id: "piatto8",
-              dishName: "Tè verde",
+              dishName: "Pane tostato",
               ingredients: [
                 {
                   id: "ingrediente13",
-                  item: "🍵 Tè verde",
-                  quantity: "5 tazze",
+                  item: "🍞 Pane",
+                  quantity: 5,
+                  unit: "fette",
                 },
               ],
             },
@@ -143,7 +156,7 @@ export const mockMealList = {
         },
         {
           id: "colazione5",
-          mealName: "Colazione con smoothie",
+          mealName: "Colazione fresca",
           dishes: [
             {
               id: "piatto9",
@@ -151,24 +164,27 @@ export const mockMealList = {
               ingredients: [
                 {
                   id: "ingrediente14",
-                  item: "🍓 Fragole",
-                  quantity: "250 g",
+                  item: "🍌 Banana",
+                  quantity: 5,
+                  unit: "pezzi",
                 },
                 {
                   id: "ingrediente15",
-                  item: "🍌 Banane",
-                  quantity: "5 pezzi",
+                  item: "🍓 Fragole",
+                  quantity: 300,
+                  unit: "g",
                 },
               ],
             },
             {
               id: "piatto10",
-              dishName: "Pane integrale",
+              dishName: "Granola",
               ingredients: [
                 {
                   id: "ingrediente16",
-                  item: "🍞 Pane integrale",
-                  quantity: "5 fette",
+                  item: "🥣 Granola",
+                  quantity: 500,
+                  unit: "g",
                 },
               ],
             },
@@ -176,37 +192,35 @@ export const mockMealList = {
         },
         {
           id: "colazione6",
-          mealName: "Colazione con pancake",
+          mealName: "Colazione con cereali",
           dishes: [
             {
               id: "piatto11",
-              dishName: "Pancake con sciroppo d'acero",
+              dishName: "Cereali con latte",
               ingredients: [
                 {
                   id: "ingrediente17",
-                  item: "🥞 Pancake",
-                  quantity: "5 pezzi",
+                  item: "🥛 Latte",
+                  quantity: 1,
+                  unit: "litro",
                 },
                 {
                   id: "ingrediente18",
-                  item: "🍁 Sciroppo d'acero",
-                  quantity: "1 bottiglia",
+                  item: "🥣 Cereali",
+                  quantity: 500,
+                  unit: "g",
                 },
               ],
             },
             {
               id: "piatto12",
-              dishName: "Caffè latte",
+              dishName: "Frutta fresca",
               ingredients: [
                 {
                   id: "ingrediente19",
-                  item: "☕ Caffè",
-                  quantity: "5 tazze",
-                },
-                {
-                  id: "ingrediente20",
-                  item: "🥛 Latte",
-                  quantity: "1 litro",
+                  item: "🍏 Mela",
+                  quantity: 5,
+                  unit: "pezzi",
                 },
               ],
             },
@@ -214,32 +228,35 @@ export const mockMealList = {
         },
         {
           id: "colazione7",
-          mealName: "Colazione con omelette",
+          mealName: "Colazione internazionale",
           dishes: [
             {
               id: "piatto13",
-              dishName: "Omelette con verdure",
+              dishName: "Bagel con cream cheese",
               ingredients: [
                 {
-                  id: "ingrediente21",
-                  item: "🥚 Uova",
-                  quantity: "10 uova",
+                  id: "ingrediente20",
+                  item: "🥯 Bagel",
+                  quantity: 5,
+                  unit: "pezzi",
                 },
                 {
-                  id: "ingrediente22",
-                  item: "🥬 Spinaci",
-                  quantity: "100 g",
+                  id: "ingrediente21",
+                  item: "🧀 Cream cheese",
+                  quantity: 250,
+                  unit: "g",
                 },
               ],
             },
             {
               id: "piatto14",
-              dishName: "Succo di mela",
+              dishName: "Succo d'arancia",
               ingredients: [
                 {
-                  id: "ingrediente23",
-                  item: "🍏 Succo di mela",
-                  quantity: "5 bicchieri",
+                  id: "ingrediente22",
+                  item: "🍊 Succo d'arancia",
+                  quantity: 1,
+                  unit: "litro",
                 },
               ],
             },
@@ -253,31 +270,47 @@ export const mockMealList = {
       meals: [
         {
           id: "pranzo1",
-          mealName: "Pasta al pomodoro",
+          mealName: "Pranzo di pasta",
           dishes: [
             {
               id: "piatto15",
               dishName: "Pasta al pomodoro",
               ingredients: [
                 {
-                  id: "ingrediente24",
+                  id: "ingrediente23",
                   item: "🍝 Pasta",
-                  quantity: "500 g",
+                  quantity: 500,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente24",
+                  item: "🍅 Pomodori",
+                  quantity: 400,
+                  unit: "g",
                 },
                 {
                   id: "ingrediente25",
-                  item: "🍅 Pomodori pelati",
-                  quantity: "1 scatola",
+                  item: "🧄 Aglio",
+                  quantity: 2,
+                  unit: "spicchi",
                 },
+              ],
+            },
+            {
+              id: "piatto16",
+              dishName: "Insalata verde",
+              ingredients: [
                 {
                   id: "ingrediente26",
-                  item: "🧄 Aglio",
-                  quantity: "1 spicchio",
+                  item: "🥗 Lattuga",
+                  quantity: 200,
+                  unit: "g",
                 },
                 {
                   id: "ingrediente27",
-                  item: "🌿 Basilico",
-                  quantity: "1 mazzetto",
+                  item: "🥒 Cetriolo",
+                  quantity: 1,
+                  unit: "pezzi",
                 },
               ],
             },
@@ -285,26 +318,47 @@ export const mockMealList = {
         },
         {
           id: "pranzo2",
-          mealName: "Pasta al pesto",
+          mealName: "Pranzo mediterraneo",
           dishes: [
             {
-              id: "piatto16",
-              dishName: "Pasta al pesto",
+              id: "piatto17",
+              dishName: "Pasta alla pesto",
               ingredients: [
                 {
                   id: "ingrediente28",
                   item: "🍝 Pasta",
-                  quantity: "500 g",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
                   id: "ingrediente29",
-                  item: "🌿 Pesto",
-                  quantity: "1 vasetto",
+                  item: "🌿 Basilico",
+                  quantity: 100,
+                  unit: "g",
                 },
                 {
                   id: "ingrediente30",
-                  item: "🍅 Pomodorini",
-                  quantity: "250 g",
+                  item: "🧄 Aglio",
+                  quantity: 2,
+                  unit: "spicchi",
+                },
+              ],
+            },
+            {
+              id: "piatto18",
+              dishName: "Caprese",
+              ingredients: [
+                {
+                  id: "ingrediente31",
+                  item: "🍅 Pomodori",
+                  quantity: 400,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente32",
+                  item: "🧀 Mozzarella",
+                  quantity: 250,
+                  unit: "g",
                 },
               ],
             },
@@ -312,31 +366,47 @@ export const mockMealList = {
         },
         {
           id: "pranzo3",
-          mealName: "Pasta con verdure",
+          mealName: "Pranzo ricco",
           dishes: [
             {
-              id: "piatto17",
-              dishName: "Pasta con zucchine e carote",
+              id: "piatto19",
+              dishName: "Pasta alla carbonara",
               ingredients: [
                 {
-                  id: "ingrediente31",
-                  item: "🍝 Pasta",
-                  quantity: "500 g",
-                },
-                {
-                  id: "ingrediente32",
-                  item: "🥒 Zucchine",
-                  quantity: "2 pezzi",
-                },
-                {
                   id: "ingrediente33",
-                  item: "🥕 Carote",
-                  quantity: "2 pezzi",
+                  item: "🍝 Pasta",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
                   id: "ingrediente34",
-                  item: "🧄 Aglio",
-                  quantity: "1 spicchio",
+                  item: "🥓 Guanciale",
+                  quantity: 200,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente35",
+                  item: "🥚 Uova",
+                  quantity: 4,
+                  unit: "pezzi",
+                },
+              ],
+            },
+            {
+              id: "piatto20",
+              dishName: "Insalata di riso",
+              ingredients: [
+                {
+                  id: "ingrediente36",
+                  item: "🍚 Riso",
+                  quantity: 300,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente37",
+                  item: "🥕 Carote",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -344,31 +414,47 @@ export const mockMealList = {
         },
         {
           id: "pranzo4",
-          mealName: "Pasta alla carbonara",
+          mealName: "Pranzo estivo",
           dishes: [
             {
-              id: "piatto18",
-              dishName: "Pasta alla carbonara",
+              id: "piatto21",
+              dishName: "Pasta fredda",
               ingredients: [
                 {
-                  id: "ingrediente35",
-                  item: "🍝 Pasta",
-                  quantity: "500 g",
-                },
-                {
-                  id: "ingrediente36",
-                  item: "🥓 Guanciale",
-                  quantity: "200 g",
-                },
-                {
-                  id: "ingrediente37",
-                  item: "🥚 Uova",
-                  quantity: "4 uova",
-                },
-                {
                   id: "ingrediente38",
-                  item: "🧀 Pecorino",
-                  quantity: "100 g",
+                  item: "🍝 Pasta",
+                  quantity: 500,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente39",
+                  item: "🍅 Pomodori",
+                  quantity: 300,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente40",
+                  item: "🥒 Cetriolo",
+                  quantity: 1,
+                  unit: "pezzi",
+                },
+              ],
+            },
+            {
+              id: "piatto22",
+              dishName: "Insalata di tonno",
+              ingredients: [
+                {
+                  id: "ingrediente41",
+                  item: "🐟 Tonno in scatola",
+                  quantity: 300,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente42",
+                  item: "🥗 Lattuga",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -376,26 +462,41 @@ export const mockMealList = {
         },
         {
           id: "pranzo5",
-          mealName: "Pasta al tonno",
+          mealName: "Pranzo veloce",
           dishes: [
             {
-              id: "piatto19",
-              dishName: "Pasta al tonno",
+              id: "piatto23",
+              dishName: "Pasta al pesto",
               ingredients: [
                 {
-                  id: "ingrediente39",
+                  id: "ingrediente43",
                   item: "🍝 Pasta",
-                  quantity: "500 g",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente40",
-                  item: "🐟 Tonno in scatola",
-                  quantity: "2 scatolette",
+                  id: "ingrediente44",
+                  item: "🌿 Basilico",
+                  quantity: 100,
+                  unit: "g",
                 },
+              ],
+            },
+            {
+              id: "piatto24",
+              dishName: "Insalata di pomodori",
+              ingredients: [
                 {
-                  id: "ingrediente41",
+                  id: "ingrediente45",
                   item: "🍅 Pomodori",
-                  quantity: "2 pezzi",
+                  quantity: 400,
+                  unit: "g",
+                },
+                {
+                  id: "ingrediente46",
+                  item: "🧄 Aglio",
+                  quantity: 2,
+                  unit: "spicchi",
                 },
               ],
             },
@@ -403,26 +504,41 @@ export const mockMealList = {
         },
         {
           id: "pranzo6",
-          mealName: "Pasta con salsiccia",
+          mealName: "Pranzo rustico",
           dishes: [
             {
-              id: "piatto20",
-              dishName: "Pasta con salsiccia",
+              id: "piatto25",
+              dishName: "Pasta al tonno",
               ingredients: [
                 {
-                  id: "ingrediente42",
+                  id: "ingrediente47",
                   item: "🍝 Pasta",
-                  quantity: "500 g",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente43",
-                  item: "🌭 Salsiccia",
-                  quantity: "300 g",
+                  id: "ingrediente48",
+                  item: "🐟 Tonno in scatola",
+                  quantity: 300,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto26",
+              dishName: "Insalata di fagioli",
+              ingredients: [
+                {
+                  id: "ingrediente49",
+                  item: "🥗 Fagioli",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente44",
-                  item: "🧄 Aglio",
-                  quantity: "1 spicchio",
+                  id: "ingrediente50",
+                  item: "🥒 Cetriolo",
+                  quantity: 1,
+                  unit: "pezzi",
                 },
               ],
             },
@@ -430,31 +546,41 @@ export const mockMealList = {
         },
         {
           id: "pranzo7",
-          mealName: "Pasta primavera",
+          mealName: "Pranzo classico",
           dishes: [
             {
-              id: "piatto21",
-              dishName: "Pasta primavera",
+              id: "piatto27",
+              dishName: "Pasta al ragù",
               ingredients: [
                 {
-                  id: "ingrediente45",
+                  id: "ingrediente51",
                   item: "🍝 Pasta",
-                  quantity: "500 g",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente46",
-                  item: "🥦 Broccoli",
-                  quantity: "200 g",
+                  id: "ingrediente52",
+                  item: "🍖 Carne macinata",
+                  quantity: 300,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto28",
+              dishName: "Insalata mista",
+              ingredients: [
+                {
+                  id: "ingrediente53",
+                  item: "🥗 Lattuga",
+                  quantity: 200,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente47",
+                  id: "ingrediente54",
                   item: "🥕 Carote",
-                  quantity: "2 pezzi",
-                },
-                {
-                  id: "ingrediente48",
-                  item: "🌿 Basilico",
-                  quantity: "1 mazzetto",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -468,26 +594,35 @@ export const mockMealList = {
       meals: [
         {
           id: "cena1",
-          mealName: "Pesce alla griglia",
+          mealName: "Cena di pesce",
           dishes: [
             {
-              id: "piatto22",
-              dishName: "Pesce alla griglia",
+              id: "piatto29",
+              dishName: "Filetti di pesce alla griglia",
               ingredients: [
                 {
-                  id: "ingrediente49",
-                  item: "🐟 Pesce fresco",
-                  quantity: "1 kg",
+                  id: "ingrediente55",
+                  item: "🐟 Filetti di pesce",
+                  quantity: 500,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto30",
+              dishName: "Verdure grigliate",
+              ingredients: [
+                {
+                  id: "ingrediente56",
+                  item: "🥦 Broccoli",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente50",
-                  item: "🍋 Limone",
-                  quantity: "2 pezzi",
-                },
-                {
-                  id: "ingrediente51",
-                  item: "🌿 Prezzemolo",
-                  quantity: "1 mazzetto",
+                  id: "ingrediente57",
+                  item: "🥕 Carote",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -495,26 +630,35 @@ export const mockMealList = {
         },
         {
           id: "cena2",
-          mealName: "Pollo alla griglia",
+          mealName: "Cena di carne",
           dishes: [
             {
-              id: "piatto23",
+              id: "piatto31",
               dishName: "Pollo alla griglia",
               ingredients: [
                 {
-                  id: "ingrediente52",
+                  id: "ingrediente58",
                   item: "🍗 Pollo",
-                  quantity: "1 kg",
+                  quantity: 500,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto32",
+              dishName: "Insalata di spinaci",
+              ingredients: [
+                {
+                  id: "ingrediente59",
+                  item: "🥗 Spinaci",
+                  quantity: 200,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente53",
-                  item: "🌿 Rosmarino",
-                  quantity: "1 mazzetto",
-                },
-                {
-                  id: "ingrediente54",
-                  item: "🧄 Aglio",
-                  quantity: "2 spicchi",
+                  id: "ingrediente60",
+                  item: "🍅 Pomodori",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -522,26 +666,41 @@ export const mockMealList = {
         },
         {
           id: "cena3",
-          mealName: "Salsiccia alla griglia",
+          mealName: "Cena vegetariana",
           dishes: [
             {
-              id: "piatto24",
-              dishName: "Salsiccia alla griglia",
+              id: "piatto33",
+              dishName: "Burger di lenticchie",
               ingredients: [
                 {
-                  id: "ingrediente55",
-                  item: "🌭 Salsiccia",
-                  quantity: "500 g",
+                  id: "ingrediente61",
+                  item: "🍔 Lenticchie",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente56",
-                  item: "🌶️ Peperoni",
-                  quantity: "2 pezzi",
+                  id: "ingrediente62",
+                  item: "🥬 Insalata",
+                  quantity: 100,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto34",
+              dishName: "Verdure al vapore",
+              ingredients: [
+                {
+                  id: "ingrediente63",
+                  item: "🥦 Broccoli",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente57",
-                  item: "🧄 Aglio",
-                  quantity: "1 spicchio",
+                  id: "ingrediente64",
+                  item: "🥕 Carote",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -549,26 +708,35 @@ export const mockMealList = {
         },
         {
           id: "cena4",
-          mealName: "Bistecca alla griglia",
+          mealName: "Cena rustica",
           dishes: [
             {
-              id: "piatto25",
-              dishName: "Bistecca alla griglia",
+              id: "piatto35",
+              dishName: "Salsiccia alla griglia",
               ingredients: [
                 {
-                  id: "ingrediente58",
-                  item: "🥩 Bistecca",
-                  quantity: "1 kg",
+                  id: "ingrediente65",
+                  item: "🌭 Salsiccia",
+                  quantity: 500,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto36",
+              dishName: "Patate al rosmarino",
+              ingredients: [
+                {
+                  id: "ingrediente67",
+                  item: "🥔 Patate",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente59",
+                  id: "ingrediente68",
                   item: "🌿 Rosmarino",
-                  quantity: "1 mazzetto",
-                },
-                {
-                  id: "ingrediente60",
-                  item: "🧄 Aglio",
-                  quantity: "2 spicchi",
+                  quantity: 50,
+                  unit: "g",
                 },
               ],
             },
@@ -576,26 +744,41 @@ export const mockMealList = {
         },
         {
           id: "cena5",
-          mealName: "Hamburger di manzo",
+          mealName: "Cena leggera",
           dishes: [
             {
-              id: "piatto26",
-              dishName: "Hamburger di manzo",
+              id: "piatto37",
+              dishName: "Insalata di pollo",
               ingredients: [
                 {
-                  id: "ingrediente61",
-                  item: "🍔 Carne di manzo",
-                  quantity: "1 kg",
+                  id: "ingrediente69",
+                  item: "🍗 Pollo",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente62",
-                  item: "🍞 Panini per hamburger",
-                  quantity: "5 pezzi",
+                  id: "ingrediente70",
+                  item: "🥗 Lattuga",
+                  quantity: 200,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto38",
+              dishName: "Verdure miste",
+              ingredients: [
+                {
+                  id: "ingrediente71",
+                  item: "🥦 Broccoli",
+                  quantity: 200,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente63",
-                  item: "🧀 Formaggio",
-                  quantity: "5 fette",
+                  id: "ingrediente72",
+                  item: "🥕 Carote",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },
@@ -603,26 +786,41 @@ export const mockMealList = {
         },
         {
           id: "cena6",
-          mealName: "Pollo al curry",
+          mealName: "Cena con pasta",
           dishes: [
             {
-              id: "piatto27",
-              dishName: "Pollo al curry",
+              id: "piatto39",
+              dishName: "Pasta al pomodoro",
               ingredients: [
                 {
-                  id: "ingrediente64",
-                  item: "🍗 Pollo",
-                  quantity: "1 kg",
+                  id: "ingrediente73",
+                  item: "🍝 Pasta",
+                  quantity: 500,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente65",
-                  item: "🍛 Curry in polvere",
-                  quantity: "1 confezione",
+                  id: "ingrediente74",
+                  item: "🍅 Pomodori",
+                  quantity: 400,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto40",
+              dishName: "Insalata verde",
+              ingredients: [
+                {
+                  id: "ingrediente75",
+                  item: "🥗 Lattuga",
+                  quantity: 200,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente66",
-                  item: "🥬 Spinaci",
-                  quantity: "200 g",
+                  id: "ingrediente76",
+                  item: "🥒 Cetriolo",
+                  quantity: 1,
+                  unit: "pezzi",
                 },
               ],
             },
@@ -630,26 +828,35 @@ export const mockMealList = {
         },
         {
           id: "cena7",
-          mealName: "Pesce al cartoccio",
+          mealName: "Cena di pesce e verdure",
           dishes: [
             {
-              id: "piatto28",
-              dishName: "Pesce al cartoccio",
+              id: "piatto41",
+              dishName: "Gamberetti in padella",
               ingredients: [
                 {
-                  id: "ingrediente67",
-                  item: "🐟 Pesce fresco",
-                  quantity: "1 kg",
+                  id: "ingrediente77",
+                  item: "🍤 Gamberetti",
+                  quantity: 500,
+                  unit: "g",
+                },
+              ],
+            },
+            {
+              id: "piatto42",
+              dishName: "Verdure miste al vapore",
+              ingredients: [
+                {
+                  id: "ingrediente78",
+                  item: "🥦 Broccoli",
+                  quantity: 300,
+                  unit: "g",
                 },
                 {
-                  id: "ingrediente68",
-                  item: "🍋 Limone",
-                  quantity: "2 pezzi",
-                },
-                {
-                  id: "ingrediente69",
-                  item: "🌿 Prezzemolo",
-                  quantity: "1 mazzetto",
+                  id: "ingrediente79",
+                  item: "🥕 Carote",
+                  quantity: 200,
+                  unit: "g",
                 },
               ],
             },

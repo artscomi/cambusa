@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="md:py-24 px-5 md:px-10 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
+        <main className="py-8 pb-24 md:px-10 md:py-16 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
           <ContextLayout>{children}</ContextLayout>
         </main>
       </body>

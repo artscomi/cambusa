@@ -2,9 +2,8 @@
 
 import { generateObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { z } from "zod";
 import { getPrompt } from "@/utils/getPrompt";
-import { FormState } from "@/hooks/useInputConfig";
+import { FormState } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
 import { mealMenuSchema } from "./schema";
 
@@ -21,11 +20,12 @@ export async function getMealListFromAi(
   try {
     const result = await generateObject({
       model: openai("gpt-4o-mini"),
-      system: "You generate a meal list for a boat trip",
       prompt: getPrompt(input),
       schema: mealMenuSchema,
     });
 
+    console.log('prompt', getPrompt(input))
+    console.log('result', result)
     return { type: "success", menu: result.object };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
