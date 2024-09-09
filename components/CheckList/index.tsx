@@ -84,7 +84,6 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                   type="checkbox"
                   className="mr-3 h-5 w-5 text-blue-500 rounded focus:ring-blue-500 focus:ring-opacity-50 "
                   checked={!!checkedItems[item.id]}
-                  onClick={(e) => e.stopPropagation()}
                 />
                 {`${item.item} - ${item.quantity} ${item.unit}`}
               </label>

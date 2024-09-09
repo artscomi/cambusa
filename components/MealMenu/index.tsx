@@ -74,7 +74,6 @@ export const MealMenu = () => {
         {/* <p className="text-xl mb-6">
        <span><Icon.Delete className="text-red-500" /></span> Elimina il pasto che non ti piace
       </p> */}
-        <p>{getPrompt(formState)}</p>
         {mealList.menu?.map((mealType) => (
           <>
             {mealType.meals?.length > 0 && (
