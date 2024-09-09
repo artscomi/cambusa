@@ -10,7 +10,7 @@ export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  return true ? (
+  return isPending ? (
     <Loading />
   ) : (
     <>
