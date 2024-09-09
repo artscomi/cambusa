@@ -1,6 +1,6 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
-import { Poppins } from "@next/font/google";
+import { Poppins } from "next/font/google";
 
 const inter = Poppins({
   subsets: ["latin"], // Optional: specify subsets
