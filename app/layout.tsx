@@ -1,6 +1,7 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
 import { Poppins } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Poppins({
   subsets: ["latin"], // Optional: specify subsets
@@ -18,12 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <main className="py-8 pb-24 md:px-10 md:py-16 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
-          <ContextLayout>{children}</ContextLayout>
-        </main>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <main className="py-8 pb-24 md:px-10 md:py-16 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
+            <ContextLayout>{children}</ContextLayout>
+          </main>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

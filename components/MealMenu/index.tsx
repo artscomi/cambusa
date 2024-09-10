@@ -66,7 +66,7 @@ export const MealMenu = () => {
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="popLayout">
       <div className="px-5">
         <p className="text-5xl mb-14 text-center">
           Et voilà! Ecco le proposte di menu

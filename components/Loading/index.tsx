@@ -1,9 +1,14 @@
 import { motion } from "framer-motion";
 import LottieAnimation from "../LottieAnimation";
+import { useEffect } from "react";
 
 export const Loading = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <div className="flex flex-col items-center justify-center max-w-[700px] m-auto px-8">
+    <motion.div className="flex flex-col items-center justify-center max-w-[700px] m-auto px-8">
       <p className="text-3xl mb-6">Stiamo generando la tua proposta di menu</p>
       <LottieAnimation />
       <motion.p
@@ -32,6 +37,6 @@ export const Loading = () => {
         🧘‍♀️ Ancora un attimo di pazienza, l&apos;AI sta ancora meditando per
         creare il menu perfetto per te...
       </motion.p>
-    </div>
+    </motion.div>
   );
 };
