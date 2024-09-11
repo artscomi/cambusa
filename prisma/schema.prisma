@@ -11,9 +11,38 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  createdAt DateTime @updatedAt @default(now())
-  completed Boolean @default(false)
-  email String
-  dietaryPreferences String
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  ownedGroups     Group[]           @relation("GroupOwner")
+  memberships     GroupMembership[] // Relation to the groups the user is a member of
+  foodPreferences FoodPreference[] // Food preferences of the user
+}
+
+model Group {
+  id              String            @id @default(uuid())
+  name            String
+  ownerId         String
+  owner           User              @relation("GroupOwner", fields: [ownerId], references: [id])
+  members         GroupMembership[] // Relation to the members of the group
+  foodPreferences FoodPreference[] // Food preferences linked to the group
+}
+
+model FoodPreference {
+  id         String @id @default(uuid())
+  userId     String
+  user       User   @relation(fields: [userId], references: [id])
+  groupId    String
+  group      Group  @relation(fields: [groupId], references: [id])
+  preference String
+}
+
+model GroupMembership {
+  id      String @id @default(uuid())
+  userId  String
+  groupId String
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  @@unique([userId, groupId]) // Ensures a user can only join a group once
 }

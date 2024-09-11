@@ -1,6 +1,4 @@
-import { TextInput } from "@/components/TextInput";
-import { CreateGroupContent } from "./CreateGroupContent";
-
+import { CreateGroupContent } from "./pageContent";
 const CreateGroup = () => {
   return <CreateGroupContent />;
 };
