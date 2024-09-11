@@ -18,7 +18,12 @@ export const CreateGroupContent = () => {
     e: FormEvent<HTMLFormElement>,
     groupName: string
   ) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    if (!groupName) {
+      setError("nome gruppo obbligatorio");
+    }
+
     try {
       const response = await fetch("/api/create-group", {
         method: "POST",
@@ -59,11 +64,13 @@ export const CreateGroupContent = () => {
           value={groupName}
           type="text"
           placeholder="Capraia 2024"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setGroupName(e.target.value)
-          }
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setError("");
+            setGroupName(e.target.value);
+          }}
+          error={error}
         />
-        {error && <p className="text-red-500">{error}</p>}
+
         <button className="h-15 p-2 underline underline-offset-8 block m-auto my-10">
           Crea un gruppo
         </button>

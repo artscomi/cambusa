@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(uuid())
+  id              String            @id @default(cuid())
   name            String
   email           String            @unique
   ownedGroups     Group[]           @relation("GroupOwner")
@@ -20,7 +20,7 @@ model User {
 }
 
 model Group {
-  id              String            @id @default(uuid())
+  id              String            @id @default(cuid())
   name            String
   ownerId         String
   owner           User              @relation("GroupOwner", fields: [ownerId], references: [id])
@@ -29,7 +29,7 @@ model Group {
 }
 
 model FoodPreference {
-  id         String @id @default(uuid())
+  id         String @id @default(cuid())
   userId     String
   user       User   @relation(fields: [userId], references: [id])
   groupId    String

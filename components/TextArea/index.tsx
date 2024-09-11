@@ -10,6 +10,7 @@ interface TextAreaConfig {
   rows?: number;
   onFocus?: () => void;
   onBlur?: () => void;
+  error?: string
 }
 export const TextArea = ({
   id,
@@ -21,6 +22,7 @@ export const TextArea = ({
   rows = 4, // Default number of rows
   onFocus,
   onBlur,
+  error
 }: TextAreaConfig) => (
   <div className="relative last:mb-0">
     <label className="block absolute text-xs left-4 top-1" htmlFor={id}>
@@ -28,14 +30,21 @@ export const TextArea = ({
     </label>
     <textarea
       id={id}
-      className={`block rounded p-4 pt-7 outline-none w-full bg-[#a5c8fa]/[0.1] resize-none ${className}`}
+      rows={rows}
+      className={`block rounded p-4 pt-8 outline-none w-full text-sm bg-white shadow-inner transition-all duration-300 resize-none ${
+        error
+          ? "shadow-[0_0_0_1px_rgba(239,68,68,0.75)]" // Red shadow for error state
+          : "shadow-[0_0_0_1px_rgba(156,163,175,0.5)]" // Gray shadow for normal state
+      } ${className}`}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
-      rows={rows}
+      autoComplete="off"
       onFocus={onFocus}
       onBlur={onBlur}
-      autoComplete="off"
     />
+    {!!error && (
+      <p className="text-red-500 text-xs mt-1 animate-fadeIn">{error}</p>
+    )}
   </div>
 );

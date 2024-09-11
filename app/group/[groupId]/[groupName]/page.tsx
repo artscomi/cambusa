@@ -7,11 +7,7 @@ const GroupPage: NextPage<{
 }> = ({ params }) => {
   const { groupId, groupName } = params;
   const displayedGroupName = groupName.replace(/-/g, " ");
-  return (
-    <div className="h-lvh flex justify-center items-center">
-      <PageContent groupId={groupId} groupName={displayedGroupName} />
-    </div>
-  );
+  return <PageContent groupId={groupId} groupName={displayedGroupName} />;
 };
 
 export default GroupPage;
