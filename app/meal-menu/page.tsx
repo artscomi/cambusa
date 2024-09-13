@@ -1,9 +1,9 @@
 
-import { MealMenu } from "@/components/MealMenu";
+import { MealList } from "@/components/MealList";
 
 const MealMenuPage = () => {
   return (
-      <MealMenu />
+      <MealList />
   );
 };
 

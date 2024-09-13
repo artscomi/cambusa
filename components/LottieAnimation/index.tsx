@@ -1,8 +1,16 @@
 import { useLottie } from "lottie-react";
-import groovyWalkAnimation from "./groovyWalk.json";
+import emptyMealList from "./empty-meal-list.json";
+import groovyWalkAnimation from "./groovy-walk.json";
 import { useEffect, useState } from "react";
 
-const LottieAnimation = () => {
+const animation = {
+  groovyWalk: groovyWalkAnimation,
+  emptyMealList: emptyMealList,
+};
+
+type AnimationType = keyof typeof animation;
+
+const LottieAnimation = ({ name }: { name: AnimationType }) => {
   const [height, setHeight] = useState(300);
 
   useEffect(() => {
@@ -23,7 +31,7 @@ const LottieAnimation = () => {
   }, []);
 
   const options = {
-    animationData: groovyWalkAnimation,
+    animationData: animation[name],
     loop: true,
     autoplay: true,
   };
