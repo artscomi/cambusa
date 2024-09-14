@@ -25,10 +25,7 @@ export default function Home() {
       <div className="w-full items-end">
         <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center  md:rounded">
           <div className="flex-1 w-full">
-            <MainForm
-              startTransition={startTransition}
-              setError={setError}
-            />
+            <MainForm startTransition={startTransition} setError={setError} />
           </div>
           <div className="flex-1 w-full">
             <CreateGroupBox />

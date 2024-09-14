@@ -6,8 +6,10 @@ import { Ingredient } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 import { Icon } from "../Icons";
+import Toast from "../Toast";
 
 const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
+  const [showToast, setShowToast] = useState(false);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -24,13 +26,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
       .map((item) => `${item.item} - ${item.quantity} ${item.unit}`)
       .join("\n");
 
-    navigator.clipboard.writeText(listText).then(
-      () => alert("Lista della spesa copiata nei tuoi appunti!"),
-      () =>
-        alert(
-          "Oops.. qualcosa è andato storto mentre cercavo di copiare la lista nei tuoi appunti. Riprova per favore"
-        )
-    );
+    navigator.clipboard.writeText(listText).then(() => setShowToast(true));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, id: string) => {
@@ -91,6 +87,12 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           ))}
         </motion.ul>
       </div>
+      <Toast
+        message={"Lista della spesa copiata nei tuoi appunti!"}
+        type="info"
+        onClose={() => setShowToast(false)}
+        showToast={showToast}
+      />
     </AnimatePresence>
   );
 };

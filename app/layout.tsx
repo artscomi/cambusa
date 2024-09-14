@@ -1,7 +1,9 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
 import { Poppins } from "next/font/google";
+import Image from "next/image";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Waves } from "@/components/Waves";
 
 const inter = Poppins({
   subsets: ["latin"], // Optional: specify subsets
@@ -21,10 +23,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>
-          <main className="py-8 pb-24 md:px-10 md:py-16 lg:px-0 h-full m-auto max-w-[1024px] overflow-auto">
+        <body className={`${inter.className} flex flex-col min-h-screen`}>
+          <main className="py-8 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1">
             <ContextLayout>{children}</ContextLayout>
           </main>
+          <Waves />
         </body>
       </html>
     </ClerkProvider>

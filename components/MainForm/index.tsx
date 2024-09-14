@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { Loading } from "../Loading";
 import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { motion } from "framer-motion";
+import { Button } from "../Button";
 
 export const MainForm = ({
   groupData,
@@ -93,33 +94,26 @@ export const MainForm = ({
 
   return (
     <>
-      <div className="md:rounded-lg p-14 bg-white mb-10 shadow-md">
-        <div className="">
-          {groupData && (
-            <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo
+      <div className="md:rounded-lg p-14 bg-white shadow-md">
+        {groupData && (
+          <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo
             ${groupData.id}`}</h1>
-          )}
+        )}
 
-          <form className="flex-1" onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-4 mb-10">
-              {inputConfig.map((config) => (
-                <TextInput
-                  key={config.id}
-                  {...config}
-                  onFocus={handleInputFocus}
-                  onBlur={handleInputBlur}
-                />
-              ))}
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              type="submit"
-              className="bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-full"
-            >
-              Genera il menu! 😍
-            </motion.button>
-          </form>
-        </div>
+        <form className="flex-1" onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-4 mb-10">
+            {inputConfig.map((config) => (
+              <TextInput
+                key={config.id}
+                {...config}
+                onFocus={handleInputFocus}
+                onBlur={handleInputBlur}
+              />
+            ))}
+          </div>
+
+          <Button type="submit"> Genera il menu! 😍</Button>
+        </form>
       </div>
     </>
   );

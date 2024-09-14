@@ -4,6 +4,7 @@ import { useMealContext } from "@/context/useMealContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/animations/framer-variants";
 import { EmptyMealList } from "./EmptyMealList";
+import { CreateShoppingListCta } from "./CreateShoppingListCta";
 
 export const MealList = () => {
   const { mealList, setMealList } = useMealContext();
@@ -91,6 +92,7 @@ export const MealList = () => {
                   </motion.div>
                 )
             )}
+            <CreateShoppingListCta />
           </motion.div>
         )}
       </div>

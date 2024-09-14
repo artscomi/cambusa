@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 28, 28, 28;
+  --foreground-rgb: 0, 255, 255;
   --background-start-rgb: 165, 200, 250;
   --background-end-rgb: 255, 255, 255;
+  --white: #ffffff;
+  --background: #FCFCFC;
+  --primary: #0d2031;
+  --secondary: #0094c6;
+  --tertiary: #0094c6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,9 +21,10 @@
   }
 }
 
+
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgba(var(--background-start-rgb), 0.2);
+  color: var(--primary);
+  background: var(--background);
 }
 
 input::placeholder,

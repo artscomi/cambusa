@@ -26,7 +26,7 @@ export async function getMealListFromAi(
     });
 
     console.log('prompt', getPrompt(input))
-    console.log('result', result)
+    console.log('result', result.object)
     // revalidatePath('/meal-menu')
     return { type: "success", menu: result.object };
   } catch (e) {
