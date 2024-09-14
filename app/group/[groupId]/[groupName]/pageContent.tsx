@@ -6,6 +6,7 @@ import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
 import { useSaveUser } from "@/hooks/useSaveUser";
 import Toast from "@/components/Toast";
+import { Button } from "@/components/Button";
 
 export const PageContent: React.FC<{ groupId: string; groupName: string }> = ({
   groupId,
@@ -86,14 +87,12 @@ export const PageContent: React.FC<{ groupId: string; groupName: string }> = ({
         label={"Inserisci le tue preferenze alimentari"}
         error={fieldError}
       />
-      <button
-        className={`bg-black rounded h-15 text-white p-2 hover:bg-gray-800 w-[200px] ml-auto  ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
+      <Button
+        className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => addFoodPreference(groupId, foodPreferences)}
       >
         {isLoading ? "Loading" : "Salva preferenze"}
-      </button>
+      </Button>
 
       <Toast
         message={"Preferenze salvate!"}
