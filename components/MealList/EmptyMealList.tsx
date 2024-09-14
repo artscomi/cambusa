@@ -10,7 +10,7 @@ export const EmptyMealList = () => {
     >
       <p className="text-xl text-center m-20">
         Ehi, sembra che tu abbia rimosso tutti i pasti!
-        <br /> Stai seguendo una dieta?
+        <br /> Vi siete messi a dieta?
       </p>
       <LottieAnimation name="emptyMealList" />
     </motion.div>

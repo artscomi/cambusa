@@ -7,7 +7,7 @@
   --background-start-rgb: 165, 200, 250;
   --background-end-rgb: 255, 255, 255;
   --white: #ffffff;
-  --background: #FCFCFC;
+  --background: #fcfcfc;
   --primary: #0d2031;
   --secondary: #0094c6;
   --tertiary: #0094c6;
@@ -20,7 +20,6 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
-
 
 body {
   color: var(--primary);

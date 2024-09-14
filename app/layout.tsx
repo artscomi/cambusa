@@ -22,8 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.className} flex flex-col min-h-screen`}>
+      <html lang="it" className="overflow-x-hidden">
+        <body
+          className={`${inter.className} flex flex-col min-h-screen max-w-screen overflow-x-hidden`}
+        >
           <main className="py-8 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1">
             <ContextLayout>{children}</ContextLayout>
           </main>
