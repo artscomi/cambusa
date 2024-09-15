@@ -2,7 +2,6 @@
 
 import { CreateGroupBox } from "@/components/CreateGroupBox";
 import { Loading } from "@/components/Loading";
-import LottieAnimation from "@/components/LottieAnimation";
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
@@ -33,8 +32,6 @@ export default function Home() {
               <CreateGroupBox />
             </div>
           </div>
-          {/* <MealMenu /> */}
-          {/* <AddMenu /> */}
         </div>
         <ToastError error={error} setError={setError} />
       </div>

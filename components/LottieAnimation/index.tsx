@@ -12,7 +12,15 @@ const animation = {
 
 type AnimationType = keyof typeof animation;
 
-const LottieAnimation = ({ name }: { name: AnimationType }) => {
+const LottieAnimation = ({
+  name,
+  speed,
+  isResponsive = true,
+}: {
+  name: AnimationType;
+  speed?: number;
+  isResponsive?: boolean;
+}) => {
   const [height, setHeight] = useState(300);
 
   useEffect(() => {
@@ -32,20 +40,17 @@ const LottieAnimation = ({ name }: { name: AnimationType }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
-
   const options = {
     animationData: animation[name],
     loop: true,
     autoplay: true,
   };
 
-  const { View, setSpeed } = useLottie(options);
+  const { View, setSpeed } = useLottie(options, isResponsive ? { height } : {});
 
   useEffect(() => {
-    setSpeed(0.1);
+    speed && setSpeed(speed);
   }, []);
-
 
   return View;
 };

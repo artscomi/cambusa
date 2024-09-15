@@ -1,6 +1,6 @@
 import { useMealContext } from "@/context/useMealContext";
 import { useShoppingContext } from "@/context/useShoppingListContext";
-import { Ingredient, MenuData } from "@/types/types";
+import { sumIngredients } from "@/utils/ingredients";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
@@ -12,32 +12,6 @@ export const CreateShoppingListCta = () => {
   if (!mealList) {
     return;
   }
-
-  const sumIngredients = (mealList: MenuData) => {
-    const combinedIngredients = mealList.menu.reduce<Ingredient[]>(
-      (acc, mealType) => {
-        mealType.meals.forEach((meal) => {
-          meal.dishes.forEach((dish) => {
-            dish.ingredients.forEach((ingredient) => {
-              const existing = acc.find(
-                (i) => i.item === ingredient.item && i.unit === ingredient.unit
-              );
-
-              if (existing) {
-                existing.quantity += ingredient.quantity;
-              } else {
-                acc.push({ ...ingredient });
-              }
-            });
-          });
-        });
-        return acc;
-      },
-      []
-    );
-
-    return combinedIngredients;
-  };
 
   const handleCreatehoppingList = () => {
     const combinedIngredients = sumIngredients(mealList);

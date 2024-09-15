@@ -64,7 +64,7 @@ export const MealList = () => {
                           className="bg-white p-6 rounded-lg flex-1 h-full min-h-[300px] flex justify-between flex-col shadow-md group"
                         >
                           {meal.dishes?.map((dish) => (
-                            <ul key={dish.id} className="first:mb-5">
+                            <ul key={dish.id} className="first:mb-5 text-pretty">
                               <p className="mb-2 font-semibold">
                                 {dish.dishName}
                               </p>
