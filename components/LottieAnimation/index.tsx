@@ -32,13 +32,20 @@ const LottieAnimation = ({ name }: { name: AnimationType }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
+
   const options = {
     animationData: animation[name],
     loop: true,
     autoplay: true,
   };
 
-  const { View } = useLottie(options);
+  const { View, setSpeed } = useLottie(options);
+
+  useEffect(() => {
+    setSpeed(0.1);
+  }, []);
+
 
   return View;
 };
