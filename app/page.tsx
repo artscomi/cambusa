@@ -15,7 +15,7 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <div className="h-screen max-sm:flex flex-col justify-center">
+      <div className="max-sm:h-screen max-sm:flex flex-col justify-center">
         <div className="max-md:p-5 mb-5 md:mb-16">
           <h1 className="text-5xl mb-4">Cambusa AI</h1>
           <p className="text-xl text-left text-pretty">
