@@ -14,6 +14,7 @@ import { Loading } from "../Loading";
 import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { motion } from "framer-motion";
 import { Button } from "../Button";
+import LottieAnimation from "../LottieAnimation";
 
 export const MainForm = ({
   groupData,
@@ -94,13 +95,13 @@ export const MainForm = ({
 
   return (
     <>
-      <div className="md:rounded-lg p-14 bg-white shadow-md">
+      <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4">
         {groupData && (
           <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo
             ${groupData.id}`}</h1>
         )}
 
-        <form className="flex-1" onSubmit={handleSubmit}>
+        <form className="flex-1 z-10 relative" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-4 mb-10">
             {inputConfig.map((config) => (
               <TextInput
@@ -114,6 +115,11 @@ export const MainForm = ({
 
           <Button type="submit"> Genera il menu! 😍</Button>
         </form>
+
+
+        <div className="absolute left-0 right-0 top-0 bottom-0 overflow-hidden">
+          <LottieAnimation name="waveBig" />
+        </div>
       </div>
     </>
   );

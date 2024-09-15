@@ -2,6 +2,7 @@
 
 import { CreateGroupBox } from "@/components/CreateGroupBox";
 import { Loading } from "@/components/Loading";
+import LottieAnimation from "@/components/LottieAnimation";
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
@@ -13,7 +14,7 @@ export default function Home() {
   return isPending ? (
     <Loading />
   ) : (
-    <>
+    <div className="relative">
       <div className="max-md:p-5 mb-5 md:mb-16">
         <h1 className="text-5xl mb-4">Cambusa AI</h1>
         <p className="text-xl text-left text-pretty">
@@ -33,8 +34,10 @@ export default function Home() {
         </div>
         {/* <MealMenu /> */}
         {/* <AddMenu /> */}
+
+        
       </div>
       <ToastError error={error} setError={setError} />
-    </>
+    </div>
   );
 }
