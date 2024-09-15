@@ -26,7 +26,7 @@ export default function RootLayout({
         <body
           className={`${inter.className} flex flex-col min-h-screen max-w-screen overflow-x-hidden`}
         >
-          <main className="py-8 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1">
+          <main className="py-8 px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">
             <ContextLayout>{children}</ContextLayout>
           </main>
           <Waves />
