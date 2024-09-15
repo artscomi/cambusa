@@ -33,6 +33,12 @@ textarea::placeholder {
   font-size: 12px;
 }
 
+input,
+select,
+textarea {
+  font-size: 16px; /* Minimum size to prevent zoom */
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

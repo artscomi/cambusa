@@ -28,7 +28,7 @@ export const TextInput = ({
 }: TextInputConfig) => (
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
     <div className={`relative last:mb-0`}>
-      <label className="block absolute text-xs left-4 top-2" htmlFor={id}>
+      <label className="block absolute text-xs left-4 top-[0.3rem]" htmlFor={id}>
         {label}
       </label>
       <input
