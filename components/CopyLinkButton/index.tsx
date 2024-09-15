@@ -15,23 +15,23 @@ const CopyLink: React.FC<{ url: string }> = ({ url }) => {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="inline-flex items-center justify-center p-4 border border-gray-300 rounded-lg shadow-md gap-5 bg-white text-sm">
-        <p>{url}</p>
-        <button
-          onClick={handleCopy}
-          className="text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 p-3"
-          aria-label="Copia link negli appunti"
-        >
-          <Icon.Copy height={22} width={22} />
-        </button>
-        <Toast
-          message={"Link copiato negli appunti!"}
-          type="info"
-          onClose={() => setShowToast(false)}
-          showToast={showToast}
-        />
-      </div>
+    <div className="flex items-center justify-center p-4 border border-gray-300 rounded-lg shadow-md gap-5 bg-white md:max-w-[500px] m-auto">
+      <p className="text-ellipsis whitespace-nowrap overflow-hidden">
+        {url}
+      </p>
+      <button
+        onClick={handleCopy}
+        className="text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 p-3"
+        aria-label="Copia link negli appunti"
+      >
+        <Icon.Copy height={22} width={22} />
+      </button>
+      <Toast
+        message={"Link copiato negli appunti!"}
+        type="info"
+        onClose={() => setShowToast(false)}
+        showToast={showToast}
+      />
     </div>
   );
 };
