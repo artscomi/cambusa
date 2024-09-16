@@ -31,7 +31,7 @@ export const TextArea = ({
     <textarea
       id={id}
       rows={rows}
-      className={`block rounded p-4 pt-8 outline-none w-full text-sm bg-white shadow-inner transition-all duration-300 resize-none ${
+      className={`block rounded p-4 pt-8 outline-none w-full text-sm bg-gray-50 shadow-inner transition-all duration-300 resize-none ${
         error
           ? "shadow-[0_0_0_1px_rgba(239,68,68,0.75)]" // Red shadow for error state
           : "shadow-[0_0_0_1px_rgba(156,163,175,0.5)]" // Gray shadow for normal state

@@ -33,10 +33,10 @@ export const MealList = () => {
 
   return (
     <AnimatePresence mode="wait">
-      <div className="px-5">
-        <p className="text-5xl mb-14 text-center">
+      <div className="px-5 py-10 max-w-screen-xl mx-auto">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-14">
           Et voilà! Ecco le proposte di menu
-        </p>
+        </h1>
         {mealList.menu.length === 0 ? (
           <EmptyMealList />
         ) : (
@@ -45,12 +45,12 @@ export const MealList = () => {
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>
-                    <h2 className="py-2 mb-5 text-2xl bg-white text-center">
+                    <h2 className="py-3 mb-5 text-2xl font-semibold text-gray-700 bg-gray-50 text-center rounded-lg shadow-sm">
                       {mealType.mealTypeName}
                     </h2>
                     <motion.div
                       key={mealType.id}
-                      className="gap-5 grid lg:grid-cols-4 mb-5"
+                      className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 mb-8"
                       initial="hidden"
                       animate="visible"
                       exit="exit"
@@ -61,17 +61,23 @@ export const MealList = () => {
                           layout
                           key={meal.id}
                           variants={itemVariants}
-                          className="bg-white p-6 rounded-lg flex-1 h-full min-h-[300px] flex justify-between flex-col shadow-md group"
+                          className="bg-white p-6 rounded-lg h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between group cursor-pointer"
                         >
                           {meal.dishes?.map((dish) => (
-                            <ul key={dish.id} className="first:mb-5 text-pretty">
-                              <p className="mb-2 font-semibold">
+                            <ul key={dish.id} className="mb-5">
+                              <p className="mb-3 font-bold text-gray-800">
                                 {dish.dishName}
                               </p>
                               {dish.ingredients?.map(
                                 (ingredient, ingredientIndex) => (
-                                  <li key={ingredientIndex}>
-                                    {ingredient.item} {ingredient.quantity}
+                                  <li
+                                    key={ingredientIndex}
+                                    className="text-gray-600"
+                                  >
+                                    {ingredient.item} -{" "}
+                                    <span className="font-medium">
+                                      {ingredient.quantity}
+                                    </span>
                                   </li>
                                 )
                               )}
@@ -82,7 +88,7 @@ export const MealList = () => {
                             onClick={() =>
                               handleDeleteMeal(mealType.id, meal.id)
                             }
-                            className="ml-auto p-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300"
+                            className="ml-auto text-red-500 opacity-80 hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 p-2 rounded"
                           >
                             <Icon.Delete className="text-red-500" />
                           </motion.button>

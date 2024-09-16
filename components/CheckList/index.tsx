@@ -38,55 +38,61 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
 
   return (
     <AnimatePresence>
-      <div className="bg-white p-5 rounded-lg shadow-md mt-8">
-        <div className="flex justify-between p-10 items-center">
-          <h1 className="text-3xl text-gray-800 text-center m-auto">
-            Lista della Spesa
+      <div className="flex flex-col lg:flex-row justify-between pb-20 items-center">
+        <div className="text-center lg:text-left">
+          <h1 className="text-4xl font-bold mb-2 text-gray-800">
+            La tua Lista della Spesa
           </h1>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleCopyToClipboard}
-            className="p-1"
-          >
-            <Icon.Copy
-              role="img"
-              aria-label="copy to clipboard"
-              height={30}
-              width={30}
-            />
-          </motion.button>
+          <p className="text-lg text-gray-600">
+            Copia e incollala dove vuoi per utilizzarla o condividerla con il
+            resto della ciurma!
+          </p>
         </div>
-        <motion.ul
-          className="space-y-4"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={containerVariantsShoppingList}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleCopyToClipboard}
+          className="p-4  rounded bg-white hover:bg-gray-100 shadow-sm"
         >
-          {items?.map((item) => (
-            <motion.li
-              role="listitem"
-              tabIndex={0}
-              variants={itemVariantsShoppingList}
-              onClick={() => handleCheckboxChange(item.id)}
-              key={item.id}
-              onKeyDown={(e) => handleKeyDown(e, item.id)}
-              className="cursor-pointer flex items-center justify-between bg-gray-100 rounded-lg px-4 py-3 shadow-sm hover:bg-gray-200 transition-all duration-300"
-            >
-              <label className="flex items-center text-lg font-medium">
-                <input
-                  tabIndex={-1}
-                  onChange={() => handleCheckboxChange(item.id)}
-                  type="checkbox"
-                  className="mr-3 h-5 w-5 text-blue-500 rounded focus:ring-blue-500 focus:ring-opacity-50 "
-                  checked={!!checkedItems[item.id]}
-                />
-                {`${item.item} - ${item.quantity} ${item.unit}`}
-              </label>
-            </motion.li>
-          ))}
-        </motion.ul>
+          <Icon.Copy
+            role="img"
+            aria-label="copy to clipboard"
+            height={25}
+            width={25}
+          />
+        </motion.button>
       </div>
+
+      <motion.ul
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={containerVariantsShoppingList}
+      >
+        {items?.map((item) => (
+          <motion.li
+            role="listitem"
+            tabIndex={0}
+            variants={itemVariantsShoppingList}
+            onClick={() => handleCheckboxChange(item.id)}
+            key={item.id}
+            onKeyDown={(e) => handleKeyDown(e, item.id)}
+            className="cursor-pointer flex items-center justify-between bg-white rounded-lg px-5 py-4 shadow-md hover:bg-gray-100 transition-all duration-300"
+          >
+            <label className="flex items-center">
+              <input
+                tabIndex={-1}
+                onChange={() => handleCheckboxChange(item.id)}
+                type="checkbox"
+                className="mr-3 h-6 w-6 text-blue-600 rounded focus:ring-blue-500 focus:ring-opacity-50"
+                checked={!!checkedItems[item.id]}
+              />
+              {`${item.item} - ${item.quantity} ${item.unit}`}
+            </label>
+          </motion.li>
+        ))}
+      </motion.ul>
+
       <Toast
         message={"Lista della spesa copiata nei tuoi appunti!"}
         type="info"

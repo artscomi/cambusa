@@ -95,7 +95,7 @@ export const MainForm = ({
 
   return (
     <>
-      <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden">
+      <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white">
         {groupData && (
           <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo
             ${groupData.id}`}</h1>
@@ -113,12 +113,12 @@ export const MainForm = ({
             ))}
           </div>
 
-          <Button type="submit"> Genera il menu! 😍</Button>
+          <Button type="submit" full> Genera il menu! 😍</Button>
         </form>
 
-        <div className="absolute left-0 right-0 top-0 bottom-0 sm:overflow-hidden">
+        {/* <div className="absolute left-0 right-0 top-0 bottom-0 sm:overflow-hidden">
           <LottieAnimation name="waveBig" isResponsive={false} speed={0.1} />
-        </div>
+        </div> */}
       </div>
     </>
   );

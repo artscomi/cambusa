@@ -20,93 +20,98 @@ export const PageContent: React.FC<{ groupId: string; groupName: string }> = ({
   const { user } = useUser();
   useSaveUser();
 
-  console.log({ error });
-  console.log({ isSuccess });
   async function addFoodPreference(groupId: string, preference: string) {
-    if (!foodPreferences) {
-      setFieldError("Preferenze obbligatorie");
-    } else {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/groups/${groupId}/preferences`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ preference }),
-        });
+    if (!foodPreferences.trim()) {
+      setFieldError("Le preferenze sono obbligatorie");
+      return;
+    }
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to add food preference");
-        }
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/groups/${groupId}/preferences`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ preference }),
+      });
 
-        const foodPreference = await response.json();
-
-        setIsSuccess(true);
-        console.log("Food preference added:", foodPreference);
-        return foodPreference;
-      } catch (error) {
-        console.error("Error:", error);
-        setError((error as Error).message);
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.error || "Errore durante il salvataggio delle preferenze"
+        );
       }
+
+      const foodPreference = await response.json();
+      setIsSuccess(true);
+      console.log("Preferenza alimentare aggiunta:", foodPreference);
+    } catch (error) {
+      console.error("Errore:", error);
+      setError((error as Error).message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    confetti({
-      particleCount: 500,
-      spread: 500,
-      origin: { y: 0.2 },
-    });
-  }, []);
+    if (isSuccess) {
+      confetti({
+        particleCount: 500,
+        spread: 500,
+        origin: { y: 0.2 },
+      });
+    }
+  }, [isSuccess]);
 
   if (!user) return null;
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white">
       <div>
-        <h1 className="text-4xl mb-2">
+        <h1 className="text-3xl font-bold mb-4">
           Congratulazioni! <br />
           Hai ricevuto un invito al gruppo{" "}
-          <span className="text-teal-500 capitalize">{groupName}</span>
+          <span className="text-tertiary capitalize">{groupName}</span>
         </h1>
-        <p>
+        <p className="text-lg text-gray-700 mb-4">
           Aggiungi le tue preferenze alimentari per creare una cambusa per il
-          viaggio
+          viaggio.
         </p>
       </div>
       <TextArea
         rows={5}
         value={foodPreferences}
         onChange={(e) => setFoodPreferences(e.target.value)}
-        placeholder="mangio 150g di yogurt greco a colazione, non mangio la pasta"
+        placeholder="Esempio: mangio 150g di yogurt greco a colazione, non mangio la pasta"
         id={"food-preferences"}
         label={"Inserisci le tue preferenze alimentari"}
         error={fieldError}
       />
       <Button
-        className={`${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
         onClick={() => addFoodPreference(groupId, foodPreferences)}
+        disabled={isLoading}
       >
-        {isLoading ? "Loading" : "Salva preferenze"}
+        {isLoading ? "Salvataggio..." : "Salva preferenze"}
       </Button>
 
-      <Toast
-        message={"Preferenze salvate!"}
-        type="success"
-        showToast={isSuccess}
-        onClose={() => setIsSuccess(false)}
-      />
+      {isSuccess && (
+        <Toast
+          message={"Preferenze salvate con successo!"}
+          type="success"
+          showToast={isSuccess}
+          onClose={() => setIsSuccess(false)}
+        />
+      )}
 
-      <Toast
-        message={error}
-        type="error"
-        showToast={!!error}
-        onClose={() => setError("")}
-      />
+      {error && (
+        <Toast
+          message={error}
+          type="error"
+          showToast={!!error}
+          onClose={() => setError("")}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/Button";
 import CopyLink from "@/components/CopyLinkButton";
 import { TextInput } from "@/components/TextInput";
 import { useSaveUser } from "@/hooks/useSaveUser";
@@ -11,7 +12,7 @@ export const CreateGroupContent = () => {
   const [error, setError] = useState("");
   const [groupLink, setGroupLink] = useState("");
   const { user } = useUser();
-  useSaveUser(); // save the clerk user into prisma db
+  useSaveUser(); // Save the Clerk user into Prisma DB
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const createGroup = async (
@@ -20,8 +21,9 @@ export const CreateGroupContent = () => {
   ) => {
     e.preventDefault();
 
-    if (!groupName) {
-      setError("nome gruppo obbligatorio");
+    if (!groupName.trim()) {
+      setError("Nome gruppo obbligatorio");
+      return;
     }
 
     try {
@@ -49,16 +51,19 @@ export const CreateGroupContent = () => {
   };
 
   return (
-    <>
+    <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white">
       <form onSubmit={(e) => createGroup(e, groupName)}>
         {user && (
-          <p className="text-4xl text-center mb-10">Ciao {user?.firstName}</p>
+          <p className="text-2xl text-center mb-6 font-medium text-gray-700">
+            Ciao {user.firstName}!
+          </p>
         )}
-        <h1 className="text-2xl text-center mb-10">Crea il tuo gruppo</h1>
+        <h1 className="text-3xl font-bold text-center mb-8 text-primary">
+          Crea il tuo gruppo
+        </h1>
         <TextInput
           center
           inputType="text"
-          className="bg-white min-w-[250px]"
           id="group-name"
           label="Nome del gruppo"
           value={groupName}
@@ -70,12 +75,11 @@ export const CreateGroupContent = () => {
           }}
           error={error}
         />
-
-        <button className="h-15 p-2 underline underline-offset-8 block m-auto my-10">
+        <Button type="submit" className="my-10" center>
           Crea un gruppo
-        </button>
+        </Button>
       </form>
       {groupLink && <CopyLink url={groupLink} />}
-    </>
+    </div>
   );
 };

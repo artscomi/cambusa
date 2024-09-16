@@ -2,10 +2,12 @@ import "/styles/globals.css";
 import ContextLayout from "./context-layout";
 import { Poppins } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Footer } from "@/components/Footer";
+import Image from "next/image";
 
-const inter = Poppins({
-  subsets: ["latin"], // Optional: specify subsets
-  weight: ["400", "700"], // Optional: specify font weights
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata = {
@@ -22,11 +24,13 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="it" className="overflow-x-hidden">
         <body
-          className={`${inter.className} flex flex-col min-h-screen max-w-screen overflow-x-hidden`}
+          className={`${poppins.className} flex flex-col min-h-screen max-w-screen overflow-hidden relative`}
         >
           <main className="py-8 px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">
             <ContextLayout>{children}</ContextLayout>
           </main>
+          <Footer />
+          <Image alt="" src="/bg.png" fill className="object-cover -z-10" />
         </body>
       </html>
     </ClerkProvider>

@@ -16,10 +16,12 @@ const LottieAnimation = ({
   name,
   speed,
   isResponsive = true,
+  autoplay = true,
 }: {
   name: AnimationType;
   speed?: number;
   isResponsive?: boolean;
+  autoplay?: boolean;
 }) => {
   const [height, setHeight] = useState(300);
 
@@ -43,7 +45,7 @@ const LottieAnimation = ({
   const options = {
     animationData: animation[name],
     loop: true,
-    autoplay: true,
+    autoplay,
   };
 
   const { View, setSpeed } = useLottie(options, isResponsive ? { height } : {});

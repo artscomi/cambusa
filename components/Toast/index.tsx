@@ -22,7 +22,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, showToast }) => {
   fixed top-10 right-10 p-4 rounded-lg shadow-lg text-white
   ${type === "success" ? "bg-teal-500" : ""}
   ${type === "error" ? "bg-red-500" : ""}
-  ${type === "info" ? "bg-secondary" : ""}
+  ${type === "info" ? "bg-tertiary" : ""}
 `;
   return (
     <AnimatePresence>
