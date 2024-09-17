@@ -9,8 +9,8 @@
   --white: #ffffff;
   --background: #fcfcfc;
   --primary: #0d2031;
-  --secondary: #DAF0FF;
-  --secondary-light: #EEF8FF;
+  --secondary: #daf0ff;
+  --secondary-light: #eef8ff;
   --tertiary: #0094c6;
 }
 
@@ -29,7 +29,7 @@ body {
 
 input::placeholder,
 textarea::placeholder {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 input,
@@ -39,8 +39,8 @@ textarea {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
 

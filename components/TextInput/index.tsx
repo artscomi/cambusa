@@ -28,12 +28,12 @@ export const TextInput = ({
 }: TextInputConfig) => (
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
     <div className={`relative last:mb-0`}>
-      <label className="block absolute text-xs left-4 top-[0.3rem]" htmlFor={id}>
+      <label className="block absolute sm:text-xs left-4 top-[0.3rem]" htmlFor={id}>
         {label}
       </label>
       <input
         id={id}
-        className={`block h-12 rounded p-4 pt-8 outline-none w-full text-sm bg-gray-50 shadow-inner transition-all duration-300 ${
+        className={`block h-14 sm:h-12 rounded p-4 pt-8 outline-none w-full text-base sm:text-sm bg-gray-50 shadow-inner transition-all duration-300 ${
           error
             ? "shadow-[0_0_0_1px_rgba(239,68,68,0.75)]" // Red shadow
             : "shadow-[0_0_0_1px_rgba(156,163,175,0.5)]" // Gray shadow for normal state

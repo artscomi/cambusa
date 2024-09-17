@@ -86,7 +86,7 @@ export const useFormConfig = () => {
     },
     {
       id: "dietaryPreferences",
-      label: "Aggiungi le tue preferenze alimentari",
+      label: "Preferenze alimentari",
       value: formState.dietaryPreferences,
       placeholder: "vegan, gluten-free",
       type: "text",

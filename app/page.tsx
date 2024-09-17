@@ -14,8 +14,8 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <div className="max-sm:h-screen max-sm:flex flex-col justify-center">
-        <div className="max-md:p-5 mb-5 md:mb-16">
+      <div className="max-sm:h-screen max-sm:flex flex-col justify-center pb-safe">
+        <div className="max-md:pt-10 max-md:px-4 md:mb-16">
           <h1 className="text-5xl mb-4">Cambusa Ai</h1>
           <p className="text-xl text-left text-pretty">
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
