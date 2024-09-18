@@ -15,6 +15,7 @@ import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { motion } from "framer-motion";
 import { Button } from "../Button";
 import LottieAnimation from "../LottieAnimation";
+import { useUser } from "@clerk/nextjs";
 
 export const MainForm = ({
   groupData,
@@ -29,6 +30,7 @@ export const MainForm = ({
   const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const { user } = useUser();
 
   const router = useRouter();
 
@@ -45,52 +47,58 @@ export const MainForm = ({
 
     setError(null);
 
-    startTransition(async () => {
-      try {
-        const result = await getMealListFromAi({
-          breakfast,
-          lunch,
-          dinner,
-          dietaryPreferences,
-          people,
-        });
+    if (user) {
+      startTransition(async () => {
+        try {
+          // const result = await getMealListFromAi({
+          //   breakfast,
+          //   lunch,
+          //   dinner,
+          //   dietaryPreferences,
+          //   people,
+          // });
 
-        // const result = await new Promise<
-        //   | { type: "success"; menu: MenuData }
-        //   | { type: "parse-error"; text: string }
-        //   | { type: "validation-error"; value: unknown }
-        //   | { type: "unknown-error"; error: unknown }
-        // >((resolve, reject) => {
-        //   setTimeout(() => {
-        //     if (Math.random() > 0) {
-        //       resolve({
-        //         type: "success",
-        //         menu: mockMealList,
-        //       });
-        //     } else {
-        //       reject(new Error("Simulated API error"));
-        //     }
-        //   }, 2000);
-        // });
+          const result = await new Promise<
+            | { type: "success"; menu: MenuData }
+            | { type: "parse-error"; text: string }
+            | { type: "validation-error"; value: unknown }
+            | { type: "unknown-error"; error: unknown }
+          >((resolve, reject) => {
+            setTimeout(() => {
+              if (Math.random() > 0) {
+                resolve({
+                  type: "success",
+                  menu: mockMealList,
+                });
+              } else {
+                reject(new Error("Simulated API error"));
+              }
+            }, 2000);
+          });
 
-        if (result.type === "success") {
-          setMealList(result.menu);
-          router.push("/meal-menu");
-        } else if (result.type === "validation-error") {
-          setError("Recipe format is invalid.");
-          console.error("Recipe format is invalid.");
-        } else if (result.type === "parse-error") {
-          setError('"Failed to parse recipe data."');
-          console.error('"Failed to parse recipe data."');
-        } else {
-          setError("An unknown error occurred.");
-          console.error("An unknown error occurred.");
+          if (result.type === "success") {
+            setMealList(result.menu);
+            router.push("/meal-menu");
+          } else if (result.type === "validation-error") {
+            setError("Recipe format is invalid.");
+            console.error("Recipe format is invalid.");
+          } else if (result.type === "parse-error") {
+            setError('"Failed to parse recipe data."');
+            console.error('"Failed to parse recipe data."');
+          } else {
+            setError("An unknown error occurred.");
+            console.error("An unknown error occurred.");
+          }
+        } catch (e) {
+          setError(
+            "An unexpected error occurred while fetching the meal list."
+          );
+          console.error(e);
         }
-      } catch (e) {
-        setError("An unexpected error occurred while fetching the meal list.");
-        console.error(e);
-      }
-    });
+      });
+    } else {
+      router.push("/sign-in");
+    }
   };
 
   return (
@@ -113,7 +121,10 @@ export const MainForm = ({
             ))}
           </div>
 
-          <Button type="submit" full> Genera il menu! 😍</Button>
+          <Button type="submit" full>
+            {" "}
+            Genera il menu! 😍
+          </Button>
         </form>
 
         {/* <div className="absolute left-0 right-0 top-0 bottom-0 sm:overflow-hidden">

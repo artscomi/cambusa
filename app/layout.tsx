@@ -1,14 +1,12 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
-import { Poppins } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Footer } from "@/components/Footer";
 import Image from "next/image";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
+import {
+  montserrat,
+  poppins,
+} from "@/styles/fonts";
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -22,10 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="it" className="overflow-x-hidden">
-        <body
-          className={`${poppins.className} flex flex-col min-h-screen max-w-screen overflow-hidden relative`}
-        >
+      <html
+        lang="it"
+        className={`${poppins.variable} ${montserrat.variable} overflow-x-hidden`}
+      >
+        <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative">
           <main className="px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">
             <ContextLayout>{children}</ContextLayout>
           </main>

@@ -16,8 +16,10 @@ export default function Home() {
     <>
       <div className="max-sm:h-screen max-sm:flex flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16">
-          <h1 className="text-5xl mb-4">Cambusa Ai</h1>
-          <p className="text-xl text-left text-pretty">
+          <h1 className="text-5xl mb-4 font-display text-primary font-semibold">CambusaAi</h1>
+          <p
+            className={"text-xl text-left text-pretty font-subtitle text-gray-600"}
+          >
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
             salpare? ⛵
           </p>

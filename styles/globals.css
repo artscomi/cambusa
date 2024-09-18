@@ -8,10 +8,14 @@
   --background-end-rgb: 255, 255, 255;
   --white: #ffffff;
   --background: #fcfcfc;
-  --primary: #0d2031;
+  --default: #0d2031;
+  --primary: #0895c5;
   --secondary: #daf0ff;
   --secondary-light: #eef8ff;
   --tertiary: #0094c6;
+  --accent: #b22384;
+  --accent-light: #d733a3;
+  --gray-600: #4b5563;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,7 +27,7 @@
 }
 
 body {
-  color: var(--primary);
+  color: var(--gray-600);
   background: var(--background);
 }
 
@@ -41,6 +45,10 @@ textarea {
 @layer utilities {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  .highlight {
+    background: url(//s2.svgbox.net/pen-brushes.svg?ic=brush-10&color=0895c5);
+    padding: 3px 10px 5px;
   }
 }
 
