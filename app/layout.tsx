@@ -3,10 +3,7 @@ import ContextLayout from "./context-layout";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Footer } from "@/components/Footer";
 import Image from "next/image";
-import {
-  montserrat,
-  poppins,
-} from "@/styles/fonts";
+import { baloo, montserrat } from "@/styles/fonts";
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -22,7 +19,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="it"
-        className={`${poppins.variable} ${montserrat.variable} overflow-x-hidden`}
+        className={`${montserrat.variable} ${baloo.variable} overflow-x-hidden`}
       >
         <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative">
           <main className="px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">

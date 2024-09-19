@@ -10,19 +10,19 @@ const config: Config = {
     fontFamily: {
       sans: ["ui-sans-serif", "system-ui", "sans-serif"],
       mono: ["ui-monospace", "SFMono-Regular", "sans-serif"],
-      display: ['var(--font-poppins)'],
-      subtitle: ['var(--font-montserrat)'],
-      body: ['var(--font-roboto)'],
+      display: ["var(--font-baloo)"],
+      subtitle: ["var(--font-montserrat)"],
     },
     extend: {
       colors: {
         primary: "var(--primary)",
+        ["primary-light"]: "var(--primary-light)",
         default: "var(--default)",
         secondary: "var(--secondary)",
         ["secondary-light"]: "var(--secondary-light)",
         tertiary: "var(--tertiary)",
         accent: "var(--accent)",
-        ['accent-light']: "var(--accent-light)",
+        ["accent-light"]: "var(--accent-light)",
         background: "var(--background)",
       },
     },
