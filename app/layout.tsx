@@ -6,6 +6,7 @@ import Image from "next/image";
 import { baloo, montserrat } from "@/styles/fonts";
 import Script from "next/script";
 import { GA_TRACKING_ID } from "@/lib/gtag";
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -54,6 +55,7 @@ export default function RootLayout({
             className="object-cover -z-10 hidden sm:block"
           />
         </body>
+        <Analytics />
       </html>
     </ClerkProvider>
   );
