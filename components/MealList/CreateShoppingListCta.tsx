@@ -3,6 +3,7 @@ import { useShoppingContext } from "@/context/useShoppingListContext";
 import { sumIngredients } from "@/utils/ingredients";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { Button } from "../Button";
 
 export const CreateShoppingListCta = () => {
   const { setShoppingList } = useShoppingContext();
@@ -22,13 +23,9 @@ export const CreateShoppingListCta = () => {
   return (
     <motion.div className="text-center" exit={{ opacity: 0 }}>
       <p className="mt-16 mb-10 text-2xl">E adesso?</p>
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={handleCreatehoppingList}
-        className="bg-black rounded h-14 text-white p-2 hover:bg-gray-800"
-      >
+      <Button onClick={handleCreatehoppingList} center>
         Genera la lista della spesa!
-      </motion.button>
+      </Button>
     </motion.div>
   );
 };

@@ -13,13 +13,13 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, showToast }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
-    }, 5000);
+    }, 189500);
 
     return () => clearTimeout(timer);
   }, [onClose]);
 
   const toastClasses = `
-  fixed top-10 right-10 p-4 rounded-lg shadow-lg text-white
+  fixed right-5 sm:left-auto p-4 m-auto left-5 rounded-lg shadow-lg text-white max-sm:b-10 bottom-10 sm:bottom-auto sm:top-10 z-10
   ${type === "success" ? "bg-teal-500" : ""}
   ${type === "error" ? "bg-red-500" : ""}
   ${type === "info" ? "bg-tertiary" : ""}
@@ -31,7 +31,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, showToast }) => {
           animate={{ scale: 1, opacity: 1 }}
           initial={{ scale: 0, opacity: 0 }}
           className={toastClasses}
-          exit={{ scale: 0, opacity: 0 }}
+          exit={{ opacity: 0, y: 30 }}
         >
           <div className="flex items-center justify-between">
             <span>{message}</span>

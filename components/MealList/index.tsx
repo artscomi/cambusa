@@ -33,8 +33,8 @@ export const MealList = () => {
 
   return (
     <AnimatePresence mode="wait">
-      <div className="px-5 py-10 max-w-screen-xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-14">
+      <div className="px-5 pb-10 max-w-screen-xl mx-auto">
+        <h1 className="text-center mb-8">
           Et voilà! Ecco le proposte di menu
         </h1>
         {mealList.menu.length === 0 ? (
@@ -45,7 +45,7 @@ export const MealList = () => {
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>
-                    <h2 className="py-3 mb-5 text-2xl font-semibold text-gray-700 bg-gray-50 text-center rounded-lg shadow-sm">
+                    <h2 className="py-3 mb-5 text-2xl font-semibo text-center rounded-lg font-cta">
                       {mealType.mealTypeName}
                     </h2>
                     <motion.div

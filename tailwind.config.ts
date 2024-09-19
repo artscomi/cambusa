@@ -12,6 +12,7 @@ const config: Config = {
       mono: ["ui-monospace", "SFMono-Regular", "sans-serif"],
       display: ["var(--font-baloo)"],
       subtitle: ["var(--font-montserrat)"],
+      cta: ["var(--font-bebas)"],
     },
     extend: {
       colors: {

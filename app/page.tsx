@@ -5,6 +5,7 @@ import { Loading } from "@/components/Loading";
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
+import Image from 'next/image'
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -42,9 +43,15 @@ export default function Home() {
         </div>
         <ToastError error={error} setError={setError} />
       </div>
-      <div className="sm:hidden pt-20">
+      <div className="sm:hidden">
         <CreateGroupBox />
       </div>
+
+
+      <Image alt="" height={60} width={60} src="/apple.png" className="absolute top-20 right-28 rotate-12 max-sm:hidden" />
+      <Image alt="" height={120} width={120} src="/basket.png" className="absolute top-20 right-40 -rotate-12 max-sm:hidden"/>
+      <Image alt="" height={120} width={120} src="/avocado.png" className="absolute bottom-20 right-5 sm:right-20 sm-max:hidden max-sm:scale-50"/>
+      <Image alt="" height={150} width={150} src="/broccoli.png" className="absolute bottom-20 max-sm:left-2 sm:right-40 -rotate-12 sm-max:hidden max-sm:scale-50" />
     </>
   );
 }

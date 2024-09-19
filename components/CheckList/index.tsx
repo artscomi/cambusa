@@ -38,12 +38,10 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
 
   return (
     <AnimatePresence>
-      <div className="flex flex-col lg:flex-row justify-between pb-20 items-center">
+      <div className="flex flex-col lg:flex-row justify-between pb-8 items-center">
         <div className="text-center lg:text-left">
-          <h1 className="text-4xl font-bold mb-2 text-gray-800">
-            La tua Lista della Spesa
-          </h1>
-          <p className="text-lg text-gray-600">
+          <h1>La tua lista della spesa</h1>
+          <p className="text-l">
             Copia e incollala dove vuoi per utilizzarla o condividerla con il
             resto della ciurma!
           </p>
@@ -51,7 +49,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleCopyToClipboard}
-          className="p-4  rounded bg-white hover:bg-gray-100 shadow-sm"
+          className="p-4 rounded bg-gray-50 hover:bg-gray-100 shadow-lg max-sm:fixed bottom-5 right-5 z-10"
         >
           <Icon.Copy
             role="img"
@@ -63,7 +61,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
       </div>
 
       <motion.ul
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-6"
         initial="hidden"
         animate="visible"
         exit="exit"

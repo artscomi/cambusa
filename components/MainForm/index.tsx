@@ -44,6 +44,7 @@ export const MainForm = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    scrollTo(0, 0);
 
     setError(null);
 
@@ -122,8 +123,7 @@ export const MainForm = ({
           </div>
 
           <Button type="submit" full>
-            {" "}
-            Genera il menu! 😍
+            Crea il menu
           </Button>
         </form>
 

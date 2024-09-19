@@ -11,7 +11,7 @@ export const Button: React.FC<
   return (
     <motion.button
       whileTap={whileTap || { scale: 0.97 }}
-      className={`bg-primary hover:bg-primary-light rounded text-white p-4 block transition-colors ${
+      className={`bg-white hover:bg-secondary-light rounded text-primary p-4 block transition-colors border-b-primary border-b-4 font-cta text-xl tracking-wide ${
         full ? "w-full" : ""
       } ${center ? "mx-auto" : ""} ${className}`}
       {...buttonProps}
