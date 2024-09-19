@@ -34,7 +34,7 @@ export const MealList = () => {
   return (
     <AnimatePresence mode="wait">
       <div className="px-5 pb-10 max-w-screen-xl mx-auto">
-        <h1 className="text-center mb-8">
+        <h1 className="text-center mb-2">
           Et voilà! Ecco le proposte di menu
         </h1>
         {mealList.menu.length === 0 ? (
@@ -45,7 +45,7 @@ export const MealList = () => {
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>
-                    <h2 className="py-3 mb-5 text-2xl font-semibo text-center rounded-lg font-cta">
+                    <h2 className="py-3 text-2xl text-center rounded-lg font-cta">
                       {mealType.mealTypeName}
                     </h2>
                     <motion.div
