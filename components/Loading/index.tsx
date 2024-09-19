@@ -9,8 +9,8 @@ export const Loading = () => {
 
   return (
     <motion.div className="flex flex-col items-center justify-center max-w-[700px] m-auto px-8">
-      <p className="text-3xl mb-6">Stiamo generando la tua proposta di menu</p>
-      <LottieAnimation name="groovyWalk"/>
+      <h1 className="mb-6">Stiamo generando la tua proposta di menu</h1>
+      <LottieAnimation name="groovyWalk" />
       <motion.p
         animate={{ opacity: 1, transition: { delay: 2, duration: 2 } }}
         initial={{ opacity: 0 }}
