@@ -3,7 +3,7 @@
 import { MealContextProvider } from "@/context/useMealContext";
 import { ShoppingProvider } from "@/context/useShoppingListContext";
 import { pageview } from "@/lib/gtag";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export default function ContextLayout({
@@ -11,22 +11,14 @@ export default function ContextLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter()
+  const pathname = usePathname();
 
   useEffect(() => {
-    const handleRouteChange = (url: string) => {
-      pageview(url);
-    };
+    if (pathname) {
+      pageview(pathname);
+    }
+  }, [pathname]);
 
-    // Handle route changes manually
-    router.events.on('routeChangeComplete', handleRouteChange);
-
-    // Clean up the event listener
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  }, [router.events]);
-  
   return (
     <MealContextProvider>
       <ShoppingProvider>{children}</ShoppingProvider>
