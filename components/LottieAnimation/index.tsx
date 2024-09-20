@@ -32,7 +32,7 @@ const LottieAnimation = ({
       } else if (window.innerWidth < 1024) {
         setHeight(100);
       } else {
-        setHeight(250);
+        setHeight(220);
       }
     };
 
