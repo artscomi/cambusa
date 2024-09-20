@@ -69,20 +69,21 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
       >
         {items?.map((item) => (
           <motion.li
+            whileHover={{ scale: 0.98 }}
             role="listitem"
             tabIndex={0}
             variants={itemVariantsShoppingList}
             onClick={() => handleCheckboxChange(item.id)}
             key={item.id}
             onKeyDown={(e) => handleKeyDown(e, item.id)}
-            className="cursor-pointer flex items-center justify-between bg-white rounded-lg px-5 py-4 shadow-md hover:bg-gray-100 transition-all duration-300"
+            className="cursor-pointer flex items-center justify-between bg-white rounded-lg px-5 py-4 shadow-md transition-all duration-300"
           >
-            <label className="flex items-center">
+            <label className="flex items-center cursor-pointer ">
               <input
                 tabIndex={-1}
                 onChange={() => handleCheckboxChange(item.id)}
                 type="checkbox"
-                className="mr-3 h-6 w-6 text-blue-600 rounded focus:ring-blue-500 focus:ring-opacity-50"
+                className="mr-3 h-6 w-6 text-blue-600 rounded focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer"
                 checked={!!checkedItems[item.id]}
               />
               {`${item.item} - ${item.quantity} ${item.unit}`}
