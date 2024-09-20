@@ -30,6 +30,7 @@ export const MainForm = ({
   const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
   const { user } = useUser();
 
   const router = useRouter();
@@ -47,8 +48,11 @@ export const MainForm = ({
     scrollTo(0, 0);
 
     setError(null);
+    setClickCount((prevCount) => prevCount + 1);
 
-    if (user) {
+    console.log({ clickCount });
+
+    if (clickCount <= 3) {
       startTransition(async () => {
         try {
           // const result = await getMealListFromAi({
@@ -98,7 +102,7 @@ export const MainForm = ({
         }
       });
     } else {
-      router.push("/sign-in");
+      router.push("/checkout");
     }
   };
 

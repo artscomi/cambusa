@@ -1,19 +1,26 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma'; // Adjust the path as needed
-import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma"; // Adjust the path as needed
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
-export async function POST(req: Request, { params }: { params: { groupId: string } }) {
+export async function POST(
+  req: Request,
+  { params }: { params: { groupId: string } }
+) {
   try {
     const { userId } = auth(); // Get the authenticated user ID from Clerk
 
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { preference } = await req.json(); // Parse the request body
 
     if (!preference) {
-      return NextResponse.json({ error: 'Preference is required' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Preference is required" },
+        { status: 400 }
+      );
     }
 
     // Add the user as a member if they aren't already in the group
@@ -37,9 +44,15 @@ export async function POST(req: Request, { params }: { params: { groupId: string
       },
     });
 
+    // Revalidate the path to refresh the group's food preferences
+    revalidatePath(`/groups/${params.groupId}/menu`);
+
     return NextResponse.json(foodPreference, { status: 201 });
   } catch (error) {
-    console.error('Error adding food preference:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error adding food preference:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

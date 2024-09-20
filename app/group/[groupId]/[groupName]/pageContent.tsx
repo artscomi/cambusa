@@ -28,7 +28,7 @@ export const PageContent: React.FC<{ groupId: string; groupName: string }> = ({
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/groups/${groupId}/preferences`, {
+      const response = await fetch(`/api/groups/${groupId}/set-preferences`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,22 +1,15 @@
-import fs from "fs";
-import path from "path";
-import { MainForm } from "@/components/MainForm";
-import { GroupData } from "@/types/types";
-import { MealList } from "@/components/MealList";
+import { PageContent } from "./PageContent";
 
-async function getGroupData(groupId: string): Promise<GroupData> {
-  const filePath = path.join(process.cwd(), "data", `${groupId}.json`);
-  const groupData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  return groupData;
+interface PageContentProps {
+  groupId: string;
 }
 
-const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
-  const groupData = await getGroupData(params.groupId);
-
+const GroupMenu = ({ params }: { params: { groupId: string } }) => {
+  const { groupId } = params;
   return (
     <>
       {/* <MainForm groupData={groupData} /> */}
-      <MealList />
+      <PageContent groupId={groupId} />
     </>
   );
 };

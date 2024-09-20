@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import React from "react";
-import { PageContent } from "@/app/group/[groupId]/[groupName]/pageContent";
+import { PageContent } from "./pageContent";
 
 const GroupPage: NextPage<{
   params: { groupId: string; groupName: string };

@@ -6,7 +6,6 @@ import { getPrompt } from "@/utils/getPrompt";
 import { FormState } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
 import { mealMenuSchema } from "./schema";
-import { revalidatePath } from "next/cache";
 
 export async function getMealListFromAi(
   input: FormState
@@ -20,14 +19,13 @@ export async function getMealListFromAi(
 
   try {
     const result = await generateObject({
-      model: openai("gpt-4o-mini"),
+      model: openai("gpt-4"),
       prompt: getPrompt(input),
       schema: mealMenuSchema,
     });
 
     console.log('prompt', getPrompt(input))
     console.log('result', result.object)
-    // revalidatePath('/meal-menu')
     return { type: "success", menu: result.object };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
