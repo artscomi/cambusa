@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/Button";
 
 export default function Return() {
   const [status, setStatus] = useState(null);
-  const [customerEmail, setCustomerEmail] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function Return() {
 
         const data = await res.json();
         setStatus(data.status);
-        setCustomerEmail(data.customer_email);
       } catch (error) {
         console.error("Error fetching checkout session:", error);
       }
@@ -62,11 +61,15 @@ export default function Return() {
   if (status === "complete") {
     return (
       <section id="success">
-        <p>
-          We appreciate your business! A confirmation email will be sent to{" "}
-          {customerEmail}. If you have any questions, please email{" "}
-          <a href="mailto:orders@example.com">orders@example.com</a>.
+        <p className="mb-10">
+          Grazie! Ora hai diritto ad altre tre rigenerazioni. Per qualsiasi
+          informazioni scrivi a{" "}
+          <a href="mailto:cristina.luerti@gmail.com">cambusa@vercel.com</a>.
         </p>
+
+        <Button center onClick={() => router.push("/")}>
+          Genera un nuovo menu
+        </Button>
       </section>
     );
   }

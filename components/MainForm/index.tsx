@@ -4,7 +4,7 @@ import { TextInput } from "../TextInput";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { useMealContext } from "@/context/useMealContext";
 import { GroupData, MenuData } from "@/types/types";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../Button";
 import LottieAnimation from "../LottieAnimation";
@@ -12,15 +12,18 @@ import { useUser } from "@clerk/nextjs";
 import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
+import { DialogStripe } from "../ui/dialogs/Stripe";
 
 export const MainForm = ({
   groupData,
   startTransition,
   setError,
+  onUserReachedApiCallLimit,
 }: {
+  setError: Dispatch<SetStateAction<null | string>>;
   groupData?: GroupData;
   startTransition: (callback: () => void) => void;
-  setError: Dispatch<SetStateAction<string | null>>;
+  onUserReachedApiCallLimit: VoidFunction;
 }) => {
   const { inputConfig, formState } = useFormConfig();
   const { setMealList } = useMealContext();
@@ -59,20 +62,20 @@ export const MainForm = ({
 
         // const result = await new Promise<Result>((resolve, reject) => {
         //   setTimeout(() => {
-        //     if (Math.random() > 0) {
-        //       resolve({
-        //         type: "success",
-        //         menu: mockMealList,
-        //       });
-        //     } else {
-        //       reject(new Error("Simulated API error"));
-        //     }
-        //   }, 10000);
+        //     resolve({
+        //       type: "success",
+        //       menu: mockMealList,
+        //     });
+
+        //     // reject(new Error("Simulated API error"));
+        //   }, 2000);
         // });
 
         handleResult(result);
       } catch (error) {
-        setError("An unexpected error occurred while fetching the meal list.");
+        setError(
+          "Ops.. qualcosa è andato storto durante la generazione del menu"
+        );
         console.error(error);
       }
     });
@@ -93,7 +96,7 @@ export const MainForm = ({
     const errorMessages: Record<ResultErrors["type"], string> = {
       "user-not-found": "User not found",
       "validation-error": "Recipe format is invalid.",
-      "user-limit-error": "Hai raggiunto il limite di chiamate",
+      "user-limit-error": "",
       "parse-error": "Failed to parse recipe data.",
       "unknown-error": "Ops..qualcosa è andato storto",
     };
@@ -103,7 +106,7 @@ export const MainForm = ({
     console.error(message);
 
     if (result.type === "user-limit-error") {
-      router.push("/checkout");
+      onUserReachedApiCallLimit();
     }
   };
 

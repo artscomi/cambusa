@@ -5,11 +5,17 @@ import { Loading } from "@/components/Loading";
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
-import Image from 'next/image'
+import Image from "next/image";
+import { DialogStripe } from "@/components/ui/dialogs/Stripe";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
+
+  const openDialogStripe = () => {
+    setIsDialogStripeOpen(true)
+  }
 
   return isPending ? (
     <Loading />
@@ -34,7 +40,11 @@ export default function Home() {
         <div className="w-full items-end">
           <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center">
             <div className="flex-1 w-full">
-              <MainForm startTransition={startTransition} setError={setError} />
+              <MainForm
+                startTransition={startTransition}
+                setError={setError}
+                onUserReachedApiCallLimit={openDialogStripe}
+              />
             </div>
             <div className="flex-1 w-full max-sm:hidden">
               <CreateGroupBox />
@@ -47,11 +57,39 @@ export default function Home() {
         <CreateGroupBox />
       </div>
 
+      <DialogStripe
+        isOpen={isDialogStripeOpen}
+        setIsOpen={setIsDialogStripeOpen}
+      />
 
-      <Image alt="" height={60} width={60} src="/apple.png" className="absolute top-20 right-28 rotate-12 max-sm:hidden" />
-      <Image alt="" height={120} width={120} src="/basket.png" className="absolute top-20 right-40 -rotate-12 max-sm:hidden"/>
-      <Image alt="" height={80} width={80} src="/avocado.png" className="absolute bottom-10 right-5 sm:right-20 sm-max:hidden max-sm:scale-50"/>
-      <Image alt="" height={150} width={150} src="/broccoli.png" className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50" />
+      <Image
+        alt=""
+        height={60}
+        width={60}
+        src="/apple.png"
+        className="absolute top-20 right-28 rotate-12 max-sm:hidden"
+      />
+      <Image
+        alt=""
+        height={120}
+        width={120}
+        src="/basket.png"
+        className="absolute top-20 right-40 -rotate-12 max-sm:hidden"
+      />
+      <Image
+        alt=""
+        height={80}
+        width={80}
+        src="/avocado.png"
+        className="absolute bottom-10 right-5 sm:right-20 sm-max:hidden max-sm:scale-50"
+      />
+      <Image
+        alt=""
+        height={150}
+        width={150}
+        src="/broccoli.png"
+        className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50"
+      />
     </>
   );
 }
