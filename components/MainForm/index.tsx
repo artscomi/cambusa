@@ -46,29 +46,29 @@ export const MainForm = ({
 
     startTransition(async () => {
       try {
-        // const result = await getMealListFromAi({
-        //   formValues: {
-        //     breakfast,
-        //     lunch,
-        //     dinner,
-        //     dietaryPreferences,
-        //     people,
-        //   },
-        //   userId: user.id,
-        // });
-
-        const result = await new Promise<Result>((resolve, reject) => {
-          setTimeout(() => {
-            if (Math.random() > 0) {
-              resolve({
-                type: "success",
-                menu: mockMealList,
-              });
-            } else {
-              reject(new Error("Simulated API error"));
-            }
-          }, 10000);
+        const result = await getMealListFromAi({
+          formValues: {
+            breakfast,
+            lunch,
+            dinner,
+            dietaryPreferences,
+            people,
+          },
+          userId: user.id,
         });
+
+        // const result = await new Promise<Result>((resolve, reject) => {
+        //   setTimeout(() => {
+        //     if (Math.random() > 0) {
+        //       resolve({
+        //         type: "success",
+        //         menu: mockMealList,
+        //       });
+        //     } else {
+        //       reject(new Error("Simulated API error"));
+        //     }
+        //   }, 10000);
+        // });
 
         handleResult(result);
       } catch (error) {
