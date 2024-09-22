@@ -3,13 +3,18 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
+const price =
+  process.env.NODE_ENV === "development"
+    ? "price_1Q08H3D79nSJWeoGYqipLIOR"
+    : "price_1Q1ofmD79nSJWeoGrZDSsoo4";
+
 export async function POST(req: Request) {
   try {
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
       line_items: [
         {
-          price: "price_1Q08H3D79nSJWeoGYqipLIOR",
+          price,
           quantity: 1,
         },
       ],
