@@ -1,9 +1,7 @@
-import { Button } from "@/components/Button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -41,7 +39,7 @@ export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
           <DialogTitle>Hai raggiunto il limite di rigenerazioni</DialogTitle>
           <DialogDescription>Compra altre 5 rigenerazioni</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4 overflow-auto">
           <div id="checkout">
             <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
               <EmbeddedCheckout />
