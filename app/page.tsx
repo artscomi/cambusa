@@ -66,29 +66,33 @@ export default function Home() {
         alt=""
         height={60}
         width={60}
+        priority
         src="/apple.png"
-        className="absolute top-20 right-28 rotate-12 max-sm:hidden"
+        className="absolute top-20 right-28 rotate-12 max-sm:hidden w-auto h-auto"
       />
       <Image
         alt=""
         height={120}
         width={120}
         src="/basket.png"
-        className="absolute top-20 right-40 -rotate-12 max-sm:hidden"
+        priority
+        className="absolute top-20 right-40 -rotate-12 max-sm:hidden w-auto h-auto"
       />
       <Image
         alt=""
         height={80}
         width={80}
         src="/avocado.png"
-        className="absolute bottom-10 right-5 sm:right-20 sm-max:hidden max-sm:scale-50"
+        priority
+        className="absolute bottom-10 right-5 sm:right-20 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
       <Image
         alt=""
         height={150}
         width={150}
         src="/broccoli.png"
-        className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50"
+        priority
+        className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
     </>
   );
