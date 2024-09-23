@@ -21,8 +21,9 @@ export async function POST(req: Request) {
       mode: "payment",
       return_url: `${req.headers.get(
         "origin"
-      )}/return?session_id={CHECKOUT_SESSION_ID}`,
+      )}/?session_id={CHECKOUT_SESSION_ID}`,
       automatic_tax: { enabled: true },
+      redirect_on_completion: "if_required",
     });
 
     return NextResponse.json({ clientSecret: session.client_secret });

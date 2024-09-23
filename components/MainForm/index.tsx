@@ -13,6 +13,7 @@ import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
+import { getUserApiCallCount } from "@/app/api/check-user-api-call/actions";
 
 export const MainForm = ({
   groupData,
@@ -46,6 +47,13 @@ export const MainForm = ({
     e.preventDefault();
     scrollTo(0, 0);
     setError(null);
+
+    const userApiCallCount = await getUserApiCallCount(user.id);
+
+    if (userApiCallCount && userApiCallCount > 0) {
+      onUserReachedApiCallLimit();
+      return;
+    }
 
     startTransition(async () => {
       try {
@@ -104,10 +112,6 @@ export const MainForm = ({
     const message = errorMessages[result.type] || "An unknown error occurred.";
     setError(message);
     console.error(message);
-
-    if (result.type === "user-limit-error") {
-      onUserReachedApiCallLimit();
-    }
   };
 
   return (

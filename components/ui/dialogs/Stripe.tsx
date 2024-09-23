@@ -23,14 +23,26 @@ type Props = {
 
 export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   const fetchClientSecret = useCallback(() => {
-    return fetch("/api/checkout_sessions", {
+    return fetch("/api/checkout-sessions", {
       method: "POST",
     })
       .then((res) => res.json())
       .then((data) => data.clientSecret);
   }, []);
 
-  const options = { fetchClientSecret };
+  const onComplete = useCallback(async () => {
+    const res = await fetch("/api/reset-api-call-count", {
+      method: "POST",
+    });
+    if (res.ok) {
+      console.log("API call count reset successfully");
+      setTimeout(() => setIsOpen(false), 4000);
+    } else {
+      console.error("Error resetting API call count:");
+    }
+  }, []);
+
+  const options = { fetchClientSecret, onComplete };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

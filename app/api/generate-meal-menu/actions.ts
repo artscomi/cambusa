@@ -40,14 +40,6 @@ export async function getMealListFromAi({
       };
     }
 
-    // Check if the API call count is below 3
-    if (user.apiCallCount >= 0) {
-      return {
-        type: "user-limit-error",
-        error: "API call limit reached for the user.",
-      };
-    }
-
     // Generate result using AI (only if apiCallCount < 3)
     const result = await generateObject({
       model: openai("gpt-4o-mini"),
