@@ -21,7 +21,7 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <div className="max-sm:h-screen max-sm:flex flex-col justify-center pb-safe">
+      <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16">
           <h1 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary relative">
             Cambusa<span className="text-secondary">Ai</span>
@@ -38,8 +38,8 @@ export default function Home() {
         </div>
 
         <div className="w-full items-end">
-          <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center">
-            <div className="flex-1 w-full">
+          <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center ">
+            <div className="flex-1 w-full min-h-[520px]">
               <MainForm
                 startTransition={startTransition}
                 setError={setError}
