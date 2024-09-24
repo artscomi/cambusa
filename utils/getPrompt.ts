@@ -23,9 +23,9 @@ export const getRegenerateMealPrompt = ({
 }: {
   dietaryPreferences: string;
   meal: Meal;
-}): string => `Crea un altro piatto che sostituisce questo: ${JSON.stringify(
+}): string => `Crea un altro piatto diverso da questo: ${JSON.stringify(
   meal
-)}, in italiano. Preferenze alimentari includono: ${dietaryPreferences}. Mantieni le stesse quantità e gli stessi id del piatto originale. Cerca di accontentare tutti, senza proporre piatti diversi per ognuno, tranne a Colazione. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
+)}, in italiano. Preferenze alimentari includono: ${dietaryPreferences}. Mantieni gli stessi id del piatto originale. Cerca di accontentare tutti, senza proporre piatti diversi per ognuno, tranne a Colazione. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
   I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
  Genera un oggetto JSON che rappresenti un pasto.
 `;
