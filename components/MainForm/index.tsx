@@ -14,7 +14,6 @@ import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getUserApiCallCount } from "@/app/api/check-user-api-call/actions";
-import { useAiCallContext } from "@/context/useAiCallContext";
 import { getMaxAiCall } from "@/utils/user";
 
 export const MainForm = ({
@@ -31,7 +30,7 @@ export const MainForm = ({
   const { inputConfig, formState } = useFormConfig();
   const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
 
@@ -49,11 +48,14 @@ export const MainForm = ({
     scrollTo(0, 0);
     setError(null);
 
+    console.log({user})
+    console.log({isLoaded})
+
     if (!user) {
       openSignIn();
-      return
+      return;
     }
-    
+
     const { apiCallCount, hasPaidForIncrease } = await getUserApiCallCount(
       user.id
     );

@@ -1,13 +1,14 @@
 import { getUserApiCallCount } from "@/app/api/check-user-api-call/actions";
 import { getMaxAiCall } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
+import { usePathname } from "next/navigation";
 
 export const Header = async () => {
   const { userId } = auth();
   if (!userId) return;
 
   const { apiCallCount, hasPaidForIncrease } = await getUserApiCallCount(
-    userId
+    userId, 
   );
   const maxAiCall = getMaxAiCall(hasPaidForIncrease);
   const aiCallLeft = maxAiCall - apiCallCount;

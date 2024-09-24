@@ -34,9 +34,7 @@ export const MealList = () => {
   return (
     <AnimatePresence mode="wait">
       <div className="px-5 pb-10 max-w-screen-xl mx-auto">
-        <h1 className="text-center mb-2">
-          Et voilà! Ecco le proposte di menu
-        </h1>
+        <h1 className="text-center mb-2">Et voilà! Ecco le proposte di menu</h1>
         {mealList.menu.length === 0 ? (
           <EmptyMealList />
         ) : (

@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/utils/db";
+import { revalidatePath } from "next/cache";
 
 export async function getUserApiCallCount(userId: string) {
   "use server";
@@ -22,8 +23,8 @@ export async function getUserApiCallCount(userId: string) {
     };
   }
 
-  console.log("api call", user.apiCallCount);
-  console.log("hasPaidForIncrease", user.hasPaidForIncrease);
+  revalidatePath("/");
+
   // Return success response
   return {
     apiCallCount: user.apiCallCount,
