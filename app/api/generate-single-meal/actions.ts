@@ -2,21 +2,22 @@
 
 import { generateObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { getMainPrompt } from "@/utils/getPrompt";
-import { FormState } from "@/hooks/useFormConfig";
-import { MenuData } from "@/types/types";
-import { mealMenuSchema } from "./schema";
+import { getRegenerateMealPrompt } from "@/utils/getPrompt";
+import { Meal } from "@/types/types";
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
+import { mealSchema } from "../generate-meal-menu/schema";
 
-export async function getMealListFromAi({
-  formValues,
+export async function regenerateSingleMeal({
+  dietaryPreferences,
   userId,
+  meal,
 }: {
-  formValues: FormState;
+  dietaryPreferences: string;
   userId: string;
+  meal: Meal;
 }): Promise<
-  | { type: "success"; menu: MenuData }
+  | { type: "success"; meal: Meal }
   | { type: "parse-error"; text: string }
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
@@ -43,8 +44,8 @@ export async function getMealListFromAi({
 
     const result = await generateObject({
       model: openai("gpt-4o-mini"),
-      prompt: getMainPrompt(formValues),
-      schema: mealMenuSchema,
+      prompt: getRegenerateMealPrompt({dietaryPreferences, meal}),
+      schema: mealSchema,
     });
 
     await db.user.update({
@@ -56,14 +57,14 @@ export async function getMealListFromAi({
     });
 
     // Log prompts and result
-    console.log("prompt", getMainPrompt(formValues));
+    console.log("prompt", getRegenerateMealPrompt({dietaryPreferences, meal}));
     console.log("result", result.object);
     console.log("api call", user.apiCallCount);
 
-    revalidatePath('/meal-menu', 'layout')
+    revalidatePath("/meal-menu", "layout");
 
     // Return success response
-    return { type: "success", menu: result.object };
+    return { type: "success", meal: result.object };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
       return { type: "validation-error", value: e.value };

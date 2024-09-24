@@ -5,15 +5,93 @@ import { AnimatePresence, motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/animations/framer-variants";
 import { EmptyMealList } from "./EmptyMealList";
 import { CreateShoppingListCta } from "./CreateShoppingListCta";
+import { regenerateSingleMeal } from "@/app/api/generate-single-meal/actions";
+import { useUser } from "@clerk/nextjs";
+import { useFormConfig } from "@/hooks/useFormConfig";
+import { MenuData } from "@/types/types";
+import { getUserInfo } from "@/app/api/get-user-info/actions";
+import { getMaxAiCall } from "@/utils/user";
+import { useState } from "react";
+import { DialogStripe } from "../ui/dialogs/Stripe";
+import LottieAnimation from "../LottieAnimation";
 
 export const MealList = () => {
   const { mealList, setMealList } = useMealContext();
+  const { user } = useUser();
+  const { formState } = useFormConfig();
+  const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
+  const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
+
+  const openDialogStripe = () => {
+    setIsDialogStripeOpen(true);
+  };
 
   if (!mealList || Object.keys(mealList).length === 0) {
     return;
   }
 
-  const handleDeleteMeal = (mealTypeId: string, mealId: string) => {
+  console.log({ mealList });
+
+  const findMealById = (mealList: MenuData, mealId: string) => {
+    for (const mealType of mealList.menu) {
+      const foundMeal = mealType.meals.find((meal) => meal.id === mealId);
+      if (foundMeal) {
+        return foundMeal;
+      }
+    }
+    return null;
+  };
+
+  const handleRegenerateMeal = async (mealTypeId: string, mealId: string) => {
+    const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
+    const maxAiCall = getMaxAiCall(hasPaidForIncrease);
+
+    if (apiCallCount && apiCallCount >= maxAiCall) {
+      openDialogStripe();
+      return;
+    }
+
+    setLoadingMealId(mealId);
+
+    console.log("regenerate");
+    console.log({ mealTypeId });
+    console.log({ mealId });
+
+    const mealToRegenerate = findMealById(mealList, mealId);
+    if (!mealToRegenerate) return;
+
+    try {
+      if (!user) return null;
+      const response = await regenerateSingleMeal({
+        dietaryPreferences: formState.dietaryPreferences,
+        userId: user.id,
+        meal: mealToRegenerate,
+      });
+
+      if (response.type === "success") {
+        const updatedMealList = mealList.menu.map((mealType) => {
+          if (mealType.id === mealTypeId) {
+            return {
+              ...mealType,
+              meals: mealType.meals.map((meal) =>
+                meal.id === mealId ? response.meal : meal
+              ),
+            };
+          }
+          return mealType;
+        });
+
+        setMealList({ ...mealList, menu: updatedMealList });
+      }
+    } catch (error) {
+      console.error("Failed to regenerate meal", error);
+    } finally {
+      setLoadingMealId(null);
+    }
+  };
+
+  const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
+    console.log("delete");
     const updatedMealList = mealList.menu.map((mealType) => {
       if (mealType.id === mealTypeId) {
         return {
@@ -32,7 +110,7 @@ export const MealList = () => {
   };
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       <div className="px-5 pb-10 max-w-screen-xl mx-auto">
         <h1 className="text-center mb-2">Et voilà! Ecco le proposte di menu</h1>
         {mealList.menu.length === 0 ? (
@@ -48,10 +126,9 @@ export const MealList = () => {
                     </h2>
                     <motion.div
                       key={mealType.id}
-                      className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 mb-8"
+                      className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mb-8 "
                       initial="hidden"
                       animate="visible"
-                      exit="exit"
                       variants={containerVariants}
                     >
                       {mealType.meals?.map((meal) => (
@@ -59,8 +136,16 @@ export const MealList = () => {
                           layout
                           key={meal.id}
                           variants={itemVariants}
-                          className="bg-white p-6 rounded-lg h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between group cursor-pointer"
+                          className="bg-white p-6 rounded-lg h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between group cursor-pointer relative  overflow-hidden"
                         >
+                          {loadingMealId === meal.id && (
+                            <div className="absolute left-0 right-0 top-0">
+                              <LottieAnimation
+                                name="waveBig"
+                                isResponsive={false}
+                              />
+                            </div>
+                          )}
                           {meal.dishes?.map((dish) => (
                             <ul key={dish.id} className="mb-5">
                               <p className="mb-3 font-bold text-gray-800">
@@ -81,15 +166,31 @@ export const MealList = () => {
                               )}
                             </ul>
                           ))}
-                          <motion.button
-                            whileTap={{ scale: 0.97 }}
-                            onClick={() =>
-                              handleDeleteMeal(mealType.id, meal.id)
-                            }
-                            className="ml-auto text-red-500 opacity-80 hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 p-2 rounded"
+                          <div
+                            className={`flex opacity-80 hover:opacity-100 lg:opacity-0 ml-auto ${
+                              loadingMealId !== meal.id &&
+                              "lg:group-hover:opacity-100 transition-opacity duration-300"
+                            }`}
                           >
-                            <Icon.Delete className="text-red-500" />
-                          </motion.button>
+                            <motion.button
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() =>
+                                handleRegenerateMeal(mealType.id, meal.id)
+                              }
+                              className="p-2 rounded"
+                            >
+                              <Icon.Reload className="text-primary"  width={25}/>
+                            </motion.button>
+                            <motion.button
+                              whileTap={{ scale: 0.97 }}
+                              onClick={() =>
+                                handleDeleteMeal(mealType.id, meal.id)
+                              }
+                              className=" text-red-500  p-2 rounded"
+                            >
+                              <Icon.Delete className="text-red-500" />
+                            </motion.button>
+                          </div>
                         </motion.div>
                       ))}
                     </motion.div>
@@ -100,6 +201,11 @@ export const MealList = () => {
           </motion.div>
         )}
       </div>
+
+      <DialogStripe
+        isOpen={isDialogStripeOpen}
+        setIsOpen={setIsDialogStripeOpen}
+      />
     </AnimatePresence>
   );
 };

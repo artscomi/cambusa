@@ -13,7 +13,7 @@ const dishSchema = z.object({
   ingredients: z.array(ingredientSchema),
 });
 
-export const mealSchema = z.object({
+const mealSchema = z.object({
   id: z.string().describe("deve essere un id univoco"),
   mealName: z.string(),
   dishes: z
