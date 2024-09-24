@@ -13,7 +13,7 @@ export const resetApiCallCount = async () => {
   try {
     await db.user.update({
       where: { clerkUserId },
-      data: { apiCallCount: 0 },
+      data: { apiCallCount: 0, hasPaidForIncrease: true },
     });
   } catch (error) {
     console.error("Error resetting API call count:", error);

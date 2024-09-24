@@ -6,7 +6,8 @@ import Image from "next/image";
 import { baloo, bebas, montserrat } from "@/styles/fonts";
 import Script from "next/script";
 import { GA_TRACKING_ID } from "@/lib/gtag";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
+import { Header } from "@/components/Header";
 
 export const metadata = {
   title: "Cambusa Ai",
@@ -44,10 +45,10 @@ export default function RootLayout({
           />
         </head>
         <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white">
+          <Header />
           <main className="py-10 px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">
             <ContextLayout>{children}</ContextLayout>
           </main>
-          {/* <Footer /> */}
           <Image
             alt=""
             src="/bg.png"

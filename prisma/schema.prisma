@@ -20,6 +20,7 @@ model User {
   memberships     GroupMembership[] // Relation to the groups the user is a member of
   foodPreferences FoodPreference[] // Food preferences of the user
   apiCallCount    Int               @default(0)
+  hasPaidForIncrease Boolean        @default(false)
   lastApiCall     DateTime?
 }
 

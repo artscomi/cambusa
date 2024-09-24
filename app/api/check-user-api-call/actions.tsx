@@ -10,15 +10,23 @@ export async function getUserApiCallCount(userId: string) {
     select: {
       id: true,
       apiCallCount: true,
+      hasPaidForIncrease: true,
     },
   });
 
   if (!user) {
     console.log("user not found");
-    return;
+    return {
+      apiCallCount: 0,
+      hasPaidForIncrease: false,
+    };
   }
 
   console.log("api call", user.apiCallCount);
+  console.log("hasPaidForIncrease", user.hasPaidForIncrease);
   // Return success response
-  return user.apiCallCount;
+  return {
+    apiCallCount: user.apiCallCount,
+    hasPaidForIncrease: user.hasPaidForIncrease,
+  };
 }

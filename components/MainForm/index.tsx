@@ -8,12 +8,14 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../Button";
 import LottieAnimation from "../LottieAnimation";
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getUserApiCallCount } from "@/app/api/check-user-api-call/actions";
+import { useAiCallContext } from "@/context/useAiCallContext";
+import { getMaxAiCall } from "@/utils/user";
 
 export const MainForm = ({
   groupData,
@@ -31,6 +33,7 @@ export const MainForm = ({
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const { user } = useUser();
   const router = useRouter();
+  const { openSignIn } = useClerk();
 
   type Result = { type: "success"; menu: MenuData } | ResultErrors;
 
@@ -41,43 +44,49 @@ export const MainForm = ({
     | { type: "user-not-found"; error: unknown }
     | { type: "user-limit-error"; error: unknown };
 
-  if (!user) return null;
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     scrollTo(0, 0);
     setError(null);
 
-    const userApiCallCount = await getUserApiCallCount(user.id);
+    if (!user) {
+      openSignIn();
+      return
+    }
+    
+    const { apiCallCount, hasPaidForIncrease } = await getUserApiCallCount(
+      user.id
+    );
+    const maxAiCall = getMaxAiCall(hasPaidForIncrease);
 
-    if (userApiCallCount && userApiCallCount > 0) {
+    if (apiCallCount && apiCallCount >= maxAiCall) {
       onUserReachedApiCallLimit();
       return;
     }
 
     startTransition(async () => {
       try {
-        // const result = await getMealListFromAi({
-        //   formValues: {
-        //     breakfast,
-        //     lunch,
-        //     dinner,
-        //     dietaryPreferences,
-        //     people,
-        //   },
-        //   userId: user.id,
-        // });
-
-        const result = await new Promise<Result>((resolve, reject) => {
-          setTimeout(() => {
-            resolve({
-              type: "success",
-              menu: mockMealList,
-            });
-
-            // reject(new Error("Simulated API error"));
-          }, 2000);
+        const result = await getMealListFromAi({
+          formValues: {
+            breakfast,
+            lunch,
+            dinner,
+            dietaryPreferences,
+            people,
+          },
+          userId: user.id,
         });
+
+        // const result = await new Promise<Result>((resolve, reject) => {
+        //   setTimeout(() => {
+        //     resolve({
+        //       type: "success",
+        //       menu: mockMealList,
+        //     });
+
+        //     // reject(new Error("Simulated API error"));
+        //   }, 2000);
+        // });
 
         handleResult(result);
       } catch (error) {

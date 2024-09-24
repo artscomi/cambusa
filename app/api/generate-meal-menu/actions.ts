@@ -40,19 +40,17 @@ export async function getMealListFromAi({
       };
     }
 
-    // Generate result using AI (only if apiCallCount < 3)
     const result = await generateObject({
       model: openai("gpt-4o-mini"),
       prompt: getPrompt(formValues),
       schema: mealMenuSchema,
     });
 
-    // Update API call count after a successful AI generation
     await db.user.update({
       where: { id: user.id },
       data: {
-        apiCallCount: user.apiCallCount + 1, // Increment API call count
-        lastApiCall: new Date(), // Optionally update the last call time
+        apiCallCount: user.apiCallCount + 1,
+        lastApiCall: new Date(),
       },
     });
 
