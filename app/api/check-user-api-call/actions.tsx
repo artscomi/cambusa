@@ -3,7 +3,7 @@
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 
-export async function getUserApiCallCount(userId: string) {
+export const getUserApiCallCount = async (userId: string) => {
   "use server";
 
   const user = await db.user.findUnique({
@@ -23,11 +23,10 @@ export async function getUserApiCallCount(userId: string) {
     };
   }
 
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 
-  // Return success response
   return {
     apiCallCount: user.apiCallCount,
     hasPaidForIncrease: user.hasPaidForIncrease,
   };
-}
+};

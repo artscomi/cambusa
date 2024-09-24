@@ -12,6 +12,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
+import { resetApiCallCount } from "@/app/api/reset-api-call-count/actions";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
@@ -31,13 +32,11 @@ export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   }, []);
 
   const onComplete = useCallback(async () => {
-    const res = await fetch("/api/reset-api-call-count", {
-      method: "POST",
-    });
-    if (res.ok) {
+    try {
+      await resetApiCallCount();
       console.log("API call count reset successfully");
       setTimeout(() => setIsOpen(false), 4000);
-    } else {
+    } catch (error) {
       console.error("Error resetting API call count:");
     }
   }, []);

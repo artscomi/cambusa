@@ -7,6 +7,7 @@ import { FormState } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
 import { mealMenuSchema } from "./schema";
 import db from "@/utils/db";
+import { revalidatePath } from "next/cache";
 
 export async function getMealListFromAi({
   formValues,
@@ -58,6 +59,8 @@ export async function getMealListFromAi({
     console.log("prompt", getPrompt(formValues));
     console.log("result", result.object);
     console.log("api call", user.apiCallCount);
+
+    revalidatePath('/meal-menu', 'layout')
 
     // Return success response
     return { type: "success", menu: result.object };
