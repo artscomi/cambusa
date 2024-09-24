@@ -13,8 +13,8 @@ import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
-import { getUserApiCallCount } from "@/app/api/check-user-api-call/actions";
 import { getMaxAiCall } from "@/utils/user";
+import { getUserInfo } from "@/app/api/get-user-info/actions";
 
 export const MainForm = ({
   groupData,
@@ -48,17 +48,15 @@ export const MainForm = ({
     scrollTo(0, 0);
     setError(null);
 
-    console.log({user})
-    console.log({isLoaded})
+    console.log({ user });
+    console.log({ isLoaded });
 
     if (!user) {
       openSignIn();
       return;
     }
 
-    const { apiCallCount, hasPaidForIncrease } = await getUserApiCallCount(
-      user.id
-    );
+    const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
     const maxAiCall = getMaxAiCall(hasPaidForIncrease);
 
     if (apiCallCount && apiCallCount >= maxAiCall) {
@@ -68,27 +66,27 @@ export const MainForm = ({
 
     startTransition(async () => {
       try {
-        const result = await getMealListFromAi({
-          formValues: {
-            breakfast,
-            lunch,
-            dinner,
-            dietaryPreferences,
-            people,
-          },
-          userId: user.id,
-        });
-
-        // const result = await new Promise<Result>((resolve, reject) => {
-        //   setTimeout(() => {
-        //     resolve({
-        //       type: "success",
-        //       menu: mockMealList,
-        //     });
-
-        //     // reject(new Error("Simulated API error"));
-        //   }, 2000);
+        // const result = await getMealListFromAi({
+        //   formValues: {
+        //     breakfast,
+        //     lunch,
+        //     dinner,
+        //     dietaryPreferences,
+        //     people,
+        //   },
+        //   userId: user.id,
         // });
+
+        const result = await new Promise<Result>((resolve, reject) => {
+          setTimeout(() => {
+            resolve({
+              type: "success",
+              menu: mockMealList,
+            });
+
+            // reject(new Error("Simulated API error"));
+          }, 2000);
+        });
 
         handleResult(result);
       } catch (error) {

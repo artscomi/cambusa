@@ -74,7 +74,7 @@ export const MealList = () => {
                                   >
                                     {ingredient.item} -{" "}
                                     <span className="font-medium">
-                                      {ingredient.quantity}
+                                      {ingredient.quantity} {ingredient.unit}
                                     </span>
                                   </li>
                                 )
