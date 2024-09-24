@@ -13,10 +13,12 @@ export const Header = async () => {
   const aiCallLeft = maxAiCall - apiCallCount;
 
   return (
-    <header className="text-primary py-4">
-      <div className="container mx-auto px-4">
-        <div className="flex md:flex-row justify-end items-center">
-          <p>hai ancora {aiCallLeft} generazioni</p>
+    <header className="text-primary fixed top-0 right-0 sm:right-20">
+      <div className="container mx-auto">
+        <div className="flex md:flex-row justify-end items-center text-primary px-4 py-1 text-xs sm:text-base">
+          <p>
+            hai ancora <strong>{aiCallLeft}</strong> generazioni
+          </p>
           <div className="flex items-center"></div>
         </div>
       </div>
