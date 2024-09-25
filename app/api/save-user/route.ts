@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Adjust the path as needed
 import { auth } from "@clerk/nextjs/server";
+import db from "@/utils/db";
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     //   );
     // }
 
-    const user = await prisma.user.upsert({
+    const user = await db.user.upsert({
       where: { clerkUserId: userId },
       update: { name, email },
       create: { name, email, clerkUserId: userId },
