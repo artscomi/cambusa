@@ -12,16 +12,16 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(cuid())
-  clerkUserId     String            @unique // Store Clerk user ID
-  name            String
-  email           String            @unique
-  ownedGroups     Group[]           @relation("GroupOwner")
-  memberships     GroupMembership[] // Relation to the groups the user is a member of
-  foodPreferences FoodPreference[] // Food preferences of the user
-  apiCallCount    Int               @default(0)
-  hasPaidForIncrease Boolean        @default(false)
-  lastApiCall     DateTime?
+  id                 String            @id @default(cuid())
+  clerkUserId        String            @unique // Store Clerk user ID
+  name               String
+  email              String            @unique
+  ownedGroups        Group[]           @relation("GroupOwner")
+  memberships        GroupMembership[] // Relation to the groups the user is a member of
+  foodPreferences    FoodPreference[] // Food preferences of the user
+  apiCallCount       Int               @default(0)
+  hasPaidForIncrease Boolean           @default(false)
+  lastApiCall        DateTime?
 }
 
 model Group {
@@ -29,14 +29,14 @@ model Group {
   name            String
   ownerId         String
   owner           User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
-  members         GroupMembership[] // Relation to the members of the group
-  foodPreferences FoodPreference[] // Food preferences linked to the group
+  members         GroupMembership[]
+  foodPreferences FoodPreference[]
 }
 
 model FoodPreference {
   id         String @id @default(cuid())
   userId     String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User   @relation(fields: [userId], references: [clerkUserId])
   groupId    String
   group      Group  @relation(fields: [groupId], references: [id])
   preference String
@@ -46,7 +46,7 @@ model GroupMembership {
   id      String @id @default(uuid())
   userId  String
   groupId String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [clerkUserId])
   group   Group  @relation(fields: [groupId], references: [id])
 
   @@unique([userId, groupId]) // Ensures a user can only join a group once

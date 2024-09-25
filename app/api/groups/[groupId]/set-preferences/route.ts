@@ -8,7 +8,8 @@ export async function POST(
   { params }: { params: { groupId: string } }
 ) {
   try {
-    const { userId } = auth(); // Get the authenticated user ID from Clerk
+    const { userId } = auth(); 
+
 
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

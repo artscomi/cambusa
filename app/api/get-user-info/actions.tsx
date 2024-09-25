@@ -3,7 +3,6 @@
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { auth } from "@clerk/nextjs/server";
-
 export const getUserInfo = async () => {
   "use server";
   const { userId } = auth();
@@ -23,7 +22,7 @@ export const getUserInfo = async () => {
       id: true,
       apiCallCount: true,
       hasPaidForIncrease: true,
-      name: true
+      name: true,
     },
   });
 
@@ -41,6 +40,6 @@ export const getUserInfo = async () => {
   return {
     apiCallCount: user.apiCallCount,
     hasPaidForIncrease: user.hasPaidForIncrease,
-    name: user.name
+    name: user.name,
   };
 };

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import db from "@/utils/db";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   try {
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
       create: { name, email, clerkUserId: userId },
     });
 
+    revalidatePath("/", "layout");
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("Error creating or updating user:", error);
