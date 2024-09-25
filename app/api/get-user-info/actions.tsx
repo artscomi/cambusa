@@ -9,7 +9,7 @@ export const getUserInfo = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    console.error("user not found");
+    console.error("userId not found in getUserInfo");
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -28,7 +28,7 @@ export const getUserInfo = async () => {
   });
 
   if (!user) {
-    console.error("user not found");
+    console.error("user not found in getUserInfo");
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
