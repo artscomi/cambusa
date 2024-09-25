@@ -28,7 +28,7 @@ model Group {
   id              String            @id @default(cuid())
   name            String
   ownerId         String
-  owner           User              @relation("GroupOwner", fields: [ownerId], references: [id])
+  owner           User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
   members         GroupMembership[] // Relation to the members of the group
   foodPreferences FoodPreference[] // Food preferences linked to the group
 }
