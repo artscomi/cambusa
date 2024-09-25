@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error creating or updating user:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: `Internal Server Error ${error}` },
       { status: 500 }
     );
   }
