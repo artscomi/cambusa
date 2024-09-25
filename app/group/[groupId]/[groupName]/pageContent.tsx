@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
-import { useSaveUser } from "@/hooks/useSaveUser";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
 
@@ -18,7 +17,7 @@ export const PageContent: React.FC<{ groupId: string; groupName: string }> = ({
   const [error, setError] = useState("");
   const [fieldError, setFieldError] = useState("");
   const { user } = useUser();
-  useSaveUser();
+
 
   async function addFoodPreference(groupId: string, preference: string) {
     if (!foodPreferences.trim()) {

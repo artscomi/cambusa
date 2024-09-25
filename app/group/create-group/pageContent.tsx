@@ -3,7 +3,6 @@
 import { Button } from "@/components/Button";
 import CopyLink from "@/components/CopyLinkButton";
 import { TextInput } from "@/components/TextInput";
-import { useSaveUser } from "@/hooks/useSaveUser";
 import { useUser } from "@clerk/nextjs";
 import { FormEvent, useState } from "react";
 
@@ -12,7 +11,6 @@ export const CreateGroupContent = () => {
   const [error, setError] = useState("");
   const [groupLink, setGroupLink] = useState("");
   const { user } = useUser();
-  useSaveUser(); // Save the Clerk user into Prisma DB
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   const createGroup = async (
