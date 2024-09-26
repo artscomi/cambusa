@@ -2,7 +2,7 @@
 
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { Meal, MenuData } from "@/types/types";
 import { generateObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
@@ -140,7 +140,7 @@ export const resetApiCallCount = async () => {
   }
 };
 
-export async function getMealListFromAi({
+export const getMealListFromAi = async ({
   formValues,
   userId,
 }: {
@@ -153,7 +153,7 @@ export async function getMealListFromAi({
   | { type: "unknown-error"; error: unknown }
   | { type: "user-limit-error"; error: string }
   | { type: "user-not-found"; error: string }
-> {
+> => {
   "use server";
 
   try {
@@ -204,4 +204,34 @@ export async function getMealListFromAi({
       return { type: "unknown-error", error: e };
     }
   }
-}
+};
+
+export const saveUser = async () => {
+  const user = await currentUser();
+  if (!user) {
+    console.error("user not found in SaveUser");
+    return;
+  }
+  const { firstName, primaryEmailAddress, id } = user;
+
+  try {
+    await db.user.upsert({
+      where: { clerkUserId: id },
+      update: {
+        name: firstName ?? "",
+        email: primaryEmailAddress?.emailAddress ?? "",
+      },
+      create: {
+        name: firstName ?? "",
+        email: primaryEmailAddress?.emailAddress ?? "",
+        clerkUserId: id,
+      },
+    });
+    revalidatePath("/", "layout");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving/updating user in database:", error);
+    return { success: false, message: '"Failed to save user data.' };
+  }
+};
