@@ -9,13 +9,7 @@ export const useSaveUser = () => {
     const fetchSaveUser = async () => {
       if (!user) return;
 
-      const result = await saveUser();
-
-      if (result?.success) {
-        console.log("User saved to database:");
-      } else {
-        console.error("Error saving user:", result?.message);
-      }
+      await saveUser();
     };
 
     fetchSaveUser();

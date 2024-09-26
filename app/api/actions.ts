@@ -228,10 +228,8 @@ export const saveUser = async () => {
       },
     });
     revalidatePath("/", "layout");
-
-    return { success: true };
+    
   } catch (error) {
     console.error("Error saving/updating user in database:", error);
-    return { success: false, message: '"Failed to save user data.' };
   }
 };
