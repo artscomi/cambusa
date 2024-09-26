@@ -9,12 +9,11 @@ import { useRouter } from "next/navigation";
 import { Button } from "../Button";
 import LottieAnimation from "../LottieAnimation";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { getMealListFromAi } from "@/app/api/generate-meal-menu/actions";
 import { Loading } from "../Loading";
 import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getMaxAiCall } from "@/utils/user";
-import { getUserInfo } from "@/app/api/get-user-info/actions";
+import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
 
 export const MainForm = ({
   groupData,

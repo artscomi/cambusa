@@ -12,7 +12,7 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
-import { resetApiCallCount } from "@/app/api/reset-api-call-count/actions";
+import { resetApiCallCount } from "@/app/api/actions";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );

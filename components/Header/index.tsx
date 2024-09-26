@@ -1,8 +1,8 @@
-import { getUserInfo } from "@/app/api/get-user-info/actions";
 import { getMaxAiCall } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
 import { SignOutButton, SignInButton } from "@clerk/nextjs";
 import { Icon } from "../Icons";
+import { getUserInfo } from "@/app/api/actions";
 
 export const Header = async () => {
   const { userId } = auth();

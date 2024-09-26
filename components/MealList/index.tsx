@@ -5,15 +5,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/animations/framer-variants";
 import { EmptyMealList } from "./EmptyMealList";
 import { CreateShoppingListCta } from "./CreateShoppingListCta";
-import { regenerateSingleMeal } from "@/app/api/generate-single-meal/actions";
 import { useUser } from "@clerk/nextjs";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
-import { getUserInfo } from "@/app/api/get-user-info/actions";
 import { getMaxAiCall } from "@/utils/user";
 import { useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import LottieAnimation from "../LottieAnimation";
+import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
 
 export const MealList = () => {
   const { mealList, setMealList } = useMealContext();
@@ -52,10 +51,6 @@ export const MealList = () => {
     }
 
     setLoadingMealId(mealId);
-
-    console.log("regenerate");
-    console.log({ mealTypeId });
-    console.log({ mealId });
 
     const mealToRegenerate = findMealById(mealList, mealId);
     if (!mealToRegenerate) return;
