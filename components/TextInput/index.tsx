@@ -11,6 +11,8 @@ export type TextInputConfig = {
   onBlur?: () => void;
   center?: boolean;
   error?: string;
+  name?: string
+  required?: boolean
 };
 
 export const TextInput = ({
@@ -25,6 +27,8 @@ export const TextInput = ({
   onBlur,
   center,
   error,
+  name, 
+  required
 }: TextInputConfig) => (
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
     <div className={`relative last:mb-0`}>
@@ -46,6 +50,8 @@ export const TextInput = ({
         autoComplete="off"
         onFocus={onFocus}
         onBlur={onBlur}
+        name={name}
+        required={required}
       />
       {!!error && (
         <p className="text-red-500 text-xs mt-1 animate-fadeIn">{error}</p>

@@ -226,8 +226,78 @@ export const saveUser = async () => {
       },
     });
     revalidatePath("/", "layout");
-
   } catch (error) {
     console.error("Error saving/updating user in database:", error);
   }
+};
+
+export const createGroupAction = async (formData: FormData) => {
+  const user = await currentUser();
+  if (!user) {
+    console.error("user not found in CreateGroup");
+    return null;
+  }
+
+  const rawFormdata = {
+    groupName: formData.get("groupName") as string,
+    groupLunch: formData.get("lunch") as string,
+    groupDinner: formData.get("dinner") as string,
+  };
+
+  try {
+    const group = await db.group.create({
+      data: {
+        name: rawFormdata.groupName,
+        ownerId: user.id, // Set the current user as the owner
+        lunch: rawFormdata.groupLunch || "0",
+        dinner: rawFormdata.groupDinner || "0",
+        members: {
+          create: {
+            userId: user.id, // Add the owner to the members list as well
+          },
+        },
+      },
+    });
+    return group.id;
+  } catch (error) {
+    console.error("Error creating new group:", error);
+  }
+};
+
+export const getGroupInfo = async ({ groupId }: { groupId: string }) => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return {
+      groupId: "",
+      groupName: "group.name",
+      isTheGroupOwner: false,
+    };
+  }
+
+  const group = await db.group.findUnique({
+    where: { id: groupId },
+    select: {
+      id: true,
+      name: true,
+      ownerId: true,
+    },
+  });
+
+  if (!group) {
+    console.error("Error getting group info");
+    return;
+  }
+  revalidatePath("/", "layout");
+
+  const isTheGroupOwner = userId === group.ownerId;
+
+  console.log({userId})
+  console.log(group.ownerId)
+
+  return {
+    groupId: group.id,
+    groupName: group.name,
+    isTheGroupOwner,
+  };
 };

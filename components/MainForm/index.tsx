@@ -26,7 +26,7 @@ export const MainForm = ({
   startTransition: (callback: () => void) => void;
   onUserReachedApiCallLimit: VoidFunction;
 }) => {
-  const { inputConfig, formState } = useFormConfig();
+  const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
   const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
   const { user, isLoaded } = useUser();

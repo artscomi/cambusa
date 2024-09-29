@@ -10,7 +10,8 @@ interface TextAreaConfig {
   rows?: number;
   onFocus?: () => void;
   onBlur?: () => void;
-  error?: string
+  error?: string;
+  maxLength?: number;
 }
 export const TextArea = ({
   id,
@@ -22,7 +23,8 @@ export const TextArea = ({
   rows = 4, // Default number of rows
   onFocus,
   onBlur,
-  error
+  error,
+  maxLength,
 }: TextAreaConfig) => (
   <div className="relative last:mb-0">
     <label className="block absolute text-xs left-4 top-1" htmlFor={id}>
@@ -42,6 +44,7 @@ export const TextArea = ({
       autoComplete="off"
       onFocus={onFocus}
       onBlur={onBlur}
+      maxLength={maxLength}
     />
     {!!error && (
       <p className="text-red-500 text-xs mt-1 animate-fadeIn">{error}</p>

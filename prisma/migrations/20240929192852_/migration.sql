@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Group" ALTER COLUMN "dinner" DROP DEFAULT,
+ALTER COLUMN "lunch" DROP DEFAULT;
