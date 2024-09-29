@@ -121,7 +121,7 @@ export const MealList = () => {
                     </h2>
                     <motion.div
                       key={mealType.id}
-                      className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mb-8 "
+                      className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] mb-8 "
                       initial="hidden"
                       animate="visible"
                       variants={containerVariants}

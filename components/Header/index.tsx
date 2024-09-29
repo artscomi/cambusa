@@ -12,10 +12,10 @@ export const Header = async () => {
   const aiCallLeft = maxAiCall - apiCallCount;
 
   return (
-    <header className="bg-white fixed w-full z-10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center w-full">
-        <nav className="flex items-center gap-4 text-primary w-full ">
-          <ul className="flex items-center gap-5 text-sm md:text-base w-full justify-between sm:justify-end">
+    <header className="bg-white fixed w-full z-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center w-full">
+        <nav className="text-primary w-full">
+          <ul className="grid grid-cols-[1fr,auto,1fr] sm:flex items-center gap-5 text-sm md:text-base w-full justify-between sm:justify-end">
             {userId ? (
               <>
                 <li>
@@ -24,13 +24,13 @@ export const Header = async () => {
                   </i>
                   {name}
                 </li>
-                <li>
+                <li className="text-center">
                   <strong>{aiCallLeft}</strong>
                   <i className="inline-block align-middle ml-2">
                     <Icon.Reload width={25} />
                   </i>
                 </li>
-                <li>
+                <li className="text-right">
                   <SignOutButton>Sign Out</SignOutButton>
                 </li>
               </>

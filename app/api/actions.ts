@@ -11,11 +11,9 @@ import { mealMenuSchema, mealSchema } from "./schemas/meal-menu";
 import { FormState } from "@/hooks/useFormConfig";
 
 export const getUserInfo = async () => {
-  "use server";
   const { userId } = auth();
 
   if (!userId) {
-    console.error("userId not found in getUserInfo");
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -228,7 +226,7 @@ export const saveUser = async () => {
       },
     });
     revalidatePath("/", "layout");
-    
+
   } catch (error) {
     console.error("Error saving/updating user in database:", error);
   }
