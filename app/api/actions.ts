@@ -292,12 +292,54 @@ export const getGroupInfo = async ({ groupId }: { groupId: string }) => {
 
   const isTheGroupOwner = userId === group.ownerId;
 
-  console.log({userId})
-  console.log(group.ownerId)
+  console.log({ userId });
+  console.log(group.ownerId);
 
   return {
     groupId: group.id,
     groupName: group.name,
     isTheGroupOwner,
   };
+};
+
+export const addFoodPreferenceAction = async (
+  preference: string,
+  groupId: string
+) => {
+  try {
+    const { userId } = auth(); 
+
+    if (!userId) {
+      return { error: "Unauthorized", status: 401 };
+    }
+
+    // Upsert membership
+    await db.groupMembership.upsert({
+      where: {
+        userId_groupId: {
+          userId,
+          groupId,
+        },
+      },
+      update: {}, // No update action needed if they are already a member
+      create: { userId, groupId }, // Create new membership if not
+    });
+
+    // Create the food preference record
+    const foodPreference = await db.foodPreference.create({
+      data: {
+        userId,
+        groupId,
+        preference,
+      },
+    });
+
+    // Revalidate the path to refresh the group's food preferences
+    revalidatePath(`/groups/${groupId}/menu`);
+
+    return { foodPreference, status: 201 };
+  } catch (error) {
+    console.error("Error adding food preference:", error);
+    return { error: "Internal Server Error", status: 500 };
+  }
 };

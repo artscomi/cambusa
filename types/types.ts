@@ -15,3 +15,9 @@ export interface Ingredient {
   quantity: number;
   unit: string;
 }
+
+export type GroupInfo = {
+  groupId: string;
+  groupName: string;
+  isTheGroupOwner: boolean;
+};

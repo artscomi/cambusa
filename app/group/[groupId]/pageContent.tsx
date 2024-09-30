@@ -7,9 +7,9 @@ import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
 import { getGroupInfo } from "@/app/api/actions";
-import { GroupInfo } from "@/types/types";
 import CopyLink from "@/components/CopyLinkButton";
 import Link from "next/link";
+import { GroupInfo } from "@/types/types";
 
 export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
   const [foodPreferences, setFoodPreferences] = useState("");
