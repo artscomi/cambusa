@@ -15,6 +15,16 @@ import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getMaxAiCall } from "@/utils/user";
 import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
 
+export type Result = { type: "success"; menu: MenuData } | ResultErrors;
+
+  export type ResultErrors =
+    | { type: "parse-error"; text: string }
+    | { type: "validation-error"; value: unknown }
+    | { type: "unknown-error"; error: unknown }
+    | { type: "user-not-found"; error: unknown }
+    | { type: "user-limit-error"; error: unknown };
+
+
 export const MainForm = ({
   groupData,
   startTransition,
@@ -33,15 +43,7 @@ export const MainForm = ({
   const router = useRouter();
   const { openSignIn } = useClerk();
 
-  type Result = { type: "success"; menu: MenuData } | ResultErrors;
-
-  type ResultErrors =
-    | { type: "parse-error"; text: string }
-    | { type: "validation-error"; value: unknown }
-    | { type: "unknown-error"; error: unknown }
-    | { type: "user-not-found"; error: unknown }
-    | { type: "user-limit-error"; error: unknown };
-
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     scrollTo(0, 0);

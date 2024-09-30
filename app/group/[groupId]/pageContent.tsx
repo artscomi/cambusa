@@ -22,6 +22,7 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
   const [group, setGroup] = useState<GroupInfo | undefined>();
   const [fieldError, setFieldError] = useState("");
   const { user } = useUser();
+  const isTheGroupOwner = group?.isTheGroupOwner;
 
   useEffect(() => {
     const fetch = async () => {
@@ -91,7 +92,7 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
         >
           <h1 className="text-3xl font-bold mb-4">
             Congratulazioni! <br />
-            {group?.isTheGroupOwner
+            {isTheGroupOwner
               ? "Hai creato il gruppo"
               : "Hai ricevuto un invito al gruppo"}{" "}
             <span className="text-tertiary capitalize">{group?.groupName}</span>
@@ -133,7 +134,7 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
           />
         )}
       </div>
-      {group?.isTheGroupOwner && groupLink && (
+      {isTheGroupOwner && groupLink && (
         <>
           <p className="text-center mb-8">
             Ecco fatto! Ora puoi condividere il link con il resto della ciurma:
