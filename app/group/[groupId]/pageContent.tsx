@@ -11,7 +11,14 @@ import CopyLink from "@/components/CopyLinkButton";
 import Link from "next/link";
 import { GroupInfo } from "@/types/types";
 
-export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
+export const PageContent: React.FC<{
+  groupId: string;
+  group: {
+    groupId: string;
+    groupName: string;
+    isTheGroupOwner: boolean;
+  };
+}> = ({ groupId, group }) => {
   const [foodPreferences, setFoodPreferences] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showToastSucess, setShowToastSuccess] = useState(false);
@@ -19,18 +26,9 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
   const [error, setError] = useState("");
   const [groupLink, setGroupLink] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const [group, setGroup] = useState<GroupInfo | undefined>();
   const [fieldError, setFieldError] = useState("");
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
-
-  useEffect(() => {
-    const fetch = async () => {
-      const group = await getGroupInfo({ groupId });
-      setGroup(group);
-    };
-    fetch();
-  }, [groupId]);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -90,17 +88,6 @@ export const PageContent: React.FC<{ groupId: string }> = ({ groupId }) => {
           onSubmit={(e) => handleSubmit(e, groupId, foodPreferences)}
           className="flex flex-col"
         >
-          <h1 className="text-3xl font-bold mb-4">
-            Congratulazioni! <br />
-            {isTheGroupOwner
-              ? "Hai creato il gruppo"
-              : "Hai ricevuto un invito al gruppo"}{" "}
-            <span className="text-tertiary capitalize">{group?.groupName}</span>
-          </h1>
-          <p className="text-lg text-gray-700 mb-4">
-            Aggiungi le tue preferenze alimentari per creare una cambusa per il
-            viaggio.
-          </p>
           <TextArea
             rows={2}
             maxLength={200}
