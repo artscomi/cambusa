@@ -9,7 +9,7 @@ const GroupPage: NextPage<{
 }> = async ({ params }) => {
   const { groupId } = params;
   const user = await currentUser();
-  const group = await getGroupInfo({ groupId });
+  const group = await getGroupInfo(groupId);
   const isTheGroupOwner = group?.isTheGroupOwner;
   if (!user || !group) return null;
 

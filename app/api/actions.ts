@@ -239,6 +239,7 @@ export const createGroupAction = async (formData: FormData) => {
   }
 
   const rawFormdata = {
+    groupPeople: formData.get("people") as string,
     groupName: formData.get("groupName") as string,
     groupLunch: formData.get("lunch") as string,
     groupDinner: formData.get("dinner") as string,
@@ -251,6 +252,7 @@ export const createGroupAction = async (formData: FormData) => {
         ownerId: user.id, // Set the current user as the owner
         lunch: rawFormdata.groupLunch || "0",
         dinner: rawFormdata.groupDinner || "0",
+        people: rawFormdata.groupPeople || "0",
         members: {
           create: {
             userId: user.id, // Add the owner to the members list as well
@@ -264,7 +266,7 @@ export const createGroupAction = async (formData: FormData) => {
   }
 };
 
-export const getGroupInfo = async ({ groupId }: { groupId: string }) => {
+export const getGroupInfo = async (groupId: string) => {
   const { userId } = auth();
 
   if (!userId) {
@@ -281,6 +283,9 @@ export const getGroupInfo = async ({ groupId }: { groupId: string }) => {
       id: true,
       name: true,
       ownerId: true,
+      lunch: true,
+      dinner: true,
+      people: true,
     },
   });
 
@@ -299,6 +304,9 @@ export const getGroupInfo = async ({ groupId }: { groupId: string }) => {
     groupId: group.id,
     groupName: group.name,
     isTheGroupOwner,
+    lunch: group.lunch,
+    dinner: group.dinner,
+    people: group.people,
   };
 };
 
@@ -307,7 +315,7 @@ export const addFoodPreferenceAction = async (
   groupId: string
 ) => {
   try {
-    const { userId } = auth(); 
+    const { userId } = auth();
 
     if (!userId) {
       return { error: "Unauthorized", status: 401 };

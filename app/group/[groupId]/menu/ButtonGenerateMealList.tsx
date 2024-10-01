@@ -1,25 +1,30 @@
 "use client";
 
-import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
+import {
+  getMealListFromAi,
+  getUserInfo,
+} from "@/app/api/actions";
 import { Button } from "@/components/Button";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { useRouter } from "next/navigation";
-import React, { MouseEventHandler, startTransition } from "react";
+import React, { startTransition } from "react";
 import { useMealContext } from "@/context/useMealContext";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { getMaxAiCall } from "@/utils/user";
 import { Result, ResultErrors } from "@/components/MainForm";
+import { useStripeModal } from "@/context/useStripeModalContext";
 
 export const ButtonGenerateMealList: React.FC<{
   userId: string;
   dietaryPreferences: string;
-}> = ({ userId, dietaryPreferences }) => {
+  groupMeals: { lunch: string; dinner: string };
+}> = ({ userId, dietaryPreferences, groupMeals }) => {
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
-
+  const { openDialogStripe } = useStripeModal();
 
   const handleError = (result: Result) => {
     if (result.type === "success") return;
@@ -62,7 +67,7 @@ export const ButtonGenerateMealList: React.FC<{
     const maxAiCall = getMaxAiCall(hasPaidForIncrease);
 
     if (apiCallCount && apiCallCount >= maxAiCall) {
-    //   onUserReachedApiCallLimit();
+      openDialogStripe();
       return;
     }
 
@@ -71,8 +76,8 @@ export const ButtonGenerateMealList: React.FC<{
         const result = await getMealListFromAi({
           formValues: {
             breakfast: "2",
-            lunch: "2",
-            dinner: "3",
+            lunch: groupMeals.lunch,
+            dinner: groupMeals.dinner,
             dietaryPreferences,
             people: "4",
           },

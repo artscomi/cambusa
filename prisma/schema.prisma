@@ -33,6 +33,7 @@ model Group {
   foodPreferences FoodPreference[]
   lunch           String
   dinner          String
+  people          String
 }
 
 model FoodPreference {

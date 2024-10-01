@@ -8,7 +8,6 @@ const GroupMenu = ({ params }: { params: { groupId: string } }) => {
   const { groupId } = params;
   return (
     <>
-      {/* <MainForm groupData={groupData} /> */}
       <PageContent groupId={groupId} />
     </>
   );

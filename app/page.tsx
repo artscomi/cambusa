@@ -11,11 +11,6 @@ import { DialogStripe } from "@/components/ui/dialogs/Stripe";
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
-
-  const openDialogStripe = () => {
-    setIsDialogStripeOpen(true);
-  };
 
   return isPending ? (
     <Loading />
@@ -40,11 +35,7 @@ export default function Home() {
         <div className="w-full items-end">
           <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center ">
             <div className="flex-1 w-full">
-              <MainForm
-                startTransition={startTransition}
-                setError={setError}
-                onUserReachedApiCallLimit={openDialogStripe}
-              />
+              <MainForm startTransition={startTransition} setError={setError} />
             </div>
             <div className="flex-1 w-full max-sm:hidden">
               <CreateGroupBox />
@@ -56,11 +47,6 @@ export default function Home() {
       <div className="sm:hidden">
         <CreateGroupBox />
       </div>
-
-      <DialogStripe
-        isOpen={isDialogStripeOpen}
-        setIsOpen={setIsDialogStripeOpen}
-      />
 
       <Image
         alt=""
@@ -94,6 +80,8 @@ export default function Home() {
         priority
         className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
+
+     
     </>
   );
 }

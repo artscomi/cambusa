@@ -2,6 +2,7 @@
 
 import { MealContextProvider } from "@/context/useMealContext";
 import { ShoppingProvider } from "@/context/useShoppingListContext";
+import { StripeModalProvider } from "@/context/useStripeModalContext";
 import { useSaveUser } from "@/hooks/useSaveUser";
 import { pageview } from "@/lib/gtag";
 import { usePathname } from "next/navigation";
@@ -22,8 +23,10 @@ export default function ContextLayout({
   }, [pathname]);
 
   return (
-    <MealContextProvider>
-      <ShoppingProvider>{children}</ShoppingProvider>
-    </MealContextProvider>
+    <StripeModalProvider>
+      <MealContextProvider>
+        <ShoppingProvider>{children}</ShoppingProvider>
+      </MealContextProvider>
+    </StripeModalProvider>
   );
 }

@@ -14,27 +14,25 @@ import { mockMealList } from "@/utils/mockMealList";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getMaxAiCall } from "@/utils/user";
 import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
+import { useStripeModal } from "@/context/useStripeModalContext";
 
 export type Result = { type: "success"; menu: MenuData } | ResultErrors;
 
-  export type ResultErrors =
-    | { type: "parse-error"; text: string }
-    | { type: "validation-error"; value: unknown }
-    | { type: "unknown-error"; error: unknown }
-    | { type: "user-not-found"; error: unknown }
-    | { type: "user-limit-error"; error: unknown };
-
+export type ResultErrors =
+  | { type: "parse-error"; text: string }
+  | { type: "validation-error"; value: unknown }
+  | { type: "unknown-error"; error: unknown }
+  | { type: "user-not-found"; error: unknown }
+  | { type: "user-limit-error"; error: unknown };
 
 export const MainForm = ({
   groupData,
   startTransition,
   setError,
-  onUserReachedApiCallLimit,
 }: {
   setError: Dispatch<SetStateAction<null | string>>;
   groupData?: GroupData;
   startTransition: (callback: () => void) => void;
-  onUserReachedApiCallLimit: VoidFunction;
 }) => {
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
@@ -42,8 +40,8 @@ export const MainForm = ({
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
+  const { openDialogStripe } = useStripeModal();
 
-  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     scrollTo(0, 0);
@@ -61,7 +59,7 @@ export const MainForm = ({
     const maxAiCall = getMaxAiCall(hasPaidForIncrease);
 
     if (apiCallCount && apiCallCount >= maxAiCall) {
-      onUserReachedApiCallLimit();
+      openDialogStripe();
       return;
     }
 
