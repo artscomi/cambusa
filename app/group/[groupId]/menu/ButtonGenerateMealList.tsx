@@ -17,7 +17,7 @@ import { useStripeModal } from "@/context/useStripeModalContext";
 export const ButtonGenerateMealList: React.FC<{
   userId: string;
   dietaryPreferences: string;
-  groupMeals: { lunch: string; dinner: string };
+  groupMeals: { lunch: string; dinner: string, people: string };
 }> = ({ userId, dietaryPreferences, groupMeals }) => {
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
@@ -79,7 +79,7 @@ export const ButtonGenerateMealList: React.FC<{
             lunch: groupMeals.lunch,
             dinner: groupMeals.dinner,
             dietaryPreferences,
-            people: "4",
+            people: groupMeals.people,
           },
           userId,
         });

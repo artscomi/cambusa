@@ -27,7 +27,7 @@ export const PageContent = async ({ groupId }: { groupId: string }) => {
     console.error(`Group not found for groupId: ${groupId} on Group page.`);
     return;
   }
-  const { lunch = "0", dinner = "0" } = group;
+  const { lunch = "0", dinner = "0", people = "0" } = group;
 
   const getPreferences = async () => {
     const data = await db.foodPreference.findMany({
@@ -84,9 +84,7 @@ export const PageContent = async ({ groupId }: { groupId: string }) => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="mb-8">
-        Gruppo {group.groupName}
-      </h1>
+      <h1 className="mb-8">Gruppo {group.groupName}</h1>
 
       <div className="bg-accent p-6 rounded-lg text-white mb-8 shadow-lg inline-block">
         <h2 className="text-xl font-semibold mb-2">Info gruppo</h2>
@@ -140,7 +138,7 @@ export const PageContent = async ({ groupId }: { groupId: string }) => {
           <ButtonGenerateMealList
             userId={user.id}
             dietaryPreferences={preferenceString()}
-            groupMeals={{ lunch, dinner }}
+            groupMeals={{ lunch, dinner, people }}
           />
         </div>
       )}
