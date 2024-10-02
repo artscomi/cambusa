@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/Icons";
 import { SignOutButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export const DropdownMenuComponent = ({ name }: { name: string }) => {
   return (
@@ -36,10 +37,12 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
         <DropdownMenuSeparator />
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Users className="mr-2 h-4 w-4" />
-            <span>I miei Gruppi</span>
-          </DropdownMenuItem>
+          <Link href="/my-groups">
+            <DropdownMenuItem>
+              <Users className="mr-2 h-4 w-4" />
+              <span>I miei Gruppi</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

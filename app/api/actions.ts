@@ -49,6 +49,30 @@ export const getUserInfo = async () => {
   };
 };
 
+export const getUserGroups = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return {
+     
+    };
+  }
+  const groupMembership = await db.groupMembership.findMany({
+    where: {
+      userId: userId, // Filter by the user's ID
+    },
+    include: {
+      group: true
+    },
+  });
+
+  revalidatePath("/", "layout");
+
+  return {
+    group: groupMembership,
+  };
+};
+
 export const regenerateSingleMeal = async ({
   dietaryPreferences,
   userId,

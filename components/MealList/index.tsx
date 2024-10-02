@@ -104,6 +104,8 @@ export const MealList = () => {
     setMealList({ ...mealList, menu: cleanedMealList });
   };
 
+  console.log({mealList})
+
   return (
     <AnimatePresence mode="sync">
       <div className="px-5 pb-10 max-w-screen-xl mx-auto">

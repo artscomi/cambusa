@@ -49,8 +49,8 @@ model GroupMembership {
   id      String @id @default(uuid())
   userId  String
   groupId String
-  user    User   @relation(fields: [userId], references: [clerkUserId])
-  group   Group  @relation(fields: [groupId], references: [id])
+  user    User   @relation(fields: [userId], references: [clerkUserId], onDelete: Cascade)
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([userId, groupId]) // Ensures a user can only join a group once
 }
