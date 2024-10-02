@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { SignOutButton, SignInButton } from "@clerk/nextjs";
 import { Icon } from "../Icons";
 import { getUserInfo } from "@/app/api/actions";
+import { DropdownMenuComponent } from "./Dropdown.tsx";
 
 export const Header = async () => {
   const { userId } = auth();
@@ -18,20 +19,14 @@ export const Header = async () => {
           <ul className="grid grid-cols-[1fr,auto,1fr] sm:flex items-center gap-5 text-sm md:text-base w-full justify-between sm:justify-end">
             {userId ? (
               <>
-                <li>
-                  <i className="inline-block align-middle mr-2">
-                    <Icon.User width={25} />
-                  </i>
-                  {name}
-                </li>
                 <li className="text-center">
                   <strong>{aiCallLeft}</strong>
                   <i className="inline-block align-middle ml-2">
                     <Icon.Reload width={25} />
                   </i>
                 </li>
-                <li className="text-right">
-                  <SignOutButton>Sign Out</SignOutButton>
+                <li>
+                  <DropdownMenuComponent name={name} />
                 </li>
               </>
             ) : (
