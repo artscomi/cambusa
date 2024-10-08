@@ -1,20 +1,16 @@
 "use client";
 
-import { TextInput } from "../TextInput";
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { useMealContext } from "@/context/useMealContext";
-import { GroupData, MenuData } from "@/types/types";
 import { Dispatch, SetStateAction } from "react";
+import { Button } from "@/components/Button";
+import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
-import { Button } from "../Button";
-import LottieAnimation from "../LottieAnimation";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { Loading } from "../Loading";
-import { mockMealList } from "@/utils/mockMealList";
-import { DialogStripe } from "../ui/dialogs/Stripe";
-import { getMaxAiCall } from "@/utils/user";
-import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
+import { handleMealListGeneration } from "@/utils/mealUtils";
 import { useStripeModal } from "@/context/useStripeModalContext";
+import { GroupData, MenuData } from "@/types/types";
+import LottieAnimation from "../LottieAnimation";
+import { TextInput } from "../TextInput";
 
 export type Result = { type: "success"; menu: MenuData } | ResultErrors;
 
@@ -36,90 +32,30 @@ export const MainForm = ({
 }) => {
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
-  const { breakfast, lunch, dinner, dietaryPreferences, people } = formState;
-  const { user, isLoaded } = useUser();
+  const { dietaryPreferences, people } = formState;
+  const { user } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
   const { openDialogStripe } = useStripeModal();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    scrollTo(0, 0);
-    setError(null);
-
-    console.log({ user });
-    console.log({ isLoaded });
 
     if (!user) {
       openSignIn();
       return;
     }
 
-    const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
-    const maxAiCall = getMaxAiCall(hasPaidForIncrease);
-
-    if (apiCallCount && apiCallCount >= maxAiCall) {
-      openDialogStripe();
-      return;
-    }
-
-    startTransition(async () => {
-      try {
-        const result = await getMealListFromAi({
-          formValues: {
-            breakfast,
-            lunch,
-            dinner,
-            dietaryPreferences,
-            people,
-          },
-          userId: user.id,
-        });
-
-        // const result = await new Promise<Result>((resolve, reject) => {
-        //   setTimeout(() => {
-        //     resolve({
-        //       type: "success",
-        //       menu: mockMealList,
-        //     });
-
-        //     // reject(new Error("Simulated API error"));
-        //   }, 2000);
-        // });
-
-        handleResult(result);
-      } catch (error) {
-        setError(
-          "Ops.. qualcosa è andato storto durante la generazione del menu"
-        );
-        console.error(error);
-      }
-    });
-  };
-
-  const handleResult = (result: Result) => {
-    if (result.type === "success") {
-      setMealList(result.menu);
-      router.push("/meal-menu");
-    } else {
-      handleError(result);
-    }
-  };
-
-  const handleError = (result: Result) => {
-    if (result.type === "success") return;
-
-    const errorMessages: Record<ResultErrors["type"], string> = {
-      "user-not-found": "User not found",
-      "validation-error": "Recipe format is invalid.",
-      "user-limit-error": "",
-      "parse-error": "Failed to parse recipe data.",
-      "unknown-error": "Ops..qualcosa è andato storto",
-    };
-
-    const message = errorMessages[result.type] || "An unknown error occurred.";
-    setError(message);
-    console.error(message);
+    await handleMealListGeneration(
+      user.id,
+      dietaryPreferences,
+      { lunch: formState.lunch, dinner: formState.dinner, people },
+      setError,
+      startTransition,
+      setMealList,
+      router,
+      openDialogStripe
+    );
   };
 
   return (
