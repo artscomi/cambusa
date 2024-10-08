@@ -1,9 +1,9 @@
 import { getMaxAiCall } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
-import { SignOutButton, SignInButton } from "@clerk/nextjs";
-import { Icon } from "../Icons";
+import { SignInButton } from "@clerk/nextjs";
 import { getUserInfo } from "@/app/api/actions";
 import { DropdownMenuComponent } from "./Dropdown.tsx";
+import { RefreshCcw } from "lucide-react";
 
 export const Header = async () => {
   const { userId } = auth();
@@ -22,7 +22,7 @@ export const Header = async () => {
                 <li className="text-center">
                   <strong>{aiCallLeft}</strong>
                   <i className="inline-block align-middle ml-2">
-                    <Icon.Reload width={25} />
+                    <RefreshCcw width={25} />
                   </i>
                 </li>
                 <li>

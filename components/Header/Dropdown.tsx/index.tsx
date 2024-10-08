@@ -1,7 +1,4 @@
-import {
-  LogOut,
-  Users,
-} from "lucide-react";
+import { LogOut, User, Users } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -12,7 +9,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Icon } from "@/components/Icons";
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
 
@@ -22,7 +18,7 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
       <DropdownMenuTrigger asChild>
         <p className="font-bold cursor-pointer">
           <i className="inline-block align-middle mr-2">
-            <Icon.User width={25} />
+            <User />
           </i>
           {name}
         </p>

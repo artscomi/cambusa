@@ -1,5 +1,4 @@
 "use client";
-import { Icon } from "@/components/Icons";
 import { useMealContext } from "@/context/useMealContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/animations/framer-variants";
@@ -13,6 +12,7 @@ import { useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import LottieAnimation from "../LottieAnimation";
 import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
+import { RefreshCcw, Trash2 } from "lucide-react";
 
 export const MealList = () => {
   const { mealList, setMealList } = useMealContext();
@@ -104,7 +104,7 @@ export const MealList = () => {
     setMealList({ ...mealList, menu: cleanedMealList });
   };
 
-  console.log({mealList})
+  console.log({ mealList });
 
   return (
     <AnimatePresence mode="sync">
@@ -176,7 +176,7 @@ export const MealList = () => {
                               }
                               className="p-2 rounded"
                             >
-                              <Icon.Reload className="text-primary"  width={25}/>
+                              <RefreshCcw className="text-primary" width={25} />
                             </motion.button>
                             <motion.button
                               whileTap={{ scale: 0.97 }}
@@ -185,7 +185,7 @@ export const MealList = () => {
                               }
                               className=" text-red-500  p-2 rounded"
                             >
-                              <Icon.Delete className="text-red-500" />
+                              <Trash2 className="text-red-500" />
                             </motion.button>
                           </div>
                         </motion.div>

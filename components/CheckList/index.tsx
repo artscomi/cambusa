@@ -5,8 +5,8 @@ import {
 import { Ingredient } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
-import { Icon } from "../Icons";
 import Toast from "../Toast";
+import { Clipboard } from "lucide-react";
 
 const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   const [showToast, setShowToast] = useState(false);
@@ -51,7 +51,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           onClick={handleCopyToClipboard}
           className="p-4 rounded bg-gray-50 hover:bg-gray-100 shadow-lg max-sm:fixed bottom-5 right-5 z-10"
         >
-          <Icon.Copy
+          <Clipboard
             role="img"
             aria-label="copy to clipboard"
             height={25}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Icon } from "../Icons";
 import Toast from "../Toast";
+import { Clipboard } from "lucide-react";
 
 const CopyLink: React.FC<{ url: string }> = ({ url }) => {
   const [showToast, setShowToast] = useState(false);
@@ -24,7 +24,7 @@ const CopyLink: React.FC<{ url: string }> = ({ url }) => {
         className="text-gray-600 hover:text-gray-900 transition-colors bg-gray-100 p-3"
         aria-label="Copia link negli appunti"
       >
-        <Icon.Copy height={22} width={22} />
+        <Clipboard height={22} width={22} />
       </button>
       <Toast
         message={"Link copiato negli appunti!"}
