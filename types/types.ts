@@ -20,4 +20,14 @@ export type GroupInfo = {
   groupId: string;
   groupName: string;
   isTheGroupOwner: boolean;
+  lunch: string;
+  dinner: string;
+  people: string;
+};
+
+export type Preference = {
+  id: string;
+  userId: string;
+  groupId: string;
+  preference: string;
 };

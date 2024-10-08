@@ -3,7 +3,7 @@
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { Meal, MenuData } from "@/types/types";
+import { GroupInfo, Meal, MenuData } from "@/types/types";
 import { generateObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
@@ -53,16 +53,14 @@ export const getUserGroups = async () => {
   const { userId } = auth();
 
   if (!userId) {
-    return {
-     
-    };
+    return {};
   }
   const groupMembership = await db.groupMembership.findMany({
     where: {
       userId: userId, // Filter by the user's ID
     },
     include: {
-      group: true
+      group: true,
     },
   });
 
@@ -194,18 +192,18 @@ export const getMealListFromAi = async ({
       };
     }
 
-    const result = await generateObject({
-      model: openai("gpt-4o-mini"),
-      prompt: getMainPrompt(formValues),
-      schema: mealMenuSchema,
-    });
-
     await db.user.update({
       where: { id: user.id },
       data: {
         apiCallCount: user.apiCallCount + 1,
         lastApiCall: new Date(),
       },
+    });
+
+    const result = await generateObject({
+      model: openai("gpt-4o-mini"),
+      prompt: getMainPrompt(formValues),
+      schema: mealMenuSchema,
     });
 
     // Log prompts and result
@@ -219,6 +217,7 @@ export const getMealListFromAi = async ({
     return { type: "success", menu: result.object };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
+      console.log(JSON.stringify(e.value, null, 2));
       return { type: "validation-error", value: e.value };
     } else if (JSONParseError.isInstance(e)) {
       return { type: "parse-error", text: e.text };
@@ -290,15 +289,13 @@ export const createGroupAction = async (formData: FormData) => {
   }
 };
 
-export const getGroupInfo = async (groupId: string) => {
+export const getGroupInfo = async (
+  groupId: string
+): Promise<GroupInfo | null> => {
   const { userId } = auth();
 
   if (!userId) {
-    return {
-      groupId: "",
-      groupName: "group.name",
-      isTheGroupOwner: false,
-    };
+    return null;
   }
 
   const group = await db.group.findUnique({
@@ -315,7 +312,7 @@ export const getGroupInfo = async (groupId: string) => {
 
   if (!group) {
     console.error("Error getting group info");
-    return;
+    return null;
   }
   revalidatePath("/", "layout");
 

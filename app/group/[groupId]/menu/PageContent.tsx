@@ -1,7 +1,10 @@
-import db from "@/utils/db";
-import { currentUser } from "@clerk/nextjs/server";
+"use client";
 import { ButtonGenerateMealList } from "./ButtonGenerateMealList";
-import { getGroupInfo } from "@/app/api/actions";
+import { useState, useTransition } from "react";
+import { Loading } from "@/components/Loading";
+import { useUser } from "@clerk/nextjs";
+import { GroupInfo } from "@/types/types";
+import { ToastError } from "@/components/ToastError";
 
 interface UserPreference {
   name: string;
@@ -18,35 +21,18 @@ interface GroupedPreference {
   preference: string;
 }
 
-export const PageContent = async ({ groupId }: { groupId: string }) => {
-  const user = await currentUser();
+export const PageContent = ({
+  group,
+  preferences,
+}: {
+  group: GroupInfo;
+  preferences: GroupedPreference[];
+}) => {
+  const [isPending, startTransition] = useTransition();
+  const { user } = useUser();
+  const [error, setError] = useState<string | null>(null);
   if (!user) return;
-
-  const group = await getGroupInfo(groupId);
-  if (!group) {
-    console.error(`Group not found for groupId: ${groupId} on Group page.`);
-    return;
-  }
   const { lunch = "0", dinner = "0", people = "0" } = group;
-
-  const getPreferences = async () => {
-    const data = await db.foodPreference.findMany({
-      where: {
-        groupId: groupId,
-      },
-      include: {
-        user: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
-
-    return data;
-  };
-
-  const preferences = await getPreferences();
 
   const groupedData = preferences.reduce(
     (acc: Record<string, UserPreference>, item: GroupedPreference) => {
@@ -82,7 +68,9 @@ export const PageContent = async ({ groupId }: { groupId: string }) => {
       .join(" ");
   };
 
-  return (
+  return isPending ? (
+    <Loading />
+  ) : (
     <div className="container mx-auto p-4">
       <h1 className="mb-8">Gruppo {group.groupName}</h1>
 
@@ -136,12 +124,16 @@ export const PageContent = async ({ groupId }: { groupId: string }) => {
       {group.isTheGroupOwner && (
         <div className="text-center">
           <ButtonGenerateMealList
+            setError={setError}
+            startTransition={startTransition}
             userId={user.id}
             dietaryPreferences={preferenceString()}
             groupMeals={{ lunch, dinner, people }}
           />
         </div>
       )}
+
+      <ToastError error={error} setError={setError} />
     </div>
   );
 };

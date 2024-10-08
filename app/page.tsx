@@ -6,7 +6,6 @@ import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
 import Image from "next/image";
-import { DialogStripe } from "@/components/ui/dialogs/Stripe";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -80,8 +79,6 @@ export default function Home() {
         priority
         className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
-
-     
     </>
   );
 }

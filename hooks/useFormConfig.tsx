@@ -37,8 +37,9 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
         }
       } else {
         if (
-          value !== "" &&
-          (isNaN(numericValue) || numericValue < 1 || numericValue > maxValue)
+          isNaN(numericValue) ||
+          numericValue < 0 ||
+          numericValue > maxValue
         ) {
           return;
         }
@@ -62,7 +63,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
             type: "text" as "text",
             inputType: "text" as "text",
             onChange: handleChange("groupName"),
-            required: true
+            required: true,
           },
         ]
       : []),
@@ -75,6 +76,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("breakfast"),
+      required: true,
     },
     {
       name: "lunch",
@@ -85,6 +87,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("lunch"),
+      required: true,
     },
     {
       name: "dinner",
@@ -95,6 +98,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("dinner"),
+      required: true,
     },
     {
       name: "people",
@@ -105,6 +109,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("people"),
+      required: true,
     },
     ...(isSimpleFlow
       ? [

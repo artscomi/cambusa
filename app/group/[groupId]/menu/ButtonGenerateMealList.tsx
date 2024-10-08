@@ -1,13 +1,10 @@
 "use client";
 
-import {
-  getMealListFromAi,
-  getUserInfo,
-} from "@/app/api/actions";
+import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
 import { Button } from "@/components/Button";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { useRouter } from "next/navigation";
-import React, { startTransition } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { useMealContext } from "@/context/useMealContext";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { getMaxAiCall } from "@/utils/user";
@@ -15,11 +12,18 @@ import { Result, ResultErrors } from "@/components/MainForm";
 import { useStripeModal } from "@/context/useStripeModalContext";
 
 export const ButtonGenerateMealList: React.FC<{
+  startTransition: (callback: () => void) => void;
+  setError: Dispatch<SetStateAction<string | null>>;
   userId: string;
   dietaryPreferences: string;
-  groupMeals: { lunch: string; dinner: string, people: string };
-}> = ({ userId, dietaryPreferences, groupMeals }) => {
-  const { inputConfig, formState } = useFormConfig(true);
+  groupMeals: { lunch: string; dinner: string; people: string };
+}> = ({
+  userId,
+  dietaryPreferences,
+  groupMeals,
+  startTransition,
+  setError,
+}) => {
   const { setMealList } = useMealContext();
   const { user, isLoaded } = useUser();
   const router = useRouter();
@@ -38,7 +42,7 @@ export const ButtonGenerateMealList: React.FC<{
     };
 
     const message = errorMessages[result.type] || "An unknown error occurred.";
-    // setError(message);
+    setError(message);
     console.error(message);
   };
 
@@ -53,7 +57,7 @@ export const ButtonGenerateMealList: React.FC<{
 
   const handleCtaClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     scrollTo(0, 0);
-    // setError(null);
+    setError(null);
 
     console.log({ user });
     console.log({ isLoaded });
@@ -97,9 +101,9 @@ export const ButtonGenerateMealList: React.FC<{
 
         handleResult(result);
       } catch (error) {
-        // setError(
-        //   "Ops.. qualcosa è andato storto durante la generazione del menu"
-        // );
+        setError(
+          "Ops.. qualcosa è andato storto durante la generazione del menu"
+        );
         console.error(error);
       }
     });
