@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getUserGroups } from "../api/actions";
+import { CookingPot, Sandwich, Users } from "lucide-react";
 
 const Gruppi = async () => {
   const userGroups = await getUserGroups();
@@ -21,9 +22,9 @@ const Gruppi = async () => {
             >
               <p className="font-bold text-primary">{groupItem.name}</p>
               <ul>
-                <li>Persone:{groupItem.people}</li>
-                <li>Pranzi:{groupItem.lunch}</li>
-                <li>Cene:{groupItem.dinner}</li>
+                <li><Users /> Persone:{groupItem.people}</li>
+                <li><Sandwich /> Pranzi:{groupItem.lunch}</li>
+                <li><CookingPot/> Cene:{groupItem.dinner}</li>
               </ul>
             </Link>
           );

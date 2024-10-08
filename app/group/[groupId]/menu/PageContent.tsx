@@ -5,6 +5,7 @@ import { Loading } from "@/components/Loading";
 import { useUser } from "@clerk/nextjs";
 import { GroupInfo } from "@/types/types";
 import { ToastError } from "@/components/ToastError";
+import { CookingPot, Heart, Sandwich, Users } from "lucide-react";
 
 interface UserPreference {
   name: string;
@@ -74,18 +75,20 @@ export const PageContent = ({
     <div className="container mx-auto p-4">
       <h1 className="mb-8">Gruppo {group.groupName}</h1>
 
-      <div className="bg-accent p-6 rounded-lg text-white mb-8 shadow-lg inline-block">
-        <h2 className="text-xl font-semibold mb-2">Info gruppo</h2>
-        <ul className="list-disc pl-5">
+      <div className="bg-accent p-6 rounded-lg text-white mb-8 shadow-lg inline-block w-60">
+        <h2 className="text-l font-semibold mb-4">Info gruppo</h2>
+        <ul className="flex flex-col gap-1 pl-2">
           <li>
-            Numero di persone:{" "}
-            <span className="font-medium">{group.people}</span>
+            <Users className="inline-block mr-2 align-sub" />
+            <span className="font-medium">{group.people} Persone</span>
           </li>
           <li>
-            Numero di cene: <span className="font-medium">{group.dinner}</span>
+            <Sandwich className="inline-block mr-2 align-sub" />
+            <span className="font-medium">{group.lunch} Pranzi</span>
           </li>
           <li>
-            Numero di pranzi: <span className="font-medium">{group.lunch}</span>
+            <CookingPot className="inline-block mr-2 align-sub" />
+            <span className="font-medium">{group.dinner} Cene</span>
           </li>
         </ul>
       </div>
@@ -98,10 +101,10 @@ export const PageContent = ({
           <h3 className="font-bold text-lg mb-2 text-accent">
             Le tue preferenze
           </h3>
-          <ul className="list-disc pl-5">
+          <ul className="pl-2">
             {userPreferences.preferences.map((preference, index) => (
               <li key={index} className="text-gray-700">
-                {preference}
+                <Heart className="inline-block mr-2 align-sub text-accent" strokeWidth={3}/> {preference}
               </li>
             ))}
           </ul>
