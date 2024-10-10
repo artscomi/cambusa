@@ -1,13 +1,10 @@
 import { useLottie } from "lottie-react";
-import emptyMealList from "./empty-meal-list.json";
-import groovyWalkAnimation from "./groovy-walk.json";
-import waveBig from "./waveBig.json";
 import { useEffect, useState } from "react";
 
 const animation = {
-  groovyWalk: groovyWalkAnimation,
-  emptyMealList: emptyMealList,
-  waveBig,
+  groovyWalk: () => import("./groovy-walk.json"),
+  emptyMealList: () => import("./empty-meal-list.json"),
+  waveBig: () => import("./waveBig.json"),
 };
 
 type AnimationType = keyof typeof animation;
@@ -24,26 +21,20 @@ const LottieAnimation = ({
   autoplay?: boolean;
 }) => {
   const [height, setHeight] = useState(300);
+  const [animationData, setAnimationData] = useState<unknown>(null);
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 600) {
-        setHeight(200);
-      } else if (window.innerWidth < 1024) {
-        setHeight(100);
-      } else {
-        setHeight(220);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const calculateHeight = () => {
+    if (window.innerWidth < 600) {
+      return 200;
+    } else if (window.innerWidth < 1024) {
+      return 100;
+    } else {
+      return 220;
+    }
+  };
 
   const options = {
-    animationData: animation[name],
+    animationData,
     loop: true,
     autoplay,
   };
@@ -51,8 +42,22 @@ const LottieAnimation = ({
   const { View, setSpeed } = useLottie(options, isResponsive ? { height } : {});
 
   useEffect(() => {
-    speed && setSpeed(speed);
-  }, []);
+    const handleResize = () => setHeight(calculateHeight);
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    if (speed) setSpeed(speed);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [speed]);
+
+  // Load the animation data based on the name
+  useEffect(() => {
+    const loadAnimation = async () => {
+      const data = await animation[name]();
+      setAnimationData(data);
+    };
+
+    loadAnimation();
+  }, [name]);
 
   return View;
 };
