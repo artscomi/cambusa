@@ -13,6 +13,7 @@ import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
+
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
@@ -31,8 +32,6 @@ export const MealList = () => {
   if (!mealList || Object.keys(mealList).length === 0) {
     return;
   }
-
-  console.log({ mealList });
 
   const findMealById = (mealList: MenuData, mealId: string) => {
     for (const mealType of mealList.menu) {
@@ -89,7 +88,6 @@ export const MealList = () => {
   };
 
   const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
-    console.log("delete");
     const updatedMealList = mealList.menu.map((mealType) => {
       if (mealType.id === mealTypeId) {
         return {
@@ -107,12 +105,10 @@ export const MealList = () => {
     setMealList({ ...mealList, menu: cleanedMealList });
   };
 
-  console.log({ mealList });
-
   return (
     <AnimatePresence mode="sync">
       <div className="px-5 pb-10 max-w-screen-xl mx-auto">
-        <h1 className="text-center mb-2">Et voilà! Ecco le proposte di menu</h1>
+        <h1>Et voilà! Ecco le proposte di menu</h1>
         {mealList.menu.length === 0 ? (
           <EmptyMealList />
         ) : (
@@ -121,12 +117,12 @@ export const MealList = () => {
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>
-                    <h2 className="py-3 text-2xl text-center rounded-lg font-cta">
+                    <h2 className="py-3 text-2xl font-semibold">
                       {mealType.mealTypeName}
                     </h2>
                     <motion.div
                       key={mealType.id}
-                      className="grid gap-6 grid-cols-[repeat(auto-fit,250px)] mb-8 "
+                      className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] mb-8"
                       initial="hidden"
                       animate="visible"
                       variants={containerVariants}
@@ -136,10 +132,10 @@ export const MealList = () => {
                           layout
                           key={meal.id}
                           variants={itemVariants}
-                          className="bg-white p-6 rounded-lg h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between group cursor-pointer relative  overflow-hidden"
+                          className="bg-white p-6 rounded-lg h-full shadow-md flex flex-col justify-between relative overflow-hidden"
                         >
                           {loadingMealId === meal.id && (
-                            <div className="absolute left-0 right-0 top-0">
+                            <div className="absolute left-0 right-0 top-0 z-10 bg-white bg-opacity-80">
                               <LottieAnimation
                                 name="waveBig"
                                 isResponsive={false}
@@ -148,7 +144,7 @@ export const MealList = () => {
                           )}
                           {meal.dishes?.map((dish) => (
                             <ul key={dish.id} className="mb-5">
-                              <p className="mb-3 font-bold text-gray-800">
+                              <p className="mb-3 font-bold  text-lg">
                                 {dish.dishName}
                               </p>
                               {dish.ingredients?.map(
@@ -166,18 +162,13 @@ export const MealList = () => {
                               )}
                             </ul>
                           ))}
-                          <div
-                            className={`flex opacity-80 hover:opacity-100 lg:opacity-0 ml-auto ${
-                              loadingMealId !== meal.id &&
-                              "lg:group-hover:opacity-100 transition-opacity duration-300"
-                            }`}
-                          >
+                          <div className="flex justify-end opacity-80 hover:opacity-100">
                             <motion.button
                               whileTap={{ scale: 0.97 }}
                               onClick={() =>
                                 handleRegenerateMeal(mealType.id, meal.id)
                               }
-                              className="p-2 rounded"
+                              className="p-2 rounded-md text-gray-600 hover:bg-gray-50 transition-colors duration-300"
                             >
                               <RefreshCcw className="text-primary" width={25} />
                             </motion.button>
@@ -186,7 +177,7 @@ export const MealList = () => {
                               onClick={() =>
                                 handleDeleteMeal(mealType.id, meal.id)
                               }
-                              className=" text-red-500  p-2 rounded"
+                              className="p-2 rounded-md text-red-500 hover:bg-red-50 transition-colors duration-300 ml-2"
                             >
                               <Trash2 className="text-red-500" />
                             </motion.button>
