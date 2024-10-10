@@ -10,9 +10,12 @@ import { MenuData } from "@/types/types";
 import { getMaxAiCall } from "@/utils/user";
 import { useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
-import LottieAnimation from "../LottieAnimation";
 import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
+import dynamic from "next/dynamic";
+const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
+  ssr: false,
+});
 
 export const MealList = () => {
   const { mealList, setMealList } = useMealContext();

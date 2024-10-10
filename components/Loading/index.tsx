@@ -1,11 +1,18 @@
 import { motion } from "framer-motion";
-import LottieAnimation from "../LottieAnimation";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
 
 export const Loading = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const LottieAnimation = dynamic(
+    () => import("@/components/LottieAnimation"),
+    {
+      ssr: false,
+    }
+  );
 
   return (
     <motion.div className="flex flex-col items-center justify-center  m-auto px-8">

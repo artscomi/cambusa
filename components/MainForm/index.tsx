@@ -9,8 +9,8 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { handleMealListGeneration } from "@/utils/mealUtils";
 import { useStripeModal } from "@/context/useStripeModalContext";
 import { GroupData, MenuData } from "@/types/types";
-import LottieAnimation from "../LottieAnimation";
 import { TextInput } from "../TextInput";
+import dynamic from "next/dynamic";
 
 export type Result = { type: "success"; menu: MenuData } | ResultErrors;
 
@@ -37,6 +37,12 @@ export const MainForm = ({
   const router = useRouter();
   const { openSignIn } = useClerk();
   const { openDialogStripe } = useStripeModal();
+  const LottieAnimation = dynamic(
+    () => import("@/components/LottieAnimation"),
+    {
+      ssr: false,
+    }
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

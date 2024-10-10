@@ -1,7 +1,3 @@
-//stagger children animation
-
-import { filter } from "framer-motion/client";
-
 export const containerVariants = {
   hidden: { opacity: 0 },
   visible: {

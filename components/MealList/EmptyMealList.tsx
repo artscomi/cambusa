@@ -1,7 +1,14 @@
 import { motion } from "framer-motion";
-import LottieAnimation from "../LottieAnimation";
+import dynamic from "next/dynamic";
 
 export const EmptyMealList = () => {
+  const LottieAnimation = dynamic(
+    () => import("@/components/LottieAnimation"),
+    {
+      ssr: false,
+    }
+  );
+
   return (
     <motion.div
       animate={{ opacity: 1, y: 10 }}
