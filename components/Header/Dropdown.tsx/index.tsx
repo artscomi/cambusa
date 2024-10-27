@@ -36,10 +36,12 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
           </Link>
         </DropdownMenuGroup>
 
-        <DropdownMenuItem>
-          <LogOut className="mr-2 h-4 w-4" />
-          <SignOutButton>Log out</SignOutButton>
-        </DropdownMenuItem>
+        <SignOutButton>
+          <DropdownMenuItem>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </SignOutButton>
       </DropdownMenuContent>
     </DropdownMenu>
   );
