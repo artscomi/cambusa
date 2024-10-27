@@ -5,6 +5,7 @@ import Link from "next/link";
 export const CreateGroupBox = () => {
   return (
     <form className="p-8 mb-5">
+      <h2 className="text-center  text-l  text-primary mb-3 font-semibold max-sm:pt-10">Oppure</h2>
       <span role="img" className="text-center block mb-2 text-2xl">
         👫👬👭
       </span>

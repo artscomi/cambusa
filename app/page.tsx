@@ -16,20 +16,33 @@ export default function Home() {
   ) : (
     <>
       <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
-        <div className="max-md:pt-10 max-md:px-4 md:mb-16">
+        <div className="max-md:pt-10 max-md:px-4 md:mb-16 max-w-[800px]">
           <h1 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary relative">
             Cambusa<span className="text-secondary">Ai</span>
           </h1>
 
           <p
             className={
-              "text-base lg:text-xl text-left text-pretty font-subtitle text-gray-600"
+              "text-base lg:text-xl text-left text-pretty font-subtitle text-gray-700 mb-2"
             }
           >
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
             salpare? ⛵
           </p>
+          <p className="text-s text-pretty font-subtitle text-gray-500 max-sm:hidden">
+            Con Cambusa Ai puoi creare un menu personalizzato, modificare i
+            piatti e generare una lista cambusa completa per una settimana in
+            barca.
+          </p>
         </div>
+
+        {/* <Image
+          src="/arrow.svg"
+          alt=""
+          className="absolute t-10 left-[80px] max-sm:hidden"
+          width={100}
+          height={100}
+        /> */}
 
         <div className="w-full items-end">
           <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center ">

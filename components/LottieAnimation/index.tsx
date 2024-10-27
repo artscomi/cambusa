@@ -41,13 +41,15 @@ const LottieAnimation = ({
 
   const { View, setSpeed } = useLottie(options, isResponsive ? { height } : {});
 
+  console.log({ speed });
+
   useEffect(() => {
     const handleResize = () => setHeight(calculateHeight);
     window.addEventListener("resize", handleResize);
     handleResize();
     if (speed) setSpeed(speed);
     return () => window.removeEventListener("resize", handleResize);
-  }, [speed]);
+  }, [speed, setSpeed]);
 
   // Load the animation data based on the name
   useEffect(() => {

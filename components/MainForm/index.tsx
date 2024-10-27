@@ -66,8 +66,15 @@ export const MainForm = ({
 
   return (
     <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden sm:bg-white">
-      {groupData && (
+      {groupData ? (
         <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo ${groupData.id}`}</h1>
+      ) : (
+        <h2 className="mb-10 text-xl text-primary font-semibold max-sm:hidden">
+          Siete un piccolo gruppo?
+          <span className="block text-base text-gray-500 font-normal">
+            Compila il form e genera subito il menu
+          </span>
+        </h2>
       )}
 
       <form className="flex-1 z-10 relative" onSubmit={handleSubmit}>
