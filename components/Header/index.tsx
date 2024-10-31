@@ -16,7 +16,7 @@ export const Header = async () => {
     <header className="bg-white fixed w-full z-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center w-full">
         <nav className="text-primary w-full">
-          <ul className="grid grid-cols-[1fr,auto,1fr] sm:flex items-center gap-5 text-sm md:text-base w-full justify-between sm:justify-end">
+          <ul className="flex justify-end items-center gap-5 text-sm md:text-base w-full sm:justify-end">
             {userId ? (
               <>
                 <li className="text-center">
