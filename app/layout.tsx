@@ -42,7 +42,7 @@ export default function RootLayout({
             `,
             }}
           />
-          <meta name="google-site-verification" content="Vw7uO9r-vQkhz6LAv93PUcnMVMM4Z-brdLW8SHLDs0c" />
+          <meta name="google-site-verification" content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU" />
         </head>
         <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white">
           <Header />
