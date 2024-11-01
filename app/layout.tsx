@@ -42,6 +42,7 @@ export default function RootLayout({
             `,
             }}
           />
+           <link rel="canonical" href="https://www.cambusa-online.com/" />
           <meta name="google-site-verification" content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU" />
         </head>
         <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white">
