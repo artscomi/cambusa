@@ -78,7 +78,7 @@ export const MainForm = ({
       )}
 
       <form className="flex-1 z-10 relative" onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-4 mb-10">
+        <div className="grid gap-4 mb-4">
           {inputConfig.map((config) => (
             <TextInput key={config.id} {...config} />
           ))}

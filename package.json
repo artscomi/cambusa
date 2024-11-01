@@ -31,7 +31,7 @@
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.445.0",
     "nanoid": "^5.0.7",
-    "next": "^14.2.12",
+    "next": "^14.2.13",
     "react": "^18",
     "react-dom": "^18",
     "sharp": "^0.33.5",

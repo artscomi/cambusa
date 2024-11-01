@@ -17,7 +17,7 @@ export default function Home() {
     <>
       <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16 max-w-[800px]">
-          <h1 className="text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary relative">
+          <h1 className="text-5xl font-display font-bold text-transparent bg-clip-text safari-gradient-text bg-gradient-to-r from-primary to-secondary relative">
             Cambusa<span className="text-secondary">Ai</span>
           </h1>
 
