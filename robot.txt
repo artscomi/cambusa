@@ -1,0 +1,10 @@
+# robots.txt file
+
+# Allow all web crawlers full access
+User-agent: *
+Disallow:
+
+# Disallow crawlers from accessing specific directories
+Disallow: /sign-in*
+
+
