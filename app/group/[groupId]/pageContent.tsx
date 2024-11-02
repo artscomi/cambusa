@@ -6,10 +6,8 @@ import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
-import { getGroupInfo } from "@/app/api/actions";
 import CopyLink from "@/components/CopyLinkButton";
 import Link from "next/link";
-import { GroupInfo } from "@/types/types";
 
 export const PageContent: React.FC<{
   groupId: string;
@@ -21,8 +19,8 @@ export const PageContent: React.FC<{
 }> = ({ groupId, group }) => {
   const [foodPreferences, setFoodPreferences] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showToastSucess, setShowToastSuccess] = useState(false);
-  const [showCta, setShowCta] = useState(false);
+  const [showToastSuccess, setShowToastSuccess] = useState(false);
+  const [arePreferencesSaved, setArePreferencesSaved] = useState(false);
   const [error, setError] = useState("");
   const [groupLink, setGroupLink] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -59,7 +57,7 @@ export const PageContent: React.FC<{
       }
 
       setShowToastSuccess(true);
-      setShowCta(true);
+      setArePreferencesSaved(true);
       group?.isTheGroupOwner && setGroupLink(`${baseUrl}/group/${groupId}/`);
     } catch (error) {
       console.error("Errore:", error);
@@ -70,44 +68,46 @@ export const PageContent: React.FC<{
   };
 
   useEffect(() => {
-    if (showToastSucess) {
+    if (showToastSuccess) {
       confetti({
         particleCount: 500,
         spread: 500,
         origin: { y: 0.2 },
       });
     }
-  }, [showToastSucess]);
+  }, [showToastSuccess]);
 
   if (!user) return null;
 
   return (
     <>
-      <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white mb-10">
-        <form
-          onSubmit={(e) => handleSubmit(e, groupId, foodPreferences)}
-          className="flex flex-col"
-        >
-          <TextArea
-            rows={2}
-            maxLength={200}
-            value={foodPreferences}
-            onChange={(e) => setFoodPreferences(e.target.value)}
-            placeholder="Esempio: mangio 150g di yogurt greco a colazione, non mangio la pasta"
-            id={"food-preferences"}
-            label={"Inserisci le tue preferenze alimentari"}
-            error={fieldError}
-          />
-          <Button disabled={isLoading} className="ml-auto mt-5">
-            {isLoading ? "Salvataggio..." : "Salva preferenze"}
-          </Button>
-        </form>
+      <div className="relative max-sm:-mx-4 md:overflow-hidden mb-10">
+        {!arePreferencesSaved && (
+          <form
+            onSubmit={(e) => handleSubmit(e, groupId, foodPreferences)}
+            className="flex flex-col"
+          >
+            <TextArea
+              rows={2}
+              maxLength={200}
+              value={foodPreferences}
+              onChange={(e) => setFoodPreferences(e.target.value)}
+              placeholder="Esempio: mangio 150g di yogurt greco a colazione, non mangio la pasta"
+              id="food-preferences"
+              label={"Inserisci le tue preferenze alimentari"}
+              error={fieldError}
+            />
+            <Button disabled={isLoading} className="ml-auto mt-5">
+              {isLoading ? "Salvataggio..." : "Salva preferenze"}
+            </Button>
+          </form>
+        )}
 
-        {showToastSucess && (
+        {showToastSuccess && (
           <Toast
             message={"Preferenze salvate con successo!"}
             type="success"
-            showToast={showToastSucess}
+            showToast={showToastSuccess}
             onClose={() => setShowToastSuccess(false)}
           />
         )}
@@ -121,23 +121,23 @@ export const PageContent: React.FC<{
           />
         )}
       </div>
-      {isTheGroupOwner && groupLink && (
-        <>
-          <p className="text-center mb-8">
+      {isTheGroupOwner && groupLink && arePreferencesSaved && (
+        <div className="mb-10">
+          <p className="mb-8">
             Ecco fatto! Ora puoi condividere il link con il resto della ciurma:
           </p>
           <CopyLink url={groupLink} />
-        </>
+        </div>
       )}
 
-      {showCta && (
+      {arePreferencesSaved && (
         <>
-          <p>
-            Ora puoi accedere alla tua area privata e monitorare le preferenze
-            aggiunte dai tuoi compagni di viaggio
+          <p className="mb-8">
+            Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di
+            viaggio
           </p>
           <Link href={`${groupId}/menu`}>
-            <Button>Vai</Button>
+            <Button>Vai alla pagina del gruppo</Button>
           </Link>
         </>
       )}
