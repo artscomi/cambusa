@@ -46,6 +46,7 @@ export const MainForm = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    sessionStorage.setItem("formState", JSON.stringify(formState));
 
     if (!user) {
       openSignIn();

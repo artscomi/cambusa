@@ -21,8 +21,11 @@ const initialState: FormState = {
   groupName: "",
 };
 
+const storedState: FormState =
+  JSON.parse(sessionStorage.getItem("formState") || "") ?? initialState;
+
 export const useFormConfig = (isSimpleFlow?: boolean) => {
-  const [formState, setFormState] = useState<FormState>(initialState);
+  const [formState, setFormState] = useState<FormState>(storedState);
   const currentYear = new Date().getFullYear();
 
   const handleChange =
