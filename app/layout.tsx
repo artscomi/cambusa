@@ -9,8 +9,10 @@ import { Analytics } from "@vercel/analytics/react";
 import { Header } from "@/components/Header";
 
 export const metadata = {
-  title: "Cambusa Ai - Crea la cambusa perfetta per la tua vacanza in barca a vela",
-  description: "Cerchi idee per organizzare la cambusa della tua vacanza in barca a vela? Con Cambusa AI puoi creare un menu personalizzato, modificare i piatti e generare una lista cambusa completa per una settimana in barca, il tutto facilmente online. Pianifica la cambusa perfetta e scopri come fare cambusa online per un viaggio senza pensieri!",
+  title:
+    "Cambusa Ai - Crea la cambusa perfetta per la tua vacanza in barca a vela",
+  description:
+    "Cerchi idee per organizzare la cambusa della tua vacanza in barca a vela? Con Cambusa AI puoi creare un menu personalizzato, modificare i piatti e generare una lista cambusa completa per una settimana in barca, il tutto facilmente online. Pianifica la cambusa perfetta e scopri come fare cambusa online per un viaggio senza pensieri!",
 };
 
 export default function RootLayout({
@@ -42,8 +44,15 @@ export default function RootLayout({
             `,
             }}
           />
-           <link rel="canonical" href="https://www.cambusa-online.com/" />
-          <meta name="google-site-verification" content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU" />
+          <link
+            rel="canonical"
+            href="https://www.cambusa-online.com"
+            key="canonical"
+          />
+          <meta
+            name="google-site-verification"
+            content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU"
+          />
         </head>
         <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white">
           <Header />
