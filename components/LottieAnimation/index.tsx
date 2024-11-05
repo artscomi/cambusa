@@ -20,7 +20,6 @@ const LottieAnimation = ({
   isResponsive?: boolean;
   autoplay?: boolean;
 }) => {
-  const [height, setHeight] = useState(300);
   const [animationData, setAnimationData] = useState<unknown>(null);
 
   const calculateHeight = () => {
@@ -39,17 +38,12 @@ const LottieAnimation = ({
     autoplay,
   };
 
-  const { View, setSpeed } = useLottie(options, isResponsive ? { height } : {});
+  const { View, setSpeed } = useLottie(
+    options,
+    isResponsive ? { height: calculateHeight() } : {}
+  );
 
-  console.log({ speed });
-
-  useEffect(() => {
-    const handleResize = () => setHeight(calculateHeight);
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    if (speed) setSpeed(speed);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [speed, setSpeed]);
+  if (speed) setSpeed(speed);
 
   // Load the animation data based on the name
   useEffect(() => {

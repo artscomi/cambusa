@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { Button } from "@/components/Button";
 import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
@@ -37,11 +37,12 @@ export const MainForm = ({
   const router = useRouter();
   const { openSignIn } = useClerk();
   const { openDialogStripe } = useStripeModal();
-  const LottieAnimation = dynamic(
-    () => import("@/components/LottieAnimation"),
-    {
-      ssr: false,
-    }
+  const LottieAnimation = useMemo(
+    () =>
+      dynamic(() => import("@/components/LottieAnimation"), {
+        ssr: false,
+      }),
+    []
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
