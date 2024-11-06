@@ -1,4 +1,4 @@
-import { LogOut, User, Users } from "lucide-react";
+import { LogOut, User, Users, UsersIcon } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -6,13 +6,16 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { getUserGroups } from "@/app/api/actions";
 
-export const DropdownMenuComponent = ({ name }: { name: string }) => {
+export const DropdownMenuComponent = async ({ name }: { name: string }) => {
+  const userGroup = await getUserGroups();
+  if (!userGroup.group) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,15 +28,22 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white" align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link href="/my-groups">
-            <DropdownMenuItem>
-              <Users className="mr-2 h-4 w-4" />
-              <span>I miei Gruppi</span>
-            </DropdownMenuItem>
-          </Link>
+          {userGroup.group.length > 0 ? (
+            <Link href="/my-groups">
+              <DropdownMenuItem>
+                <Users className="mr-2 h-4 w-4" />
+                <span>I miei Gruppi</span>
+              </DropdownMenuItem>
+            </Link>
+          ) : (
+            <Link href="/group/create-group">
+              <DropdownMenuItem>
+                <UsersIcon className="mr-2 h-4 w-4" />
+                <span>Crea gruppo</span>
+              </DropdownMenuItem>
+            </Link>
+          )}
         </DropdownMenuGroup>
 
         <SignOutButton>

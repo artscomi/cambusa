@@ -4,12 +4,12 @@ import { CookingPot, Sandwich, Users } from "lucide-react";
 
 const Gruppi = async () => {
   const userGroups = await getUserGroups();
-  if (!userGroups) return null;
+  if (!userGroups.group) return null;
 
   return (
     <>
       <h1>I miei gruppi</h1>
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-5">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5">
         {userGroups.group?.filter(group => group.group.name).map((group) => {
           const { group: groupItem } = group;
           return (

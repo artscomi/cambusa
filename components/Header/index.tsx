@@ -2,8 +2,9 @@ import { getMaxAiCall } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import { getUserInfo } from "@/app/api/actions";
-import { DropdownMenuComponent } from "./Dropdown.tsx";
 import { RefreshCcw } from "lucide-react";
+import { DropdownMenuComponent } from "./Dropdown";
+import { Logo } from "./Logo";
 
 export const Header = async () => {
   const { userId } = auth();
@@ -15,6 +16,7 @@ export const Header = async () => {
   return (
     <header className="bg-white fixed w-full z-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center w-full">
+        <Logo />
         <nav className="text-primary w-full">
           <ul className="flex justify-end items-center gap-5 text-sm md:text-base w-full sm:justify-end">
             {userId ? (
