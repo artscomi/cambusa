@@ -21,11 +21,15 @@ const initialState: FormState = {
   groupName: "",
 };
 
+const getStoredState = (): FormState => {
+  if (typeof window !== "undefined") {
+    const stored = sessionStorage.getItem("formState");
+    return stored ? JSON.parse(stored) : initialState;
+  }
+  return initialState;
+};
 
-console.log('passa')
-const storedState: FormState = sessionStorage?.getItem("formState")
-  ? JSON.parse(sessionStorage.getItem("formState") || "")
-  : initialState;
+const storedState: FormState = getStoredState()
 
 export const useFormConfig = (isSimpleFlow?: boolean) => {
   const [formState, setFormState] = useState<FormState>(storedState);
