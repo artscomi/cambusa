@@ -27,6 +27,7 @@ export default function RootLayout({
         className={`${montserrat.variable} ${baloo.variable} ${bebas.variable} overflow-x-hidden`}
       >
         <head>
+          <meta name="theme-color" content="#0895c5" />
           <Script
             id="google-analytics"
             strategy="afterInteractive"
