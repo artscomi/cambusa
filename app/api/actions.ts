@@ -57,7 +57,7 @@ export const getUserGroups = async () => {
   }
   const groupMembership = await db.groupMembership.findMany({
     where: {
-      userId: userId, // Filter by the user's ID
+      userId: userId,
     },
     include: {
       group: true,

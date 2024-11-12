@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /sign-in*
+Disallow: /group/create-group
+
+# Host
+Host: https://www.cambusa-online.com
+
+# Sitemaps
+Sitemap: https://www.cambusa-online.com/sitemap.xml

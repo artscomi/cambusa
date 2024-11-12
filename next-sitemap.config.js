@@ -1,5 +1,15 @@
 module.exports = {
-  siteUrl: "https://www.cambusa-online.com", // Replace with your domain
-  generateRobotsTxt: true, // Automatically generate a robots.txt file
-  sitemapSize: 7000, // Adjust the size if you have many URLs
+  siteUrl: "https://www.cambusa-online.com",
+  generateRobotsTxt: true,
+  sitemapSize: 7000,
+  exclude: ["/sign-in*", "/group/create-group"],
+  robotsTxtOptions: {
+    policies: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/sign-in*", "/group/create-group"],
+      },
+    ],
+  },
 };

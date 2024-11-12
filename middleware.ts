@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/sitemap.xml",
+  "/sitemap-0.xml",
   "/robots.txt",
 ]);
 
