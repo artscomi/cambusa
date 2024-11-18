@@ -57,7 +57,12 @@ export const MainForm = ({
     await handleMealListGeneration(
       user.id,
       dietaryPreferences,
-      { lunch: formState.lunch, dinner: formState.dinner, people },
+      {
+        breakfast: formState.breakfast,
+        lunch: formState.lunch,
+        dinner: formState.dinner,
+        people,
+      },
       setError,
       startTransition,
       setMealList,

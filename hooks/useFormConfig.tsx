@@ -24,12 +24,17 @@ const initialState: FormState = {
 const getStoredState = (): FormState => {
   if (typeof window !== "undefined") {
     const stored = sessionStorage.getItem("formState");
-    return stored ? JSON.parse(stored) : initialState;
+    const parsedState = stored ? JSON.parse(stored) : initialState;
+
+    return {
+      ...parsedState,
+      breakfast: parsedState.breakfast || "0",
+    };
   }
   return initialState;
 };
 
-const storedState: FormState = getStoredState()
+const storedState: FormState = getStoredState();
 
 export const useFormConfig = (isSimpleFlow?: boolean) => {
   const [formState, setFormState] = useState<FormState>(storedState);
@@ -86,7 +91,6 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("breakfast"),
-      required: true,
     },
     {
       name: "lunch",

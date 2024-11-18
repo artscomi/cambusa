@@ -1,3 +1,15 @@
+import { MenuData } from "@/types/types";
+
+export const fakeOpenAiCall = (): Promise<{ object: MenuData }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        object: mockMealList,
+      });
+    }, 100); // Simulate network delay
+  });
+};
+
 export const mockMealList = {
   menu: [
     {

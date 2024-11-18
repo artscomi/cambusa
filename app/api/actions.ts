@@ -9,6 +9,7 @@ import { openai } from "@ai-sdk/openai";
 import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
 import { mealMenuSchema, mealSchema } from "./schemas/meal-menu";
 import { FormState } from "@/hooks/useFormConfig";
+import { fakeOpenAiCall } from "@/utils/mockMealList";
 
 export const getUserInfo = async () => {
   const { userId } = auth();
@@ -200,11 +201,14 @@ export const getMealListFromAi = async ({
       },
     });
 
-    const result = await generateObject({
-      model: openai("gpt-4o-mini"),
-      prompt: getMainPrompt(formValues),
-      schema: mealMenuSchema,
-    });
+    const result =
+      process.env.NODE_ENV === "development"
+        ? await fakeOpenAiCall()
+        : await generateObject({
+            model: openai("gpt-4o-mini"),
+            prompt: getMainPrompt(formValues),
+            schema: mealMenuSchema,
+          });
 
     // Log prompts and result
     console.log("prompt", getMainPrompt(formValues));

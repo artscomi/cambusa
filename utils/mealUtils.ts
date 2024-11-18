@@ -6,7 +6,12 @@ import { Result, ResultErrors } from "@/components/MainForm";
 export const handleMealListGeneration = async (
   userId: string,
   dietaryPreferences: string,
-  groupMeals: { lunch: string; dinner: string; people: string },
+  groupMeals: {
+    breakfast: string;
+    lunch: string;
+    dinner: string;
+    people: string;
+  },
   setError: Dispatch<SetStateAction<string | null>>,
   startTransition: (callback: () => void) => void,
   setMealList: (mealList: any) => void,
@@ -28,7 +33,7 @@ export const handleMealListGeneration = async (
     try {
       const result = await getMealListFromAi({
         formValues: {
-          breakfast: "2", // This can be adjusted or made dynamic if needed
+          breakfast: groupMeals.breakfast,
           lunch: groupMeals.lunch,
           dinner: groupMeals.dinner,
           dietaryPreferences,
