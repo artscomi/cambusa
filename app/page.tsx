@@ -6,6 +6,7 @@ import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { useState, useTransition } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -18,7 +19,9 @@ export default function Home() {
       <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16 max-w-[800px]">
           <h1 className="text-5xl font-display font-bold relative">
-            Cambusa<span className="text-secondary">Ai</span>
+            <Link href="/">
+              Cambusa<span className="text-secondary">Ai</span>
+            </Link>
           </h1>
 
           <p
