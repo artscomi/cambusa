@@ -4,13 +4,51 @@ import { CreateGroupBox } from "@/components/CreateGroupBox";
 import { Loading } from "@/components/Loading";
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import Toast from "@/components/Toast";
+import { resetApiCallCount } from "./api/actions";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [successPayment, setSuccessPayment] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const fetchStripeState = async () => {
+      return fetch(
+        `/api/checkout-sessions?session_id=${searchParams.get("session_id")}`,
+        {
+          method: "GET",
+        }
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          if (data.status === "complete") {
+            try {
+              await resetApiCallCount();
+              console.log("API call count reset successfully");
+              setSuccessPayment(true);
+            } catch (e) {
+              console.error("Error resetting API call count:");
+            }
+          } else {
+            throw new Error("Pagamento non completato, riprova");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          setError(error.message);
+        });
+    };
+
+    if (searchParams.get("session_id")) {
+      fetchStripeState();
+    }
+  }, [searchParams]);
 
   return isPending ? (
     <Loading />
@@ -58,6 +96,12 @@ export default function Home() {
           </div>
         </div>
         <ToastError error={error} setError={setError} />
+        <Toast
+          message="Pagamento effettuato con successo!"
+          type="success"
+          onClose={() => setSuccessPayment(false)}
+          showToast={successPayment}
+        />
       </div>
       <div className="sm:hidden">
         <CreateGroupBox />
