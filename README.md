@@ -2,7 +2,8 @@
 
 **Cambusa** is a React web application built with Next.js that helps you generate personalized meal plans for boat trips. Input your trip duration, number of meals per day, and any dietary restrictions, and Cambusa will generate a customized meal plan, complete with a shopping list.
 
-<img width="1163" alt="image" src="https://github.com/user-attachments/assets/fe43aec0-d2d3-4a75-a018-ed9a38361a8f">
+
+<img width="1356" alt="image" src="https://github.com/user-attachments/assets/5fd96299-6adc-42c7-8ca4-136b315bbcbb">
 
 <img width="488" alt="image" src="https://github.com/user-attachments/assets/0584f8d8-cdf9-4b63-9b45-1398ec76530b">
 
