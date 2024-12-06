@@ -33,7 +33,7 @@ export const PageContent = ({
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
   if (!user) return;
-  const { lunch = "0", dinner = "0", people = "0" } = group;
+  const { breakfast = "0", lunch = "0", dinner = "0", people = "0" } = group;
 
   const groupedData = preferences.reduce(
     (acc: Record<string, UserPreference>, item: GroupedPreference) => {
@@ -104,7 +104,11 @@ export const PageContent = ({
           <ul className="pl-2">
             {userPreferences.preferences.map((preference, index) => (
               <li key={index} className="text-gray-700">
-                <Heart className="inline-block mr-2 align-sub text-accent" strokeWidth={3}/> {preference}
+                <Heart
+                  className="inline-block mr-2 align-sub text-accent"
+                  strokeWidth={3}
+                />{" "}
+                {preference}
               </li>
             ))}
           </ul>
@@ -131,7 +135,7 @@ export const PageContent = ({
             startTransition={startTransition}
             userId={user.id}
             dietaryPreferences={preferenceString()}
-            groupMeals={{ lunch, dinner, people }}
+            groupMeals={{ breakfast, lunch, dinner, people }}
           />
         </div>
       )}

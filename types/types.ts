@@ -20,6 +20,7 @@ export type GroupInfo = {
   groupId: string;
   groupName: string;
   isTheGroupOwner: boolean;
+  breakfast: string;
   lunch: string;
   dinner: string;
   people: string;

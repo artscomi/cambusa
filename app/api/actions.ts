@@ -268,6 +268,7 @@ export const createGroupAction = async (formData: FormData) => {
   const rawFormdata = {
     groupPeople: formData.get("people") as string,
     groupName: formData.get("groupName") as string,
+    groupBreakfast: formData.get("breakfast") as string,
     groupLunch: formData.get("lunch") as string,
     groupDinner: formData.get("dinner") as string,
   };
@@ -277,6 +278,7 @@ export const createGroupAction = async (formData: FormData) => {
       data: {
         name: rawFormdata.groupName,
         ownerId: user.id, // Set the current user as the owner
+        breakfast: rawFormdata.groupBreakfast || "0",
         lunch: rawFormdata.groupLunch || "0",
         dinner: rawFormdata.groupDinner || "0",
         people: rawFormdata.groupPeople || "0",
@@ -308,6 +310,7 @@ export const getGroupInfo = async (
       id: true,
       name: true,
       ownerId: true,
+      breakfast: true,
       lunch: true,
       dinner: true,
       people: true,
@@ -329,6 +332,7 @@ export const getGroupInfo = async (
     groupId: group.id,
     groupName: group.name,
     isTheGroupOwner,
+    breakfast: group.breakfast,
     lunch: group.lunch,
     dinner: group.dinner,
     people: group.people,

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/Button";
 import { useMealContext } from "@/context/useMealContext";
-import { useClerk, useUser } from "@clerk/nextjs";
+import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
 import { handleMealListGeneration } from "@/utils/mealUtils";
@@ -13,7 +13,12 @@ export const ButtonGenerateMealList: React.FC<{
   setError: Dispatch<SetStateAction<string | null>>;
   userId: string;
   dietaryPreferences: string;
-  groupMeals: { lunch: string; dinner: string; people: string };
+  groupMeals: {
+    breakfast: string;
+    lunch: string;
+    dinner: string;
+    people: string;
+  };
 }> = ({
   userId,
   dietaryPreferences,
@@ -22,7 +27,6 @@ export const ButtonGenerateMealList: React.FC<{
   setError,
 }) => {
   const { setMealList } = useMealContext();
-  const { user } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
   const { openDialogStripe } = useStripeModal();
