@@ -31,7 +31,7 @@ model Group {
   owner           User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
   members         GroupMembership[]
   foodPreferences FoodPreference[]
-  breakfast       String
+  breakfast       String @default("0")
   lunch           String
   dinner          String
   people          String
