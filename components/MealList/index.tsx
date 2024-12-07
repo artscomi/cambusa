@@ -107,7 +107,7 @@ export const MealList = () => {
 
   return (
     <AnimatePresence mode="sync">
-      <div className="px-5 pb-10 max-w-screen-xl mx-auto">
+      <div className="px-5 max-w-screen-xl mx-auto">
         <h1>Et voilà! Ecco le proposte di menu</h1>
         {mealList.menu.length === 0 ? (
           <EmptyMealList />
@@ -142,6 +142,7 @@ export const MealList = () => {
                               />
                             </div>
                           )}
+
                           {meal.dishes?.map((dish) => (
                             <ul key={dish.id} className="mb-5">
                               <p className="mb-3 font-bold  text-lg">
