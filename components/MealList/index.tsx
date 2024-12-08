@@ -29,14 +29,8 @@ export const MealList = () => {
     setIsDialogStripeOpen(true);
   };
 
-  useEffect(() => {
-    if (loadingMealId) {
-      setLoadingMealId(loadingMealId);
-    }
-  }, [loadingMealId]);
-
   if (!mealList || Object.keys(mealList).length === 0) {
-    return;
+    return <EmptyMealList />;
   }
 
   const findMealById = (mealList: MenuData, mealId: string) => {
@@ -60,41 +54,40 @@ export const MealList = () => {
 
     setLoadingMealId(mealId);
 
-    const mealToRegenerate = findMealById(mealList, mealId);
-    if (!mealToRegenerate) return;
+    setTimeout(async () => {
+      const mealToRegenerate = findMealById(mealList, mealId);
+      if (!mealToRegenerate) return;
 
-    try {
-      if (!user) return null;
-      const response = await regenerateSingleMeal({
-        dietaryPreferences: formState.dietaryPreferences,
-        userId: user.id,
-        meal: mealToRegenerate,
-      });
-
-      if (response.type === "success") {
-        const updatedMealList = mealList.menu.map((mealType) => {
-          if (mealType.id === mealTypeId) {
-            return {
-              ...mealType,
-              meals: mealType.meals.map((meal) =>
-                meal.id === mealId ? response.meal : meal
-              ),
-            };
-          }
-          return mealType;
+      try {
+        if (!user) return null;
+        const response = await regenerateSingleMeal({
+          dietaryPreferences: formState.dietaryPreferences,
+          userId: user.id,
+          meal: mealToRegenerate,
         });
 
-        setMealList({ ...mealList, menu: updatedMealList });
+        if (response.type === "success") {
+          const updatedMealList = mealList.menu.map((mealType) => {
+            if (mealType.id === mealTypeId) {
+              return {
+                ...mealType,
+                meals: mealType.meals.map((meal) =>
+                  meal.id === mealId ? response.meal : meal
+                ),
+              };
+            }
+            return mealType;
+          });
+
+          setMealList({ ...mealList, menu: updatedMealList });
+        }
+      } catch (error) {
+        console.error("Failed to regenerate meal", error);
+      } finally {
+        setLoadingMealId(null);
       }
-    } catch (error) {
-      console.error("Failed to regenerate meal", error);
-    } finally {
-      setLoadingMealId(null);
-    }
+    }, 1000);
   };
-
-
-
 
   const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
     const updatedMealList = mealList.menu.map((mealType) => {
@@ -152,6 +145,7 @@ export const MealList = () => {
                             {loadingMealId === meal.id && (
                               <div className="absolute left-0 right-0 top-0 z-10 bg-white bg-opacity-80">
                                 <LottieAnimation
+                                  key={loadingMealId}
                                   name="waveBig"
                                   isResponsive={false}
                                 />
