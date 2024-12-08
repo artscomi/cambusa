@@ -3,8 +3,8 @@ import { useShoppingContext } from "@/context/useShoppingListContext";
 import { sumIngredients } from "@/utils/ingredients";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Button } from "../Button";
 import { ShoppingCart } from "lucide-react";
+import { Ingredient } from "@/types/types";
 
 export const CreateShoppingListCta = () => {
   const { setShoppingList } = useShoppingContext();
@@ -16,7 +16,7 @@ export const CreateShoppingListCta = () => {
   }
 
   const handleCreatehoppingList = () => {
-    const combinedIngredients = sumIngredients(mealList);
+    const combinedIngredients = sumIngredients(mealList) as Ingredient[];
     setShoppingList(combinedIngredients);
     router.push("/shopping-list");
   };
