@@ -15,7 +15,7 @@ export const EmptyMealList = () => {
       initial={{ opacity: 0, y: 0 }}
       key="empty-meal-list"
     >
-      <p className="text-xl text-center m-20">
+      <p className="text-xl text-center m-10 mb-20">
         Ehi, sembra che tu abbia rimosso tutti i pasti!
         <br /> Vi siete messi a dieta?
       </p>

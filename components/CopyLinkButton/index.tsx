@@ -15,7 +15,7 @@ const CopyLink: React.FC<{ url: string }> = ({ url }) => {
   };
 
   return (
-    <div className="flex items-center justify-center p-4 border border-gray-300 rounded-lg shadow-md gap-5 bg-white md:max-w-[500px] ">
+    <div className="flex items-center justify-center p-4 border border-gray-300 rounded-lg shadow-md gap-5 bg-white md:max-w-[500px]">
       <p className="text-ellipsis whitespace-nowrap overflow-hidden">
         {url}
       </p>

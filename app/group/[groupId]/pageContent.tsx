@@ -81,7 +81,7 @@ export const PageContent: React.FC<{
 
   return (
     <>
-      <div className="relative max-sm:-mx-4 md:overflow-hidden mb-10">
+      <div className="relative md:overflow-hidden mb-10">
         {!arePreferencesSaved && (
           <form
             onSubmit={(e) => handleSubmit(e, groupId, foodPreferences)}

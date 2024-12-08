@@ -8,7 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
 import { getMaxAiCall } from "@/utils/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
@@ -28,6 +28,12 @@ export const MealList = () => {
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
   };
+
+  useEffect(() => {
+    if (loadingMealId) {
+      setLoadingMealId(loadingMealId);
+    }
+  }, [loadingMealId]);
 
   if (!mealList || Object.keys(mealList).length === 0) {
     return;
@@ -87,6 +93,9 @@ export const MealList = () => {
     }
   };
 
+
+
+
   const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
     const updatedMealList = mealList.menu.map((mealType) => {
       if (mealType.id === mealTypeId) {
@@ -127,64 +136,74 @@ export const MealList = () => {
                       animate="visible"
                       variants={containerVariants}
                     >
-                      {mealType.meals?.map((meal) => (
-                        <motion.div
-                          layout
-                          key={meal.id}
-                          variants={itemVariants}
-                          className="bg-white p-6 rounded-lg h-full shadow-md flex flex-col justify-between relative overflow-hidden"
-                        >
-                          {loadingMealId === meal.id && (
-                            <div className="absolute left-0 right-0 top-0 z-10 bg-white bg-opacity-80">
-                              <LottieAnimation
-                                name="waveBig"
-                                isResponsive={false}
-                              />
-                            </div>
-                          )}
+                      {mealType.meals?.map((meal) => {
+                        console.log({
+                          loadingMealId,
+                          mealId: meal.id,
+                        });
 
-                          {meal.dishes?.map((dish) => (
-                            <ul key={dish.id} className="mb-5">
-                              <p className="mb-3 font-bold  text-lg">
-                                {dish.dishName}
-                              </p>
-                              {dish.ingredients?.map(
-                                (ingredient, ingredientIndex) => (
-                                  <li
-                                    key={ingredientIndex}
-                                    className="text-gray-600"
-                                  >
-                                    {ingredient.item} -{" "}
-                                    <span className="font-medium">
-                                      {ingredient.quantity} {ingredient.unit}
-                                    </span>
-                                  </li>
-                                )
-                              )}
-                            </ul>
-                          ))}
-                          <div className="flex justify-end opacity-80 hover:opacity-100">
-                            <motion.button
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() =>
-                                handleRegenerateMeal(mealType.id, meal.id)
-                              }
-                              className="p-2 rounded-md text-gray-600 hover:bg-gray-50 transition-colors duration-300"
-                            >
-                              <RefreshCcw className="text-primary" width={25} />
-                            </motion.button>
-                            <motion.button
-                              whileTap={{ scale: 0.97 }}
-                              onClick={() =>
-                                handleDeleteMeal(mealType.id, meal.id)
-                              }
-                              className="p-2 rounded-md text-red-500 hover:bg-red-50 transition-colors duration-300 ml-2"
-                            >
-                              <Trash2 className="text-red-500" />
-                            </motion.button>
-                          </div>
-                        </motion.div>
-                      ))}
+                        return (
+                          <motion.div
+                            layout
+                            key={meal.id}
+                            variants={itemVariants}
+                            className="bg-white p-6 rounded-lg h-full shadow-md flex flex-col justify-between relative overflow-hidden"
+                          >
+                            {loadingMealId === meal.id && (
+                              <div className="absolute left-0 right-0 top-0 z-10 bg-white bg-opacity-80">
+                                <LottieAnimation
+                                  name="waveBig"
+                                  isResponsive={false}
+                                />
+                              </div>
+                            )}
+
+                            {meal.dishes?.map((dish) => (
+                              <ul key={dish.id} className="mb-5">
+                                <p className="mb-3 font-bold  text-lg">
+                                  {dish.dishName}
+                                </p>
+                                {dish.ingredients?.map(
+                                  (ingredient, ingredientIndex) => (
+                                    <li
+                                      key={ingredientIndex}
+                                      className="text-gray-600"
+                                    >
+                                      {ingredient.item} -{" "}
+                                      <span className="font-medium">
+                                        {ingredient.quantity} {ingredient.unit}
+                                      </span>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            ))}
+                            <div className="flex justify-end opacity-80 hover:opacity-100">
+                              <motion.button
+                                whileTap={{ scale: 0.97 }}
+                                onClick={() =>
+                                  handleRegenerateMeal(mealType.id, meal.id)
+                                }
+                                className="p-2 rounded-md text-gray-600 hover:bg-gray-50 transition-colors duration-300"
+                              >
+                                <RefreshCcw
+                                  className="text-primary"
+                                  width={25}
+                                />
+                              </motion.button>
+                              <motion.button
+                                whileTap={{ scale: 0.97 }}
+                                onClick={() =>
+                                  handleDeleteMeal(mealType.id, meal.id)
+                                }
+                                className="p-2 rounded-md text-red-500 hover:bg-red-50 transition-colors duration-300 ml-2"
+                              >
+                                <Trash2 className="text-red-500" />
+                              </motion.button>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
                     </motion.div>
                   </motion.div>
                 )

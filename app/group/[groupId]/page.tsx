@@ -14,7 +14,7 @@ const GroupPage: NextPage<{
   if (!user || !group) return null;
 
   return (
-    <>
+    <div className="mx-4 max-w-2xl lg:mx-auto">
       <h1 className="text-3xl mb-4 font-display">
         <p>{isTheGroupOwner ? "Top!" : `Ciao ${user.fullName}!`}</p>
         <p>
@@ -24,12 +24,12 @@ const GroupPage: NextPage<{
           <span className="text-accent capitalize">{group?.groupName}</span>
         </p>
       </h1>
-      <p className="text-lg text-gray-700 mb-4">
+      <p className="text-md text-gray-700 mb-4">
         Aggiungi le tue preferenze alimentari per creare una cambusa per il
         viaggio.
       </p>
       <PageContent groupId={groupId} group={group} />
-    </>
+    </div>
   );
 };
 
