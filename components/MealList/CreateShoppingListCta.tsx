@@ -25,7 +25,7 @@ export const CreateShoppingListCta = () => {
     <motion.button
       whileTap={{ scale: 0.97 }}
       onClick={handleCreatehoppingList}
-      className="p-4 rounded bg-gray-50 hover:bg-gray-100 shadow-md fixed max-sm:bottom-5 bottom-auto min-sm:top-32 max-sm:right-5 right-[400px] z-10"
+      className="p-4 rounded bg-gray-50 hover:bg-gray-100 shadow-md fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-20"
     >
       <ShoppingCart
         role="img"

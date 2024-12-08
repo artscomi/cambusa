@@ -130,11 +130,6 @@ export const MealList = () => {
                       variants={containerVariants}
                     >
                       {mealType.meals?.map((meal) => {
-                        console.log({
-                          loadingMealId,
-                          mealId: meal.id,
-                        });
-
                         return (
                           <motion.div
                             layout
