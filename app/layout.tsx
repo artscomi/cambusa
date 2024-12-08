@@ -20,6 +20,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   return (
     <ClerkProvider>
       <html
@@ -28,6 +30,21 @@ export default function RootLayout({
       >
         <head>
           <meta name="theme-color" content="#0895c5" />
+          {isProduction && (
+            <Script
+              id="clarity-script"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+             (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "paqf1qkf3c");
+            `,
+              }}
+            />
+          )}
           <Script
             id="google-analytics"
             strategy="afterInteractive"
