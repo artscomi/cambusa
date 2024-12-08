@@ -1,7 +1,7 @@
 export type TextInputConfig = {
   id: string;
   label: string;
-  value: string;
+  value: string | undefined;
   type: "number" | "text";
   placeholder: string;
   inputType: "numeric" | "text";

@@ -58,7 +58,7 @@ export const MainForm = ({
       user.id,
       dietaryPreferences,
       {
-        breakfast: formState.breakfast,
+        breakfast: formState.breakfast ?? '0',
         lunch: formState.lunch,
         dinner: formState.dinner,
         people,
