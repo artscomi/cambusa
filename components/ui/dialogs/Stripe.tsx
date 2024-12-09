@@ -48,7 +48,11 @@ export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Hai raggiunto il limite di rigenerazioni</DialogTitle>
-          <DialogDescription>Compra altre 5 rigenerazioni</DialogDescription>
+          <DialogDescription>
+            Ogni chiamata all&apos;AI ha un costo 💸 <br /> per questo ti
+            chiediamo un piccolo contributo per sbloccare altre{" "}
+            <strong>5 rigenerazioni</strong>. <br /> Grazie 💙
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 overflow-auto">
           <div id="checkout">
