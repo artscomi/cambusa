@@ -18,7 +18,7 @@ const Toast: React.FC<ToastProps> = ({ message, type, onClose, showToast }) => {
   }, [onClose]);
 
   const toastClasses = `
-  fixed right-5 sm:left-auto p-4 m-auto left-5 rounded-lg shadow-lg text-white max-sm:b-10 bottom-10 sm:bottom-auto sm:top-10 z-20
+  fixed right-5s sm:left-auto p-4 m-auto left-5 rounded-lg shadow-lg text-white max-sm:b-10 bottom-10 sm:bottom-auto sm:top-10 z-20
   ${type === "success" ? "bg-teal-500" : ""}
   ${type === "error" ? "bg-red-500" : ""}
   ${type === "info" ? "bg-tertiary" : ""}

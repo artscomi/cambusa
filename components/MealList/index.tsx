@@ -10,7 +10,11 @@ import { MenuData } from "@/types/types";
 import { getMaxAiCall } from "@/utils/user";
 import { useEffect, useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
-import { getUserInfo, regenerateSingleMeal } from "@/app/api/actions";
+import {
+  getUserInfo,
+  regenerateSingleMeal,
+  saveMealList,
+} from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -18,18 +22,20 @@ const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
 
-export const MealList = () => {
+export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
   const { mealList, setMealList } = useMealContext();
   const { user } = useUser();
   const { formState } = useFormConfig();
   const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
   const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
 
+  const mealListToUse = mealList || mealListFromDB;
+
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
   };
 
-  if (!mealList || Object.keys(mealList).length === 0) {
+  if (!mealListToUse || Object.keys(mealListToUse).length === 0) {
     return <EmptyMealList />;
   }
 
@@ -55,7 +61,7 @@ export const MealList = () => {
     setLoadingMealId(mealId);
 
     setTimeout(async () => {
-      const mealToRegenerate = findMealById(mealList, mealId);
+      const mealToRegenerate = findMealById(mealListToUse, mealId);
       if (!mealToRegenerate) return;
 
       try {
@@ -67,7 +73,7 @@ export const MealList = () => {
         });
 
         if (response.type === "success") {
-          const updatedMealList = mealList.menu.map((mealType) => {
+          const updatedMealList = mealListToUse.menu.map((mealType) => {
             if (mealType.id === mealTypeId) {
               return {
                 ...mealType,
@@ -79,6 +85,7 @@ export const MealList = () => {
             return mealType;
           });
 
+          saveMealList(JSON.stringify(updatedMealList));
           setMealList({ ...mealList, menu: updatedMealList });
         }
       } catch (error) {
@@ -90,7 +97,7 @@ export const MealList = () => {
   };
 
   const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
-    const updatedMealList = mealList.menu.map((mealType) => {
+    const updatedMealList = mealListToUse.menu.map((mealType) => {
       if (mealType.id === mealTypeId) {
         return {
           ...mealType,
@@ -104,6 +111,7 @@ export const MealList = () => {
       (mealType) => mealType.meals.length > 0
     );
 
+    saveMealList(JSON.stringify(cleanedMealList));
     setMealList({ ...mealList, menu: cleanedMealList });
   };
 
@@ -111,11 +119,11 @@ export const MealList = () => {
     <AnimatePresence mode="sync">
       <div className="px-5 max-w-screen-xl mx-auto">
         <h1>Et voilà! Ecco le proposte di menu</h1>
-        {mealList.menu.length === 0 ? (
+        {mealListToUse.menu.length === 0 ? (
           <EmptyMealList />
         ) : (
           <motion.div key="meal-list" exit={{ opacity: 0 }}>
-            {mealList.menu?.map(
+            {mealListToUse.menu?.map(
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>

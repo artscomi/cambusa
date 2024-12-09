@@ -9,7 +9,7 @@ export const ToastError: React.FC<{ error: string | null; setError: any }> = ({
     if (error) {
       const timer = setTimeout(() => {
         setError(null);
-      }, 3000);
+      }, 2500);
 
       return () => clearTimeout(timer);
     }
@@ -18,7 +18,7 @@ export const ToastError: React.FC<{ error: string | null; setError: any }> = ({
   return (
     <AnimatePresence>
       {error && (
-        <div className="fixed left-1/2 transform -translate-x-1/2 bottom-20 w-auto">
+        <div className="fixed left-8 right-8 bottom-20 w-auto z-10">
           <motion.p
             initial={{
               opacity: 0,

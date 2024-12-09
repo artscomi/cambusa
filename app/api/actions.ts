@@ -250,6 +250,7 @@ export const saveUser = async () => {
         name: firstName ?? "",
         email: primaryEmailAddress?.emailAddress ?? "",
         clerkUserId: id,
+        mealList: "",
       },
     });
     revalidatePath("/", "layout");
@@ -378,5 +379,38 @@ export const addFoodPreferenceAction = async (
   } catch (error) {
     console.error("Error adding food preference:", error);
     return { error: "Internal Server Error", status: 500 };
+  }
+};
+
+export const saveMealList = async (mealList: string) => {
+  try {
+    const { userId: clerkUserId } = auth();
+    if (!clerkUserId) {
+      throw new Error("Missing clerkUserId");
+    }
+
+    await db.user.update({
+      where: { clerkUserId },
+      data: { mealList },
+    });
+  } catch (error) {
+    console.error("Error saving meal list:", error);
+  }
+};
+
+export const getMealListFromDB = async () => {
+  try {
+    const { userId: clerkUserId } = auth();
+    if (!clerkUserId) {
+      throw new Error("Missing clerkUserId");
+    }
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId },
+      select: { mealList: true },
+    });
+    return user?.mealList;
+  } catch (error) {
+    console.error("Error getting meal list from DB:", error);
   }
 };
