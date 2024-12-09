@@ -8,7 +8,7 @@ import { useUser } from "@clerk/nextjs";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { MenuData } from "@/types/types";
 import { getMaxAiCall } from "@/utils/user";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import {
   getUserInfo,
@@ -119,7 +119,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
     <AnimatePresence mode="sync">
       <div className="px-5 max-w-screen-xl mx-auto">
         <h1>Et voilà! Ecco le proposte di menu</h1>
-        {mealListToUse.menu.length === 0 ? (
+        {mealListToUse?.menu?.length === 0 ? (
           <EmptyMealList />
         ) : (
           <motion.div key="meal-list" exit={{ opacity: 0 }}>
