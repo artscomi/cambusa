@@ -18,7 +18,7 @@ export const ToastError: React.FC<{ error: string | null; setError: any }> = ({
   return (
     <AnimatePresence>
       {error && (
-        <div className="fixed left-8 right-8 bottom-20 w-auto z-10">
+        <div className="fixed left-8 right-8 bottom-20 m-auto z-10 max-w-sm">
           <motion.p
             initial={{
               opacity: 0,
