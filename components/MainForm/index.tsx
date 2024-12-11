@@ -19,7 +19,6 @@ export type ResultErrors =
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
   | { type: "user-not-found"; error: unknown }
-  | { type: "user-limit-error"; error: unknown };
 
 export const MainForm = ({
   groupData,

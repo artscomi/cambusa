@@ -28,7 +28,6 @@ export const handleMealListGeneration = async (
     openDialogStripe();
     return;
   }
-
   startTransition(async () => {
     try {
       const result = await getMealListFromAi({
@@ -73,11 +72,10 @@ const handleError = (
   if (result.type === "success") return;
 
   const errorMessages: Record<ResultErrors["type"], string> = {
-    "user-not-found": "User not found",
-    "validation-error": "Recipe format is invalid.",
-    "user-limit-error": "",
-    "parse-error": "Failed to parse recipe data.",
-    "unknown-error": "Ops..qualcosa è andato storto",
+    "user-not-found": "Utente non trovato.",
+    "validation-error": "Il formato della ricetta non è valido.",
+    "parse-error": "Impossibile analizzare i dati della ricetta.",
+    "unknown-error": "Ops... qualcosa è andato storto.",
   };
 
   const message = errorMessages[result.type] || "An unknown error occurred.";

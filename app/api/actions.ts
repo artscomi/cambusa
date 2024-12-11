@@ -85,7 +85,6 @@ export const regenerateSingleMeal = async ({
   | { type: "parse-error"; text: string }
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
-  | { type: "user-limit-error"; error: string }
   | { type: "user-not-found"; error: string }
 > => {
   "use server";
@@ -172,7 +171,6 @@ export const getMealListFromAi = async ({
   | { type: "parse-error"; text: string }
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
-  | { type: "user-limit-error"; error: string }
   | { type: "user-not-found"; error: string }
 > => {
   "use server";
