@@ -178,6 +178,17 @@ export const getMealListFromAi = async ({
   "use server";
 
   try {
+    const result =
+      process.env.NODE_ENV === "development"
+        ? await fakeOpenAiCall()
+        : await generateObject({
+            model: openai("gpt-4o-mini"),
+            prompt: getMainPrompt(formValues),
+            schema: mealMenuSchema,
+          });
+
+    revalidatePath("/meal-menu", "layout");
+
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
       select: {
@@ -201,21 +212,10 @@ export const getMealListFromAi = async ({
       },
     });
 
-    const result =
-      process.env.NODE_ENV === "development"
-        ? await fakeOpenAiCall()
-        : await generateObject({
-            model: openai("gpt-4o-mini"),
-            prompt: getMainPrompt(formValues),
-            schema: mealMenuSchema,
-          });
-
     // Log prompts and result
     console.log("prompt", getMainPrompt(formValues));
     console.log("result", result.object);
     console.log("api call", user.apiCallCount);
-
-    revalidatePath("/meal-menu", "layout");
 
     // Return success response
     return { type: "success", menu: result.object };
