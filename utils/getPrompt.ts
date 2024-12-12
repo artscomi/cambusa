@@ -7,7 +7,7 @@ export const getMainPrompt = ({
   dinner,
   dietaryPreferences,
   people,
-}: FormState): string => `Crea una proposta di menu in italiano con ${breakfast} colazioni, ${lunch} pranzi, ${dinner} cene per ${people} persone.
+}: FormState): string => `Crea una proposta di menu in italiano con ${breakfast || 0} colazioni, ${lunch} pranzi, ${dinner} cene per ${people} persone.
   Preferenze alimentari includono: pasta circa 100 grammi a testa, ${dietaryPreferences}. Cerca di accontentare tutti, senza proporre piatti diversi per ognuno, tranne a Colazione. Non includere nel menu integratori alimentari. Cerca di proporre carboidrati a pranzo e proteine a cena.
   I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
  Genera un oggetto JSON che rappresenti un piano alimentare. L'oggetto deve avere tre categorie principali: "colazioni", "pranzi" e "cene".
