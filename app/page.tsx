@@ -129,7 +129,7 @@ export default function Home() {
         width={80}
         src="/avocado.png"
         priority
-        className="absolute bottom-10 right-5 sm:right-20 sm-max:hidden max-sm:scale-50 w-auto h-auto"
+        className="absolute bottom-36 right-5 sm:right-20 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
       <Image
         alt=""
@@ -137,8 +137,9 @@ export default function Home() {
         width={150}
         src="/broccoli.png"
         priority
-        className="absolute bottom-5 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
+        className="absolute bottom-36 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
+
     </>
   );
 }
