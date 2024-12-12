@@ -41,8 +41,6 @@ export const getUserInfo = async () => {
     };
   }
 
-  revalidatePath("/", "layout");
-
   return {
     apiCallCount: user.apiCallCount,
     hasPaidForIncrease: user.hasPaidForIncrease,
@@ -64,8 +62,6 @@ export const getUserGroups = async () => {
       group: true,
     },
   });
-
-  revalidatePath("/", "layout");
 
   return {
     group: groupMembership,
@@ -152,8 +148,6 @@ export const resetApiCallCount = async () => {
       where: { clerkUserId },
       data: { apiCallCount: 0, hasPaidForIncrease: true },
     });
-
-    revalidatePath("/", "layout");
   } catch (error) {
     console.error("Error resetting API call count:", error);
     throw new Error("Failed to reset API call count");
@@ -251,7 +245,6 @@ export const saveUser = async () => {
         mealList: "",
       },
     });
-    revalidatePath("/", "layout");
   } catch (error) {
     console.error("Error saving/updating user in database:", error);
   }
@@ -320,7 +313,6 @@ export const getGroupInfo = async (
     console.error("Error getting group info");
     return null;
   }
-  revalidatePath("/", "layout");
 
   const isTheGroupOwner = userId === group.ownerId;
 
