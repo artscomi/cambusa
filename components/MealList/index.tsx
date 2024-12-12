@@ -117,7 +117,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
 
   return (
     <AnimatePresence mode="sync">
-      <div className="px-5 max-w-screen-xl mx-auto">
+      <div className="px-5 max-w-screen-xl mx-auto" key={0}>
         <h1>Et voilà! Ecco le proposte di menu</h1>
         {mealListToUse?.menu?.length === 0 ? (
           <EmptyMealList />
@@ -211,6 +211,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
       </div>
 
       <DialogStripe
+        key={1}
         isOpen={isDialogStripeOpen}
         setIsOpen={setIsDialogStripeOpen}
       />
