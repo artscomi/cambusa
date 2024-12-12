@@ -4,7 +4,7 @@ import { useState } from "react";
 export type FormState = {
   people: string;
   dietaryPreferences: string;
-  breakfast?: string;
+  breakfast: string;
   lunch: string;
   dinner: string;
   groupName?: string;
@@ -18,6 +18,7 @@ const initialState: FormState = {
   lunch: "",
   dinner: "",
   groupName: "",
+  breakfast: ""
 };
 
 const getStoredState = (): FormState => {
