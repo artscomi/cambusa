@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Toast from "@/components/Toast";
 import { resetApiCallCount } from "@/app/api/actions"; // Assicurati che questa sia la path corretta
+import { useRouter } from "next/navigation";
 
 export default function PaymentReturnPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successPayment, setSuccessPayment] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStripeState = async () => {
@@ -26,8 +28,10 @@ export default function PaymentReturnPage() {
               await resetApiCallCount();
               console.log("API call count reset successfully");
               setSuccessPayment(true);
+              router.refresh()
+              setTimeout(() => router.push("/"), 2000); 
             } catch (e) {
-              console.error("Error resetting API call count:");
+              console.error(`Error resetting API call count: ${e}`);
             }
           } else {
             throw new Error("Pagamento non completato, riprova");
@@ -61,7 +65,6 @@ export default function PaymentReturnPage() {
               showToast={!!error}
             />
           )}
-
           {successPayment && (
             <Toast
               message="Pagamento effettuato con successo!"

@@ -152,6 +152,7 @@ export const resetApiCallCount = async () => {
     console.error("Error resetting API call count:", error);
     throw new Error("Failed to reset API call count");
   }
+  revalidatePath('/meal-menu', 'layout');
 };
 
 export const getMealListFromAi = async ({
