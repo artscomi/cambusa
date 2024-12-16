@@ -9,10 +9,8 @@ const isPublicRoute = createRouteMatcher([
   "/robots.txt",
 ]);
 
-export default clerkMiddleware((auth, request) => {
-  if (!isPublicRoute(request)) {
-    auth().protect();
-  }
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) await auth.protect()
 });
 
 export const config = {

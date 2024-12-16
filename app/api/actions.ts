@@ -12,7 +12,7 @@ import { FormState } from "@/hooks/useFormConfig";
 import { fakeOpenAiCall } from "@/utils/mockMealList";
 
 export const getUserInfo = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return {
@@ -49,7 +49,7 @@ export const getUserInfo = async () => {
 };
 
 export const getUserGroups = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return {};
@@ -138,7 +138,7 @@ export const regenerateSingleMeal = async ({
 
 export const resetApiCallCount = async () => {
   "use server";
-  const { userId: clerkUserId } = auth();
+  const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
     throw new Error("Missing clerkUserId");
   }
@@ -291,7 +291,7 @@ export const createGroupAction = async (formData: FormData) => {
 export const getGroupInfo = async (
   groupId: string
 ): Promise<GroupInfo | null> => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return null;
@@ -336,7 +336,7 @@ export const addFoodPreferenceAction = async (
   groupId: string
 ) => {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
 
     if (!userId) {
       return { error: "Unauthorized", status: 401 };
@@ -375,7 +375,7 @@ export const addFoodPreferenceAction = async (
 
 export const saveMealList = async (mealList: string) => {
   try {
-    const { userId: clerkUserId } = auth();
+    const { userId: clerkUserId } = await auth();
     if (!clerkUserId) {
       throw new Error("Missing clerkUserId");
     }
@@ -391,7 +391,7 @@ export const saveMealList = async (mealList: string) => {
 
 export const getMealListFromDB = async () => {
   try {
-    const { userId: clerkUserId } = auth();
+    const { userId: clerkUserId } = await auth();
     if (!clerkUserId) {
       throw new Error("Missing clerkUserId");
     }

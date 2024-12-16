@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 
 export async function POST(req: Request, { params }: { params: { groupId: string } }) {
   try {
-    const { userId } = auth(); // Get the authenticated user ID from Clerk
+    const { userId } = await auth(); // Get the authenticated user ID from Clerk
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

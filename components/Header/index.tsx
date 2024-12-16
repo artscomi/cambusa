@@ -7,7 +7,7 @@ import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
 
 export const Header = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   const { apiCallCount, hasPaidForIncrease, name } = await getUserInfo();
   const maxAiCall = getMaxAiCall(hasPaidForIncrease);

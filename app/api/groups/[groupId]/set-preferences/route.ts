@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: { groupId: string } }
 ) {
   try {
-    const { userId } = auth(); 
+    const { userId } = await auth(); 
 
 
     if (!userId) {
