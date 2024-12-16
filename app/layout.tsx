@@ -24,6 +24,7 @@ export default function RootLayout({
   const isProduction = process.env.NODE_ENV === "production";
 
   return (
+    <ClerkProvider dynamic>
       <html
         lang="it"
         className={`${montserrat.variable} ${baloo.variable} ${bebas.variable} overflow-x-hidden`}
@@ -87,5 +88,6 @@ export default function RootLayout({
         </body>
         <Analytics />
       </html>
+    </ClerkProvider>
   );
 }
