@@ -388,8 +388,6 @@ export const saveMealList = async (mealList: string) => {
     console.error("Error saving meal list:", error);
   }
 };
-
-'use server'
 export const getMealListFromDB = async () => {
   try {
     const { userId: clerkUserId } = await auth();
