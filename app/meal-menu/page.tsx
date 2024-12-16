@@ -1,3 +1,5 @@
+'use server';
+
 import { MealList } from "@/components/MealList";
 import { getMealListFromDB } from "../api/actions";
 
