@@ -389,6 +389,7 @@ export const saveMealList = async (mealList: string) => {
   }
 };
 
+'use server'
 export const getMealListFromDB = async () => {
   try {
     const { userId: clerkUserId } = await auth();
