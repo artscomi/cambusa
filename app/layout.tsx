@@ -73,7 +73,7 @@ export default function RootLayout({
             content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU"
           />
         </head>
-        <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white">
+        <body className="font-subtitle text-default flex flex-col min-h-screen max-w-screen overflow-hidden relative max-sm:bg-white antialiased">
           <Header />
           <main className="pt-[75px] px-4 md:px-10 md:pt-20 lg:px-0 m-auto max-w-[1024px] overflow-auto flex-1 w-full">
             <ContextLayout>{children}</ContextLayout>
