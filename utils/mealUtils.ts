@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { getMaxAiCall } from "./user";
-import { getMealListFromAi, getUserInfo } from "@/app/api/actions";
+import { getMealListFromAi, getUserInfo, saveMealList } from "@/app/api/actions";
 import { Result, ResultErrors } from "@/components/MainForm";
 
 export const handleMealListGeneration = async (
@@ -59,6 +59,7 @@ const handleResult = (
 ) => {
   if (result.type === "success") {
     setMealList(result.menu);
+    saveMealList(JSON.stringify(result.menu));
     router.push("/meal-menu");
   } else {
     handleError(result, setError);
