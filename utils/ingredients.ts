@@ -1,4 +1,4 @@
-import { Ingredient, MenuData } from "@/types/types";
+import { Ingredient, MealList } from "@/types/types";
 
 // Helper function to find an existing ingredient in the list
 const findExistingIngredient = (acc: Ingredient[], ingredient: Ingredient) => {
@@ -16,8 +16,8 @@ const convertUnits = (ingredient: Ingredient) => {
 };
 
 // Main function to sum ingredients
-export const sumIngredients = (mealList: MenuData): Ingredient[] => {
-  return mealList.menu.reduce<Ingredient[]>((acc, mealType) => {
+export const sumIngredients = (mealList: MealList): Ingredient[] => {
+  return mealList.reduce<Ingredient[]>((acc, mealType) => {
     mealType.meals.forEach((meal) => {
       meal.dishes.forEach((dish) => {
         dish.ingredients.forEach((ingredient) => {

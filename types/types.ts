@@ -1,7 +1,8 @@
-import { mealMenuSchema, mealSchema } from "@/app/api/schemas/meal-menu";
+import { mealMenuSchema, mealSchema, mealTypeSchema } from "@/app/api/schemas/meal-menu";
 import { z } from "zod";
 
 export type MenuData = z.infer<typeof mealMenuSchema>;
+export type MealList = z.infer<typeof mealTypeSchema>[];
 export type Meal = z.infer<typeof mealSchema>;
 
 export interface GroupData {

@@ -3,7 +3,7 @@
 import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { GroupInfo, Meal, MenuData } from "@/types/types";
+import { GroupInfo, Meal, MealList } from "@/types/types";
 import { generateObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
@@ -162,7 +162,7 @@ export const getMealListFromAi = async ({
   formValues: FormState;
   userId: string;
 }): Promise<
-  | { type: "success"; menu: MenuData }
+  | { type: "success"; menu: MealList }
   | { type: "parse-error"; text: string }
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
@@ -211,7 +211,7 @@ export const getMealListFromAi = async ({
     console.log("api call", user.apiCallCount);
 
     // Return success response
-    return { type: "success", menu: result.object };
+    return { type: "success", menu: result.object.menu };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
       console.log(JSON.stringify(e.value, null, 2));

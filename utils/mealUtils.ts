@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { getMaxAiCall } from "./user";
 import { getMealListFromAi, getUserInfo, saveMealList } from "@/app/api/actions";
 import { Result, ResultErrors } from "@/components/MainForm";
+import { MealList } from "@/types/types";
 
 export const handleMealListGeneration = async (
   userId: string,
@@ -14,7 +15,7 @@ export const handleMealListGeneration = async (
   },
   setError: Dispatch<SetStateAction<string | null>>,
   startTransition: (callback: () => void) => void,
-  setMealList: (mealList: any) => void,
+  setMealList: (mealList: MealList) => void,
   router: any,
   openDialogStripe: () => void
 ) => {
@@ -53,7 +54,7 @@ export const handleMealListGeneration = async (
 
 const handleResult = (
   result: Result,
-  setMealList: (mealList: any) => void,
+  setMealList: (mealList: MealList) => void,
   router: any,
   setError: Dispatch<SetStateAction<string | null>>
 ) => {

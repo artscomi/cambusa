@@ -1,14 +1,12 @@
 "use client";
-import { useMealContext } from "@/context/useMealContext";
 import { AnimatePresence, motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/animations/framer-variants";
 import { EmptyMealList } from "./EmptyMealList";
 import { CreateShoppingListCta } from "./CreateShoppingListCta";
 import { useUser } from "@clerk/nextjs";
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { MenuData } from "@/types/types";
 import { getMaxAiCall } from "@/utils/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import {
   getUserInfo,
@@ -17,30 +15,38 @@ import {
 } from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useMealContext } from "@/context/useMealContext";
+import { MealList } from "@/types/types";
 
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
 
-export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
+export const MealListComponent = ({
+  savedMealList,
+}: {
+  savedMealList: MealList;
+}) => {
   const { mealList, setMealList } = useMealContext();
   const { user } = useUser();
   const { formState } = useFormConfig();
   const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
   const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
 
-  const mealListToUse = mealList || mealListFromDB;
+  useEffect(() => {
+    setMealList(savedMealList);
+  }, [saveMealList]);
 
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
   };
 
-  if (!mealListToUse || Object.keys(mealListToUse).length === 0) {
+  if (!mealList || Object.keys(mealList).length === 0) {
     return <EmptyMealList />;
   }
 
-  const findMealById = (mealList: MenuData, mealId: string) => {
-    for (const mealType of mealList.menu) {
+  const findMealById = (mealList: MealList, mealId: string) => {
+    for (const mealType of mealList) {
       const foundMeal = mealType.meals.find((meal) => meal.id === mealId);
       if (foundMeal) {
         return foundMeal;
@@ -61,7 +67,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
     setLoadingMealId(mealId);
 
     setTimeout(async () => {
-      const mealToRegenerate = findMealById(mealListToUse, mealId);
+      const mealToRegenerate = findMealById(mealList, mealId);
       if (!mealToRegenerate) return;
 
       try {
@@ -73,7 +79,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
         });
 
         if (response.type === "success") {
-          const updatedMealList = mealListToUse.menu.map((mealType) => {
+          const updatedMealList = savedMealList.map((mealType) => {
             if (mealType.id === mealTypeId) {
               return {
                 ...mealType,
@@ -86,7 +92,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
           });
 
           saveMealList(JSON.stringify(updatedMealList));
-          setMealList({ ...mealList, menu: updatedMealList });
+          setMealList(updatedMealList);
         }
       } catch (error) {
         console.error("Failed to regenerate meal", error);
@@ -97,7 +103,7 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
   };
 
   const handleDeleteMeal = async (mealTypeId: string, mealId: string) => {
-    const updatedMealList = mealListToUse.menu.map((mealType) => {
+    const updatedMealList = mealList.map((mealType) => {
       if (mealType.id === mealTypeId) {
         return {
           ...mealType,
@@ -112,18 +118,18 @@ export const MealList = ({ mealListFromDB }: { mealListFromDB: MenuData }) => {
     );
 
     saveMealList(JSON.stringify(cleanedMealList));
-    setMealList({ ...mealList, menu: cleanedMealList });
+    setMealList(cleanedMealList);
   };
 
   return (
     <AnimatePresence mode="sync">
       <div className="px-5 max-w-screen-xl mx-auto" key={0}>
         <h1>Et voilà! Ecco le proposte di menu</h1>
-        {mealListToUse?.menu?.length === 0 ? (
+        {mealList.length === 0 ? (
           <EmptyMealList />
         ) : (
           <motion.div key="meal-list" exit={{ opacity: 0 }}>
-            {mealListToUse.menu?.map(
+            {mealList?.map(
               (mealType) =>
                 mealType.meals?.length > 0 && (
                   <motion.div key={mealType.id} exit={{ opacity: 0 }}>

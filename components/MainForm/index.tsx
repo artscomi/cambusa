@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { handleMealListGeneration } from "@/utils/mealUtils";
 import { useStripeModal } from "@/context/useStripeModalContext";
-import { GroupData, MenuData } from "@/types/types";
+import { GroupData, MealList } from "@/types/types";
 import { TextInput } from "../TextInput";
 import dynamic from "next/dynamic";
 
-export type Result = { type: "success"; menu: MenuData } | ResultErrors;
+export type Result = { type: "success"; menu: MealList } | ResultErrors;
 
 export type ResultErrors =
   | { type: "parse-error"; text: string }
