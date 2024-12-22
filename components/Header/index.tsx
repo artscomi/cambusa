@@ -5,6 +5,7 @@ import { getUserInfo } from "@/app/api/actions";
 import { RefreshCcw } from "lucide-react";
 import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
+import { ApiCallCountComponent } from "./ApiCallCountComponent";
 
 export const Header = async () => {
   const { userId } = await auth();
@@ -21,12 +22,7 @@ export const Header = async () => {
           <ul className="flex justify-end items-center gap-5 text-sm md:text-base w-full sm:justify-end">
             {userId ? (
               <>
-                <li className="text-center">
-                  <strong>{aiCallLeft}</strong>
-                  <i className="inline-block align-middle ml-2">
-                    <RefreshCcw width={25} />
-                  </i>
-                </li>
+                <ApiCallCountComponent aiCallLeft={aiCallLeft} />
                 <li>
                   <DropdownMenuComponent name={name} />
                 </li>

@@ -1,3 +1,4 @@
+import {  currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -9,6 +10,9 @@ const price =
     : "price_1Q1ofmD79nSJWeoGrZDSsoo4";
 
 export async function POST(req: Request) {
+  const user = await currentUser();
+
+  if (!user) return null;
   try {
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
@@ -25,6 +29,7 @@ export async function POST(req: Request) {
       automatic_tax: { enabled: true },
       redirect_on_completion: "if_required",
       payment_method_types: ["card", "paypal"],
+      customer_email: user?.emailAddresses[0].emailAddress,
     });
 
     return NextResponse.json({ clientSecret: session.client_secret });
