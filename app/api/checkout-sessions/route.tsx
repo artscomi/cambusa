@@ -12,7 +12,6 @@ const price =
 export async function POST(req: Request) {
   const user = await currentUser();
 
-  if (!user) return null;
   try {
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
