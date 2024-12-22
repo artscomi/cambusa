@@ -1,6 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 import { getMaxAiCall } from "./user";
-import { getMealListFromAi, getUserInfo, saveMealList } from "@/app/api/actions";
+import {
+  getMealListFromAi,
+  getUserInfo,
+  saveMealList,
+} from "@/app/api/actions";
 import { Result, ResultErrors } from "@/components/MainForm";
 import { MealList } from "@/types/types";
 
@@ -52,7 +56,7 @@ export const handleMealListGeneration = async (
   });
 };
 
-const handleResult = (
+const handleResult = async (
   result: Result,
   setMealList: (mealList: MealList) => void,
   router: any,
@@ -60,7 +64,7 @@ const handleResult = (
 ) => {
   if (result.type === "success") {
     setMealList(result.menu);
-    saveMealList(JSON.stringify(result.menu));
+    await saveMealList(JSON.stringify(result.menu));
     router.push("/meal-menu");
   } else {
     handleError(result, setError);
