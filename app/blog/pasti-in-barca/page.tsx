@@ -9,7 +9,7 @@ import { BlogCta } from "./cta";
 export const metadata: Metadata = {
   title: "Pasti veloci in barca: 5 idee pratiche | Cambusa Online",
   description:
-    "Scopri 5 idee semplici e gustose per organizzare i tuoi pasti in barca senza stress. Pianifica la tua cambusa in pochi click su cambusa-online.com!",
+    "Scopri 5 idee semplici per organizzare la tua cambusa in barca senza stress. Pianifica la tua cambusa in pochi click su cambusa-online.com!",
 };
 
 export default function BlogPost() {
@@ -43,7 +43,7 @@ export default function BlogPost() {
         <div className="mt-6 mb-8">
           <Image
             src="/images/blog/pasti-veloci-in-barca.png"
-            alt="Pasti in barca - pranzo in navigazione"
+            alt="cambusa in barca- pranzo in navigazione"
             width={1152}
             height={768}
             className="rounded-2xl shadow-md object-cover w-full h-auto"

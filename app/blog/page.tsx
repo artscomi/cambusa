@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 
 const articles = [
   {
-    title: "Pasti veloci in barca: 5 idee pratiche",
-    slug: "pasti-in-barca",
+    title: "Pasti veloci in barca: 5 idee pratiche per la tua cambusa",
+    slug: "pasti-in-barca-cambusa",
     description:
-      "Scopri 5 idee semplici e gustose per organizzare i tuoi pasti in barca senza stress.",
+      "Scopri 5 idee semplici per organizzare la tua cambusa in barca senza stress.",
   },
 ];
 
