@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { BlogCta } from "./pasti-in-barca/cta";
+import { BlogCta } from "./pasti-in-barca-cambusa/cta";
 
 export const metadata: Metadata = {
   title: "Blog | Cambusa Online",
