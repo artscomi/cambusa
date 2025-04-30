@@ -6,6 +6,7 @@ import { RefreshCcw } from "lucide-react";
 import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
 import { ApiCallCountComponent } from "./ApiCallCountComponent";
+import Link from "next/link";
 
 export const Header = async () => {
   const { userId } = await auth();
@@ -20,6 +21,9 @@ export const Header = async () => {
         <Logo />
         <nav className="text-primary w-full">
           <ul className="flex justify-end items-center gap-5 text-sm md:text-base w-full sm:justify-end">
+            <li>
+              <Link href="/blog">Blog</Link>
+            </li>
             {userId ? (
               <>
                 <ApiCallCountComponent aiCallLeft={aiCallLeft} />
