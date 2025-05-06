@@ -44,6 +44,11 @@ export default function RootLayout({
             })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
           `}
           </Script>
+          <Script
+            src="https://analytics.ahrefs.com/analytics.js"
+            data-key="0936IsFm5X3AsXRbCcwqZw"
+            strategy="afterInteractive"
+          />
           {isProduction && (
             <Script
               id="clarity-script"
