@@ -46,7 +46,7 @@ export const TextArea = ({
       <textarea
         id={id}
         rows={rows}
-        className={`block h-14 sm:h-32 p-4 pt-8 outline-none w-full text-base sm:text-sm bg-white transition-all duration-300 resize-none ${
+        className={`block w-full p-4 pt-8 outline-none text-base sm:text-sm bg-white transition-all duration-300 resize-none ${
           error
             ? "border-b-[3px] border-b-red-500 focus:border-b-red-500"
             : "border-b-[3px] border-b-secondary focus:border-b-primary"
@@ -58,7 +58,6 @@ export const TextArea = ({
         onFocus={onFocus}
         onBlur={onBlur}
         name={name}
-        required={required}
       />
       {!!error && (
         <div className="flex items-center gap-1 mt-1 text-red-500 text-sm animate-fadeIn">

@@ -14,7 +14,7 @@ export const Button: React.FC<
   const getVariantClasses = () => {
     switch (variant) {
       case "outline":
-        return "bg-transparent hover:bg-gray-100 text-primary border-2 border-primary";
+        return "bg-transparent hover:bg-secondary text-primary border-2 border-primary";
       case "primary":
       default:
         return "bg-white hover:bg-secondary-light text-primary border-b-primary border-b-4";

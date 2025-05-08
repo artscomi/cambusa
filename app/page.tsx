@@ -54,7 +54,7 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
+      <div className="max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16 max-w-[800px]">
           <h1 className="text-6xl font-display font-bold relative">
             <Link href="/">

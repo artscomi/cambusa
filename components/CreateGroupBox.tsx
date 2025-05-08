@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const CreateGroupBox = () => {
   return (
-    <form className="p-8 mb-5">
+    <form className="z-10 relative p-4 rounded-lg">
       <p className="text-center text-primary mb-3 font-semibold max-sm:pt-10 text-lg">
         Oppure
       </p>
