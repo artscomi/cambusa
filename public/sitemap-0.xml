@@ -14,7 +14,14 @@
   </url>
 
   <url>
-    <loc>https://www.cambusa-online.com/blog/pasti-in-barca</loc>
+    <loc>https://www.cambusa-online.com/blog/pasti-in-barca-cambusa</loc>
+    <lastmod>2025-04-30T00:00:00Z</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.cambusa-online.com/blog/cambusa-settimanale-barca-vela</loc>
     <lastmod>2025-04-30T00:00:00Z</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

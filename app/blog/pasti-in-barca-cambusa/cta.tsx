@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation";
 export const BlogCta = () => {
   const router = useRouter();
   return (
-    <Button center onClick={() => router.push("/")}>
-      Genera il menu!
-    </Button>
+    <>
+      <Button center onClick={() => router.push("/")}>
+        Genera il menu!
+      </Button>
+    </>
   );
 };

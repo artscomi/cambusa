@@ -263,8 +263,8 @@ export default function BlogPost() {
             <li>Vivi la navigazione senza pensieri</li>
           </ul>
 
-          <p className="mt-6 mb-12">
-            Vuoi semplificare ancora di più la tua cambusa?
+          <p className="mt-6 mb-12 text-center mt-16">
+            Vuoi semplificare la gestione della tua cambusa? <br />
             <strong>
               {" "}
               Scopri come{" "}
