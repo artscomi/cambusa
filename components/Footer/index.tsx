@@ -1,8 +1,4 @@
-import {
-  Instagram,
-} from "lucide-react";
-
-const currentYear = new Date().getFullYear();
+import { Instagram } from "lucide-react";
 
 export const Footer = () => (
   <footer className="text-primary py-4">
@@ -13,7 +9,7 @@ export const Footer = () => (
             <a href="/privacy-policy">Privacy Policy</a>
           </div> */}
         <a href="https://www.instagram.com/cambusaai/" className="gap-2 flex">
-          <Instagram /> Cambusaai
+          <Instagram /> cambusaai
         </a>
 
         <div className="text-sm text-right">
