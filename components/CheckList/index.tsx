@@ -49,7 +49,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleCopyToClipboard}
-          className="p-4 rounded bg-gray-50 hover:bg-gray-100 shadow-md max-sm:fixed bottom-5 right-5 z-10"
+          className="p-4 rounded bg-primary fixed text-white shadow-md fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10"
         >
           <Clipboard
             role="img"

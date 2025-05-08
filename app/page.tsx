@@ -56,9 +56,9 @@ export default function Home() {
     <>
       <div className="max-sm:h-screen max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
         <div className="max-md:pt-10 max-md:px-4 md:mb-16 max-w-[800px]">
-          <h1 className="text-5xl font-display font-bold relative">
+          <h1 className="text-6xl font-display font-bold relative">
             <Link href="/">
-              Cambusa<span className="text-secondary">Ai</span>
+              Cambusa<span className="text-secondary">ai</span>
             </Link>
           </h1>
 
@@ -71,19 +71,11 @@ export default function Home() {
             salpare? ⛵
           </p>
           <p className="text-s text-pretty font-subtitle text-gray-500 max-sm:hidden">
-            Con Cambusa Ai puoi creare un menu personalizzato, modificare i
+            Con cambusaai puoi creare un menu personalizzato, modificare i
             piatti e generare una lista cambusa completa per una settimana in
             barca.
           </p>
         </div>
-
-        {/* <Image
-          src="/arrow.svg"
-          alt=""
-          className="absolute t-10 left-[80px] max-sm:hidden"
-          width={100}
-          height={100}
-        /> */}
 
         <div className="w-full items-end">
           <div className="flex flex-col md:flex-row justify-items-center gap-16 items-center ">
@@ -139,7 +131,6 @@ export default function Home() {
         priority
         className="absolute bottom-36 max-sm:left-0 sm:right-[140px] -rotate-12 sm-max:hidden max-sm:scale-50 w-auto h-auto"
       />
-
     </>
   );
 }

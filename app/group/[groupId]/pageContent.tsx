@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import confetti from "canvas-confetti";
+import React, { useState } from "react";
 import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
@@ -15,6 +14,7 @@ export const PageContent: React.FC<{
     groupId: string;
     groupName: string;
     isTheGroupOwner: boolean;
+    ownerName: string;
   };
 }> = ({ groupId, group }) => {
   const [foodPreferences, setFoodPreferences] = useState("");
@@ -22,11 +22,11 @@ export const PageContent: React.FC<{
   const [showToastSuccess, setShowToastSuccess] = useState(false);
   const [arePreferencesSaved, setArePreferencesSaved] = useState(false);
   const [error, setError] = useState("");
-  const [groupLink, setGroupLink] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const [fieldError, setFieldError] = useState("");
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
+  const groupLink = isTheGroupOwner && `${baseUrl}/group/${groupId}/`;
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -58,7 +58,6 @@ export const PageContent: React.FC<{
 
       setShowToastSuccess(true);
       setArePreferencesSaved(true);
-      group?.isTheGroupOwner && setGroupLink(`${baseUrl}/group/${groupId}/`);
     } catch (error) {
       console.error("Errore:", error);
       setError((error as Error).message);
@@ -67,34 +66,23 @@ export const PageContent: React.FC<{
     }
   };
 
-  useEffect(() => {
-    if (showToastSuccess) {
-      confetti({
-        particleCount: 500,
-        spread: 500,
-        origin: { y: 0.2 },
-      });
-    }
-  }, [showToastSuccess]);
-
   if (!user) return null;
 
   return (
     <>
       <div className="relative md:overflow-hidden mb-10">
-        {!arePreferencesSaved && (
+        {!isTheGroupOwner && (
           <form
             onSubmit={(e) => handleSubmit(e, groupId, foodPreferences)}
             className="flex flex-col"
           >
             <TextArea
               rows={2}
-              maxLength={200}
               value={foodPreferences}
               onChange={(e) => setFoodPreferences(e.target.value)}
               placeholder="Esempio: mangio 150g di yogurt greco a colazione, non mangio la pasta"
               id="food-preferences"
-              label={"Inserisci le tue preferenze alimentari"}
+              label={`Inserisci le tue preferenze alimentari per il gruppo di ${group.ownerName}`}
               error={fieldError}
             />
             <Button disabled={isLoading} className="ml-auto mt-5">
@@ -121,7 +109,7 @@ export const PageContent: React.FC<{
           />
         )}
       </div>
-      {isTheGroupOwner && groupLink && arePreferencesSaved && (
+      {isTheGroupOwner && groupLink && (
         <div className="mb-10">
           <p className="mb-8">
             Ecco fatto! Ora puoi condividere il link con il resto della ciurma:
@@ -130,11 +118,12 @@ export const PageContent: React.FC<{
         </div>
       )}
 
-      {arePreferencesSaved && (
+      {(arePreferencesSaved || isTheGroupOwner) && (
         <>
           <p className="mb-8">
-            Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di
-            viaggio
+            {!isTheGroupOwner
+              ? "Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di viaggio"
+              : "Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di viaggio e quando tutti saranno pronti potrai generare il menu per il gruppo"}
           </p>
           <Link href={`${groupId}/menu`}>
             <Button>Vai alla pagina del gruppo</Button>

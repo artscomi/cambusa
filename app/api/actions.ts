@@ -152,7 +152,7 @@ export const resetApiCallCount = async () => {
     console.error("Error resetting API call count:", error);
     throw new Error("Failed to reset API call count");
   }
-  revalidatePath('/meal-menu', 'layout');
+  revalidatePath("/meal-menu", "layout");
 };
 
 export const getMealListFromAi = async ({
@@ -264,6 +264,7 @@ export const createGroupAction = async (formData: FormData) => {
     groupBreakfast: formData.get("breakfast") as string,
     groupLunch: formData.get("lunch") as string,
     groupDinner: formData.get("dinner") as string,
+    dietaryPreferences: formData.get("dietaryPreferences") as string,
   };
 
   try {
@@ -282,6 +283,18 @@ export const createGroupAction = async (formData: FormData) => {
         },
       },
     });
+
+    // Create the initial food preference for the group owner
+    if (rawFormdata.dietaryPreferences) {
+      await db.foodPreference.create({
+        data: {
+          userId: user.id,
+          groupId: group.id,
+          preference: rawFormdata.dietaryPreferences,
+        },
+      });
+    }
+
     return group.id;
   } catch (error) {
     console.error("Error creating new group:", error);
@@ -307,6 +320,12 @@ export const getGroupInfo = async (
       lunch: true,
       dinner: true,
       people: true,
+      owner: {
+        select: {
+          name: true,
+          clerkUserId: true,
+        },
+      },
     },
   });
 
@@ -317,8 +336,9 @@ export const getGroupInfo = async (
 
   const isTheGroupOwner = userId === group.ownerId;
 
-  console.log({ userId });
-  console.log(group.ownerId);
+  // Get the owner's gender from Clerk's public metadata
+  const ownerUser = await currentUser();
+  const ownerGender = (ownerUser?.publicMetadata?.gender as string) || "";
 
   return {
     groupId: group.id,
@@ -328,6 +348,8 @@ export const getGroupInfo = async (
     lunch: group.lunch,
     dinner: group.dinner,
     people: group.people,
+    ownerName: group.owner.name,
+    ownerGender,
   };
 };
 

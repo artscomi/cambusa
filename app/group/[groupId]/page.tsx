@@ -15,19 +15,19 @@ const GroupPage: NextPage<{
 
   return (
     <div className="mx-4 max-w-2xl lg:mx-auto">
-      <h1 className="text-3xl mb-4 font-display">
-        <p>{isTheGroupOwner ? "Top!" : `Ciao ${user.fullName}!`}</p>
-        <p>
-          {isTheGroupOwner
-            ? "Hai creato il gruppo"
-            : "Hai ricevuto un invito al gruppo"}{" "}
-          <span className="text-accent capitalize">{group?.groupName}</span>
-        </p>
+      {!isTheGroupOwner && <p>{`Ciao ${user.fullName}!`}</p>}
+      <h1>
+        {isTheGroupOwner
+          ? "Hai creato il gruppo"
+          : `Hai ricevuto un invito al gruppo di ${group.ownerName}`}{" "}
+        <span className="text-accent capitalize">{group?.groupName}</span>
       </h1>
-      <p className="text-md text-gray-700 mb-4">
-        Aggiungi le tue preferenze alimentari per creare una cambusa per il
-        viaggio.
-      </p>
+      {!isTheGroupOwner && (
+        <p className="text-md text-gray-700 mb-4">
+          Aggiungi le tue preferenze alimentari per creare una cambusa per il
+          viaggio.
+        </p>
+      )}
       <PageContent groupId={groupId} group={group} />
     </div>
   );

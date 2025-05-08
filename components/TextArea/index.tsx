@@ -1,18 +1,22 @@
 import { ChangeEvent } from "react";
 
-interface TextAreaConfig {
+export type TextAreaConfig = {
   id: string;
   label: string;
-  value: string;
+  value: string | undefined;
   placeholder: string;
-  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   className?: string;
-  rows?: number;
   onFocus?: () => void;
   onBlur?: () => void;
+  center?: boolean;
   error?: string;
-  maxLength?: number;
-}
+  name?: string;
+  required?: boolean;
+  rows?: number;
+  showRequiredIndicator?: boolean;
+};
+
 export const TextArea = ({
   id,
   label,
@@ -20,34 +24,60 @@ export const TextArea = ({
   placeholder,
   onChange,
   className,
-  rows = 4, // Default number of rows
   onFocus,
   onBlur,
+  center,
   error,
-  maxLength,
+  name,
+  required,
+  rows = 4,
 }: TextAreaConfig) => (
-  <div className="relative last:mb-0">
-    <label className="block absolute text-xs left-4 top-1" htmlFor={id}>
-      {label}
-    </label>
-    <textarea
-      id={id}
-      rows={rows}
-      className={`block rounded p-4 pt-8 outline-none w-full text-sm bg-gray-50 shadow-inner transition-all duration-300 resize-none ${
-        error
-          ? "shadow-[0_0_0_1px_rgba(239,68,68,0.75)]" // Red shadow for error state
-          : "shadow-[0_0_0_1px_rgba(156,163,175,0.5)]" // Gray shadow for normal state
-      } ${className}`}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      autoComplete="off"
-      onFocus={onFocus}
-      onBlur={onBlur}
-      maxLength={maxLength}
-    />
-    {!!error && (
-      <p className="text-red-500 text-xs mt-1 animate-fadeIn">{error}</p>
-    )}
+  <div className={`${center ? "flex flex-col items-center" : ""}`}>
+    <div className={`relative last:mb-0 ${error ? "mb-6" : ""}`}>
+      <label
+        className={`block absolute text-xs left-4 top-[0.3rem] transition-colors duration-200 ${
+          error ? "text-red-500" : "text-primary"
+        }`}
+        htmlFor={id}
+      >
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
+      <textarea
+        id={id}
+        rows={rows}
+        className={`block h-14 sm:h-32 p-4 pt-8 outline-none w-full text-base sm:text-sm bg-white transition-all duration-300 resize-none ${
+          error
+            ? "border-b-[3px] border-b-red-500 focus:border-b-red-500"
+            : "border-b-[3px] border-b-secondary focus:border-b-primary"
+        } ${className}`}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        autoComplete="off"
+        onFocus={onFocus}
+        onBlur={onBlur}
+        name={name}
+        required={required}
+      />
+      {!!error && (
+        <div className="flex items-center gap-1 mt-1 text-red-500 text-sm animate-fadeIn">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p>{error}</p>
+        </div>
+      )}
+    </div>
   </div>
 );

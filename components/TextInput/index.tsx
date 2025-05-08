@@ -5,14 +5,16 @@ export type TextInputConfig = {
   type: "number" | "text";
   placeholder: string;
   inputType: "numeric" | "text";
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   className?: string;
   onFocus?: () => void;
   onBlur?: () => void;
   center?: boolean;
   error?: string;
-  name?: string
-  required?: boolean
+  name?: string;
+  required?: boolean;
 };
 
 export const TextInput = ({
@@ -27,20 +29,26 @@ export const TextInput = ({
   onBlur,
   center,
   error,
-  name, 
-  required
+  name,
+  required,
 }: TextInputConfig) => (
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
-    <div className={`relative last:mb-0`}>
-      <label className="block absolute text-xs left-4 top-[0.3rem]" htmlFor={id}>
+    <div className={`relative last:mb-0 ${error ? "mb-6" : ""}`}>
+      <label
+        className={`block absolute text-xs left-4 top-[0.3rem] transition-colors duration-200 ${
+          error ? "text-red-500" : "text-primary"
+        }`}
+        htmlFor={id}
+      >
         {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
       </label>
       <input
         id={id}
-        className={`block h-14 sm:h-12 rounded p-4 pt-8 outline-none w-full text-base sm:text-sm bg-white sm:bg-gray-50 shadow-inner transition-all duration-300 ${
+        className={`block h-14 sm:h-12 p-4 pt-8 outline-none w-full text-base sm:text-sm bg-white transition-all duration-300 ${
           error
-            ? "shadow-[0_0_0_1px_rgba(239,68,68,0.75)]" // Red shadow
-            : "shadow-[0_0_0_1px_rgba(156,163,175,0.5)]" // Gray shadow for normal state
+            ? "border-b-[3px] border-b-red-500 focus:border-b-red-500"
+            : "border-b-[3px] border-b-secondary focus:border-b-primary"
         } ${className}`}
         type={type}
         value={value}
@@ -54,7 +62,22 @@ export const TextInput = ({
         required={required}
       />
       {!!error && (
-        <p className="text-red-500 text-xs mt-1 animate-fadeIn">{error}</p>
+        <div className="flex items-center gap-1 mt-1 text-red-500 text-sm animate-fadeIn">
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p>{error}</p>
+        </div>
       )}
     </div>
   </div>

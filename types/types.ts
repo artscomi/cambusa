@@ -1,4 +1,8 @@
-import { mealMenuSchema, mealSchema, mealTypeSchema } from "@/app/api/schemas/meal-menu";
+import {
+  mealMenuSchema,
+  mealSchema,
+  mealTypeSchema,
+} from "@/app/api/schemas/meal-menu";
 import { z } from "zod";
 
 export type MenuData = z.infer<typeof mealMenuSchema>;
@@ -25,6 +29,8 @@ export type GroupInfo = {
   lunch: string;
   dinner: string;
   people: string;
+  ownerName: string;
+  ownerGender: string;
 };
 
 export type Preference = {

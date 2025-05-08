@@ -72,42 +72,41 @@ export const PageContent = ({
   return isPending ? (
     <Loading />
   ) : (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-8">Gruppo {group.groupName}</h1>
+    <div className="container mx-auto p-4 max-w-4xl">
+      <h1 className="text-3xl font-bold mb-8 text-primary">
+        Gruppo {group.groupName}
+      </h1>
 
-      <div className="bg-accent p-6 rounded-lg text-white mb-8 shadow-lg inline-block w-60">
-        <h2 className="text-l font-semibold mb-4">Info gruppo</h2>
-        <ul className="flex flex-col gap-1 pl-2">
-          <li>
-            <Users className="inline-block mr-2 align-sub" />
+      <div className="bg-accent p-6 rounded-lg text-white mb-8 shadow-lg inline-block w-64">
+        <h2 className="text-xl font-semibold mb-4 text-white">Info gruppo</h2>
+        <ul className="flex flex-col gap-3 pl-2">
+          <li className="flex items-center">
+            <Users className="w-5 h-5 mr-3" />
             <span className="font-medium">{group.people} Persone</span>
           </li>
-          <li>
-            <Sandwich className="inline-block mr-2 align-sub" />
+          <li className="flex items-center">
+            <Sandwich className="w-5 h-5 mr-3" />
             <span className="font-medium">{group.lunch} Pranzi</span>
           </li>
-          <li>
-            <CookingPot className="inline-block mr-2 align-sub" />
+          <li className="flex items-center">
+            <CookingPot className="w-5 h-5 mr-3" />
             <span className="font-medium">{group.dinner} Cene</span>
           </li>
         </ul>
       </div>
 
-      <h2 className="mb-4 text-primary text-xl font-bold">
+      <h2 className="text-2xl font-bold mb-6 text-primary">
         Preferenze alimentari del gruppo
       </h2>
-      <div className="flex flex-wrap gap-5 mb-8">
-        <div className="border-2 border-accent p-6 rounded-lg shadow-md w-64 bg-white">
-          <h3 className="font-bold text-lg mb-2 text-accent">
+      <div className="flex flex-wrap gap-6 mb-10">
+        <div className="border-2 border-accent p-6 rounded-lg shadow-md w-72 bg-white hover:shadow-lg transition-shadow">
+          <h3 className="font-bold text-lg mb-4 text-accent flex items-center">
+            <Heart className="w-5 h-5 mr-2" strokeWidth={3} />
             Le tue preferenze
           </h3>
-          <ul className="pl-2">
+          <ul className="pl-5 space-y-2">
             {userPreferences.preferences.map((preference, index) => (
-              <li key={index} className="text-gray-700">
-                <Heart
-                  className="inline-block mr-2 align-sub text-accent"
-                  strokeWidth={3}
-                />{" "}
+              <li key={index} className="text-gray-700 list-disc">
                 {preference}
               </li>
             ))}
@@ -115,9 +114,12 @@ export const PageContent = ({
         </div>
 
         {otherPreferences.map(([userId, { name, preferences }]) => (
-          <div key={userId} className="bg-white p-6 rounded-lg shadow-md w-64">
-            <h3 className="font-bold text-lg mb-2">{name}</h3>
-            <ul className="list-disc pl-5">
+          <div
+            key={userId}
+            className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
+          >
+            <h3 className="font-bold text-lg mb-4 text-primary">{name}</h3>
+            <ul className="list-disc pl-5 space-y-2">
               {preferences.map((preference, index) => (
                 <li key={index} className="text-gray-700">
                   {preference}
@@ -128,15 +130,28 @@ export const PageContent = ({
         ))}
       </div>
 
-      {group.isTheGroupOwner && (
-        <div className="text-center">
-          <ButtonGenerateMealList
-            setError={setError}
-            startTransition={startTransition}
-            userId={user.id}
-            dietaryPreferences={preferenceString()}
-            groupMeals={{ breakfast, lunch, dinner, people }}
-          />
+      {group.isTheGroupOwner ? (
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-lg text-center sm:text-left">
+              Solo tu in quanto{" "}
+              <strong className="text-primary">group owner</strong> puoi
+              generare il menu 👨‍🍳
+            </p>
+            <ButtonGenerateMealList
+              setError={setError}
+              startTransition={startTransition}
+              userId={user.id}
+              dietaryPreferences={preferenceString()}
+              groupMeals={{ breakfast, lunch, dinner, people }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <p className="text-lg text-center sm:text-left">
+            Solo {group.ownerName} può generare la lista dei pasti.
+          </p>
         </div>
       )}
 

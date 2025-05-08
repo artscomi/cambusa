@@ -49,5 +49,9 @@ export const ButtonGenerateMealList: React.FC<{
     );
   };
 
-  return <Button onClick={handleCtaClick}>Genera il menu</Button>;
+  return (
+    <Button variant="outline" onClick={handleCtaClick}>
+      Genera il menu
+    </Button>
+  );
 };

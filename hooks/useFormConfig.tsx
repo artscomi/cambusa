@@ -1,4 +1,5 @@
 import { TextInputConfig } from "@/components/TextInput";
+import { TextAreaConfig } from "@/components/TextArea";
 import { useState } from "react";
 
 export type FormState = {
@@ -18,7 +19,7 @@ const initialState: FormState = {
   lunch: "",
   dinner: "",
   groupName: "",
-  breakfast: ""
+  breakfast: "",
 };
 
 const getStoredState = (): FormState => {
@@ -40,7 +41,8 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
   const currentYear = new Date().getFullYear();
 
   const handleChange =
-    (field: FormStateKeys) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (field: FormStateKeys) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = e.target.value;
       const maxValue = field === "people" ? 20 : 7;
 
@@ -65,7 +67,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       }));
     };
 
-  const inputConfig: TextInputConfig[] = [
+  const inputConfig: (TextInputConfig | TextAreaConfig)[] = [
     ...(!isSimpleFlow
       ? [
           {
@@ -124,20 +126,17 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       onChange: handleChange("people"),
       required: true,
     },
-    ...(isSimpleFlow
-      ? [
-          {
-            name: "dietaryPreferences",
-            id: "dietaryPreferences",
-            label: "Preferenze alimentari",
-            value: formState.dietaryPreferences,
-            placeholder: "vegan, gluten-free",
-            type: "text" as "text",
-            inputType: "text" as "text",
-            onChange: handleChange("dietaryPreferences"),
-          },
-        ]
-      : []),
+
+    {
+      id: "dietaryPreferences",
+      label: "Preferenze alimentari",
+      value: formState.dietaryPreferences,
+      placeholder:
+        "Inserisci le tue preferenze alimentari, allergie o intolleranze...",
+      onChange: handleChange("dietaryPreferences"),
+      required: true,
+      rows: 4,
+    },
   ];
 
   return { inputConfig, formState };
