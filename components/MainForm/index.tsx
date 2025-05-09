@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState, useRef } from "react";
 import { Button } from "@/components/Button";
 import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
@@ -60,6 +60,8 @@ export const MainForm = ({
   groupData?: GroupData;
   startTransition: (callback: () => void) => void;
 }) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
   const { dietaryPreferences, people } = formState;
@@ -142,11 +144,13 @@ export const MainForm = ({
     e.preventDefault();
     if (validateStep(currentStep)) {
       setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+      progressRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const prevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
+    progressRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const currentFields = steps[currentStep].fields;
@@ -185,7 +189,7 @@ export const MainForm = ({
 
       {/* Progress Bar */}
       <div className="mb-16 z-10 relative">
-        <div className="flex justify-between mb-2">
+        <div ref={progressRef} className="flex justify-between mb-2">
           {steps.map((step, index) => (
             <p
               key={step.title}
