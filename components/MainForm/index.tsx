@@ -13,7 +13,7 @@ import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Utensils, Heart } from "lucide-react";
+import { Users, Utensils, Heart, ArrowRight, ArrowLeft } from "lucide-react";
 
 export type Result = { type: "success"; menu: MealList } | ResultErrors;
 
@@ -165,7 +165,7 @@ export const MainForm = ({
           key={config.id}
           {...config}
           error={errors[config.id]}
-          rows={4}
+          rows={2}
           required={true}
           placeholder="Non mangiamo carne. A colazione mangiamo yogurt e frutta."
         />
@@ -241,16 +241,20 @@ export const MainForm = ({
             <Button
               type="button"
               onClick={prevStep}
-              variant="outline"
-              className="px-6"
+              variant="primary"
+              className="px-2 text-sm"
             >
               Indietro
             </Button>
           )}
 
           {currentStep < steps.length - 1 ? (
-            <Button type="button" onClick={nextStep} className="ml-auto px-6">
-              Avanti
+            <Button
+              type="button"
+              onClick={nextStep}
+              className="ml-auto px-6 group"
+            >
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           ) : (
             <Button type="submit" className="ml-auto px-6">

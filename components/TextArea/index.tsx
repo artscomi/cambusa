@@ -35,7 +35,7 @@ export const TextArea = ({
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
     <div className={`relative last:mb-0 ${error ? "mb-6" : ""}`}>
       <label
-        className={`block absolute text-xs left-4 top-[0.3rem] transition-colors duration-200 ${
+        className={`block text-xs mb-2 transition-colors duration-200 ${
           error ? "text-red-500" : "text-primary"
         }`}
         htmlFor={id}
@@ -46,7 +46,7 @@ export const TextArea = ({
       <textarea
         id={id}
         rows={rows}
-        className={`block w-full p-4 pt-8 outline-none text-base sm:text-sm bg-white transition-all duration-300 resize-none ${
+        className={`block w-full py-4 outline-none text-base sm:text-sm bg-white transition-all duration-300 resize-none ${
           error
             ? "border-b-[3px] border-b-red-500 focus:border-b-red-500"
             : "border-b-[3px] border-b-secondary focus:border-b-primary"
