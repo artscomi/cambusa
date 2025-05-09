@@ -162,18 +162,21 @@ export const MealListComponent = ({
                             )}
 
                             {meal.dishes?.map((dish) => (
-                              <ul key={dish.id} className="mb-5">
-                                <p className="mb-3 font-bold  text-lg">
+                              <ul key={dish.id} className="mb-4">
+                                <p className="mb-3 text-lg font-medium tracking-wide bg-primary/10 text-primary px-2 py-0.5 rounded-sm inline-block">
                                   {dish.dishName}
                                 </p>
                                 {dish.ingredients?.map(
                                   (ingredient, ingredientIndex) => (
                                     <li
                                       key={ingredientIndex}
-                                      className="text-gray-600"
+                                      className="text-gray-700 text-sm mb-1"
                                     >
-                                      {ingredient.item} -{" "}
                                       <span className="font-medium">
+                                        {ingredient.item}
+                                      </span>{" "}
+                                      -{" "}
+                                      <span className="text-gray-500">
                                         {ingredient.quantity} {ingredient.unit}
                                       </span>
                                     </li>
@@ -181,7 +184,7 @@ export const MealListComponent = ({
                                 )}
                               </ul>
                             ))}
-                            <div className="flex justify-end opacity-80 hover:opacity-100">
+                            <div className="flex justify-end opacity-80 hover:opacity-100 mt-3">
                               <motion.button
                                 whileTap={{ scale: 0.97 }}
                                 onClick={() =>

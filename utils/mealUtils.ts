@@ -86,5 +86,13 @@ const handleError = (
 
   const message = errorMessages[result.type] || "An unknown error occurred.";
   setError(message);
-  console.error(message);
+
+  // Type guard per accedere a result.error in modo sicuro
+  if (result.type === "unknown-error" || result.type === "user-not-found") {
+    console.error(result.error);
+  } else if (result.type === "parse-error") {
+    console.error(result.text);
+  } else if (result.type === "validation-error") {
+    console.error(result.value);
+  }
 };
