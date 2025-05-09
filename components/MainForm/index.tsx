@@ -167,7 +167,7 @@ export const MainForm = ({
           error={errors[config.id]}
           rows={4}
           required={true}
-          placeholder="Non mangiamo carne, preferiamo piatti vegetariani. A colazione mangiamo yogurt e frutta. Abbiamo un'intolleranza al lattosio."
+          placeholder="Non mangiamo carne. A colazione mangiamo yogurt e frutta."
         />
       );
     }
