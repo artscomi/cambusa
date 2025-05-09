@@ -117,7 +117,15 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                 tabIndex={-1}
                 onChange={() => handleCheckboxChange(item.id)}
                 type="checkbox"
-                className="mr-3 h-6 w-6 text-blue-600 rounded focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer pointer-events-none"
+                style={{
+                  accentColor: "var(--accent-light)",
+                  width: "1.5rem",
+                  height: "1.5rem",
+                  marginRight: "0.75rem",
+                  cursor: "pointer",
+                  pointerEvents: "none",
+                }}
+                className="rounded"
                 checked={!!checkedItems[item.id]}
               />
               {`${item.item} - ${item.quantity} ${item.unit}`}
