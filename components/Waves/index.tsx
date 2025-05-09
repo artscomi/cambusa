@@ -4,11 +4,7 @@ import { motion } from "framer-motion";
 
 export const Waves = () => {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 1920 140"
-      className="w-[110%]"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 140">
       <motion.path
         d="M1920 0l-107 28c-106 29-320 85-533 93-213 7-427-36-640-50s-427 0-533 7L0 85v171h1920z"
         animate={{ y: [0, 3, 0], x: [-10, 0, -10] }}

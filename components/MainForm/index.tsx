@@ -171,7 +171,7 @@ export const MainForm = ({
   };
 
   return (
-    <div className="z-10 md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white">
+    <div className="z-10 md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-8 overflow-y-clip bg-white">
       {groupData ? (
         <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo ${groupData.id}`}</h1>
       ) : (
@@ -184,7 +184,7 @@ export const MainForm = ({
       )}
 
       {/* Progress Bar */}
-      <div className="mb-8 z-10 relative">
+      <div className="mb-16 z-10 relative">
         <div className="flex justify-between mb-2">
           {steps.map((step, index) => (
             <p

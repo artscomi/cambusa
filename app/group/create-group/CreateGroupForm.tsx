@@ -148,7 +148,7 @@ export const CreateGroupForm = () => {
   };
 
   return (
-    <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white">
+    <div className="md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-4 md:overflow-hidden bg-white max-w-[500px] m-auto">
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-2">
