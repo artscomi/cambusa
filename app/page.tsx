@@ -70,11 +70,6 @@ export default function Home() {
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
             salpare? ⛵
           </p>
-          <p className="text-sm sm:text-base text-pretty font-subtitle text-gray-500 mb-4">
-            Con cambusaai puoi creare un menu personalizzato in base alle
-            preferenze alimentari di tutto l&apos;equipaggio, modificare i
-            piatti e generare una lista della spesa per una settimana in barca.
-          </p>
         </div>
 
         <div className="w-full items-center">
@@ -102,7 +97,7 @@ export default function Home() {
         width={60}
         priority
         src="/apple.png"
-        className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-4 max-sm:top-16"
+        className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-0 max-sm:top-16"
       />
       <Image
         alt=""
@@ -110,7 +105,7 @@ export default function Home() {
         width={120}
         src="/basket.png"
         priority
-        className="absolute top-[66px] right-32 -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-6 max-sm:top-[51px]"
+        className="absolute top-[66px] right-[150px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-2 max-sm:top-[51px]"
       />
       <Image
         alt=""
