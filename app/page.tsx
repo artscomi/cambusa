@@ -71,9 +71,9 @@ export default function Home() {
             salpare? ⛵
           </p>
           <p className="text-sm sm:text-base text-pretty font-subtitle text-gray-500 mb-4">
-            Con cambusaai puoi creare un menu personalizzato, modificare i
-            piatti e generare una lista cambusa completa per una settimana in
-            barca.
+            Con cambusaai puoi creare un menu personalizzato in base alle
+            preferenze alimentari di tutto l'equipaggio, modificare i piatti e
+            generare una lista della spesa per una settimana in barca.
           </p>
         </div>
 

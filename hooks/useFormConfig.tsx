@@ -118,7 +118,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
     {
       name: "people",
       id: "people",
-      label: "Quante persone siete?",
+      label: "Quanti siete a bordo?",
       value: formState.people,
       placeholder: "5",
       type: "number",
