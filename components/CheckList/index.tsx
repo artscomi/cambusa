@@ -6,7 +6,7 @@ import { Ingredient } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 import Toast from "../Toast";
-import { Clipboard } from "lucide-react";
+import { Clipboard, Share2 } from "lucide-react";
 
 const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   const [showToast, setShowToast] = useState(false);
@@ -29,6 +29,26 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
     navigator.clipboard.writeText(listText).then(() => setShowToast(true));
   };
 
+  const handleShare = async () => {
+    const listText = items
+      .map((item) => `${item.item} - ${item.quantity} ${item.unit}`)
+      .join("\n");
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "La mia lista della spesa",
+          text: listText,
+        });
+      } else {
+        // Fallback to clipboard if Web Share API is not supported
+        handleCopyToClipboard();
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, id: string) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -42,22 +62,36 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         <div className="text-center lg:text-left">
           <h1>La tua lista della spesa</h1>
           <p className="text-l">
-            Copia e incollala dove vuoi per utilizzarla o condividerla con il
-            resto della ciurma!
+            Condividi la lista con il resto della ciurma o copiala nei tuoi
+            appunti!
           </p>
         </div>
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={handleCopyToClipboard}
-          className="p-4 rounded bg-primary fixed text-white shadow-md fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10"
-        >
-          <Clipboard
-            role="img"
-            aria-label="copy to clipboard"
-            height={25}
-            width={25}
-          />
-        </motion.button>
+        <div className="flex gap-2 fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleShare}
+            className="p-4 rounded bg-primary text-white shadow-md"
+          >
+            <Share2
+              role="img"
+              aria-label="condividi lista"
+              height={25}
+              width={25}
+            />
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleCopyToClipboard}
+            className="p-4 rounded bg-primary text-white shadow-md"
+          >
+            <Clipboard
+              role="img"
+              aria-label="copia negli appunti"
+              height={25}
+              width={25}
+            />
+          </motion.button>
+        </div>
       </div>
 
       <motion.ul
