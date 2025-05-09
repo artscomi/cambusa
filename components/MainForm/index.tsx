@@ -85,19 +85,22 @@ export const MainForm = ({
 
     stepFields.forEach((field) => {
       const value = formState[field as keyof typeof formState];
-      const config = inputConfig.find((c) => c.id === field);
 
       if (field === "dietaryPreferences") {
-        if (value && value.trim().length < 10) {
+        if (!value || value.trim() === "") {
+          newErrors[field] = "Questo campo è obbligatorio";
+        } else if (value.trim().length < 10) {
           newErrors[field] =
             "Inserisci almeno 10 caratteri per le preferenze alimentari";
         }
-      } else if (config?.required && (!value || value.trim() === "")) {
-        newErrors[field] = "Questo campo è obbligatorio";
-      } else if (value && value.trim() !== "") {
-        const numValue = Number(value);
-        if (isNaN(numValue) || numValue < 0) {
-          newErrors[field] = "Inserisci un numero valido maggiore o uguale a 0";
+      } else {
+        if (!value || value.trim() === "") {
+          newErrors[field] = "Questo campo è obbligatorio";
+        } else {
+          const numValue = Number(value);
+          if (isNaN(numValue) || numValue <= 0) {
+            newErrors[field] = "Inserisci un numero valido maggiore di 0";
+          }
         }
       }
     });
