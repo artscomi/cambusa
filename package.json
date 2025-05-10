@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "test": "jest",
-    "postbuild": "next-sitemap"
+    "test": "jest"
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.58",

@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { BlogCta } from "../../components/BlogCta";
+import { BlogCta } from "@/app/components/BlogCta";
 
 export const metadata: Metadata = {
   title:
