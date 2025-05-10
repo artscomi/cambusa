@@ -54,10 +54,13 @@ export default function Home() {
     <Loading />
   ) : (
     <>
-      <div className="max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe">
+      <main
+        className="max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe"
+        role="main"
+      >
         <div className="max-md:pt-10 md:mb-16 max-w-[800px]">
           <h1 className="text-5xl sm:text-6xl font-display font-bold relative">
-            <Link href="/">
+            <Link href="/" aria-label="Torna alla home">
               Cambusa<span className="text-secondary">ai</span>
             </Link>
           </h1>
@@ -89,10 +92,10 @@ export default function Home() {
           onClose={() => setSuccessPayment(false)}
           showToast={successPayment}
         />
-      </div>
+      </main>
 
       <Image
-        alt=""
+        alt="Mela decorativa per la pianificazione dei pasti di Cambusa"
         height={60}
         width={60}
         priority
@@ -100,7 +103,7 @@ export default function Home() {
         className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-0 max-sm:top-16"
       />
       <Image
-        alt=""
+        alt="Cestino della spesa per la cambusa della barca a vela"
         height={120}
         width={120}
         src="/basket.png"
@@ -108,7 +111,7 @@ export default function Home() {
         className="absolute top-[66px] right-[150px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-2 max-sm:top-[51px]"
       />
       <Image
-        alt=""
+        alt="Avocado fresco per il menu settimanale della cambusa"
         height={80}
         width={80}
         src="/avocado.png"
@@ -116,7 +119,7 @@ export default function Home() {
         className="absolute bottom-36 right-5 sm:right-20 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:right-4"
       />
       <Image
-        alt=""
+        alt="Broccoli freschi per la spesa dell'equipaggio"
         height={150}
         width={150}
         src="/broccoli.png"
