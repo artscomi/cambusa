@@ -74,13 +74,6 @@ export default function Home() {
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
             salpare? ⛵
           </p>
-
-          <Link
-            href="/blog/cambusa-efficiente"
-            className="text-secondary hover:underline text-sm"
-          >
-            Scopri come organizzare una cambusa efficiente →
-          </Link>
         </header>
 
         <section
