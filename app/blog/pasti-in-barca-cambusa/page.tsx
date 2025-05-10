@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import Image from "next/image";
-import { BlogCta } from "./cta";
+import { BlogCta } from "@/app/components/BlogCta";
 
 export const metadata: Metadata = {
   title: "Pasti veloci in barca: 5 idee pratiche | Cambusa Online",
@@ -262,22 +262,6 @@ export default function BlogPost() {
             <li>Eviti sprechi di cibo</li>
             <li>Vivi la navigazione senza pensieri</li>
           </ul>
-
-          <p className="mt-6 mb-12 text-center mt-16">
-            Vuoi semplificare la gestione della tua cambusa? <br />
-            <strong>
-              {" "}
-              Scopri come{" "}
-              <a
-                href="https://cambusa-online.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                cambusa-online.com
-              </a>{" "}
-              può aiutarti a creare il tuo piano pasti personalizzato! 🚤🍴
-            </strong>
-          </p>
 
           <BlogCta />
         </section>

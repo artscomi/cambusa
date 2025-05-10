@@ -58,9 +58,9 @@ export default function Home() {
         className="max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe"
         role="main"
       >
-        <div className="max-md:pt-10 md:mb-16 max-w-[800px]">
+        <header className="max-md:pt-10 md:mb-16 max-w-[800px]">
           <h1 className="text-5xl sm:text-6xl font-display font-bold relative">
-            <Link href="/" aria-label="Torna alla home">
+            <Link href="/" aria-label="Torna alla home di cambusaai">
               Cambusa<span className="text-secondary">ai</span>
             </Link>
           </h1>
@@ -69,63 +69,92 @@ export default function Home() {
             className={
               "text-base lg:text-xl text-left text-pretty font-subtitle text-gray-700 mb-4 mt-4"
             }
+            role="doc-subtitle"
           >
             Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
             salpare? ⛵
           </p>
-        </div>
 
-        <div className="w-full items-center">
+          <Link
+            href="/blog/cambusa-efficiente"
+            className="text-secondary hover:underline text-sm"
+          >
+            Scopri come organizzare una cambusa efficiente →
+          </Link>
+        </header>
+
+        <section
+          className="w-full items-center"
+          aria-label="Strumenti di pianificazione menu"
+          aria-describedby="section-description"
+        >
+          <div id="section-description" className="sr-only">
+            Sezione per la creazione e pianificazione del menu settimanale per
+            l'equipaggio
+          </div>
           <div className="flex flex-col md:flex-row justify-items-center gap-8 md:gap-16 items-center">
-            <div className="flex-1 w-full">
+            <div
+              className="flex-1 w-full"
+              role="complementary"
+              aria-label="Form di creazione menu"
+            >
               <MainForm startTransition={startTransition} setError={setError} />
             </div>
-            <div className="flex-1 w-full md:mt-0 -mt-4">
+            <div
+              className="flex-1 w-full md:mt-0 -mt-4"
+              role="complementary"
+              aria-label="Creazione gruppo"
+            >
               <CreateGroupBox />
             </div>
           </div>
+        </section>
+
+        <div role="alert" aria-live="polite">
+          <ToastError error={error} setError={setError} />
+          <Toast
+            message="Pagamento effettuato con successo!"
+            type="success"
+            onClose={() => setSuccessPayment(false)}
+            showToast={successPayment}
+          />
         </div>
-        <ToastError error={error} setError={setError} />
-        <Toast
-          message="Pagamento effettuato con successo!"
-          type="success"
-          onClose={() => setSuccessPayment(false)}
-          showToast={successPayment}
-        />
       </main>
 
-      <Image
-        alt="Mela decorativa per la pianificazione dei pasti di Cambusa"
-        height={60}
-        width={60}
-        priority
-        src="/apple.png"
-        className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-0 max-sm:top-16"
-      />
-      <Image
-        alt="Cestino della spesa per la cambusa della barca a vela"
-        height={120}
-        width={120}
-        src="/basket.png"
-        priority
-        className="absolute top-[66px] right-[150px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-2 max-sm:top-[51px]"
-      />
-      <Image
-        alt="Avocado fresco per il menu settimanale della cambusa"
-        height={80}
-        width={80}
-        src="/avocado.png"
-        priority
-        className="absolute bottom-36 right-5 sm:right-20 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:right-4"
-      />
-      <Image
-        alt="Broccoli freschi per la spesa dell'equipaggio"
-        height={150}
-        width={150}
-        src="/broccoli.png"
-        priority
-        className="absolute bottom-36 max-sm:left-0 sm:right-[140px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:left-4"
-      />
+      <aside aria-hidden="true" className="decorative-elements">
+        <Image
+          alt="Mela decorativa per la pianificazione dei pasti di Cambusa"
+          height={60}
+          width={60}
+          priority
+          src="/apple.png"
+          className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-0 max-sm:top-16"
+        />
+        <Image
+          alt="Cestino della spesa per la cambusa della barca a vela"
+          height={120}
+          width={120}
+          src="/basket.png"
+          priority
+          className="absolute top-[66px] right-[150px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-2 max-sm:top-[51px]"
+        />
+        <Image
+          alt="Avocado fresco per il menu settimanale della cambusa"
+          height={80}
+          width={80}
+          src="/avocado.png"
+          priority
+          className="absolute bottom-36 right-5 sm:right-20 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:right-4"
+        />
+        <Image
+          alt="Broccoli freschi per la spesa dell'equipaggio"
+          height={150}
+          width={150}
+          src="/broccoli.png"
+          priority
+          className="absolute bottom-36 max-sm:left-0 sm:right-[140px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:left-4"
+        />
+      </aside>
     </>
   );
 }

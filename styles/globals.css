@@ -10,13 +10,24 @@
   --background: #fcfcfc;
   --default: #0d2031;
   --primary: #0895c5;
+  --primary-rgb: 8, 149, 197;
   --primary-light: #1ba7d6;
+  --primary-light-rgb: 27, 167, 214;
   --secondary: #daf0ff;
+  --secondary-rgb: 218, 240, 255;
   --secondary-light: #eef8ff;
+  --secondary-light-rgb: 238, 248, 255;
   --tertiary: #0094c6;
+  --tertiary-rgb: 0, 148, 198;
   --accent: #b22384;
+  --accent-rgb: 178, 35, 132;
   --accent-light: #d733a3;
+  --accent-light-rgb: 215, 51, 163;
   --gray-600: #4b5563;
+  --green: #166434;
+  --green-rgb: 22, 100, 52;
+  --green-light: #EFFDF4;
+  --green-light-rgb: 239, 253, 244;
 }
 
 @media (prefers-color-scheme: dark) {

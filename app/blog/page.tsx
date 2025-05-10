@@ -3,20 +3,29 @@
 import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
-import { BlogCta } from "./pasti-in-barca-cambusa/cta";
+import { BlogCta } from "../components/BlogCta";
 
 export const metadata: Metadata = {
-  title: "Blog | Cambusa Online",
-  description:
-    "Esplora gli articoli e le idee per organizzare i tuoi pasti in barca.",
+  title: "Blog - CambusaAI",
+  description: "Consigli e guide per la gestione della cambusa in barca",
 };
 
 const articles = [
   {
-    title: "Pasti veloci in barca: 5 idee pratiche per la tua cambusa",
-    slug: "pasti-in-barca-cambusa",
+    title:
+      "Come Organizzare una Cambusa Efficiente: Guida Completa per Evitare gli Sprechi",
     description:
-      "Dalla pasta fredda al cous cous, scopri 5 ricette veloci e nutrienti perfette per la barca. Idee semplici per mangiare bene anche in navigazione, senza rinunciare al gusto e alla praticità.",
+      "Scopri i segreti per una gestione ottimale della cambusa in barca. Dalla pianificazione alla conservazione, impara a evitare gli sprechi e mantenere una dieta equilibrata durante la navigazione.",
+    slug: "cambusa-efficiente",
+    date: "2024-03-20",
+    readTime: "5 min",
+    image: "/basket.png",
+  },
+  {
+    title: "Pasti veloci in barca: 5 idee pratiche per la tua cambusa",
+    description:
+      "Scopri come preparare pasti veloci e nutrienti in barca con ingredienti semplici e facilmente conservabili.",
+    slug: "pasti-in-barca-cambusa",
   },
   {
     title: "Cambusa per una settimana in barca a vela: la guida definitiva",
@@ -66,7 +75,6 @@ export default function BlogPage() {
         ))}
       </div>
 
-      {/* Call to action */}
       <div className="mt-12">
         <BlogCta />
       </div>

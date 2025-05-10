@@ -16,14 +16,28 @@ const config: Config = {
     },
     extend: {
       colors: {
-        primary: "var(--primary)",
-        ["primary-light"]: "var(--primary-light)",
+        primary: {
+          DEFAULT: "var(--primary)",
+          light: "var(--primary-light)",
+          "40": "rgb(var(--primary-rgb), 0.4)",
+        },
+        secondary: {
+          DEFAULT: "var(--secondary)",
+          light: "var(--secondary-light)",
+          "40": "rgb(var(--secondary-rgb), 0.4)",
+        },
+        accent: {
+          DEFAULT: "var(--accent)",
+          light: "var(--accent-light)",
+          "5": "rgb(var(--accent-rgb), 0.05)",
+          "40": "rgb(var(--accent-rgb), 0.4)",
+        },
+        green: {
+          DEFAULT: "var(--green)",
+          light: "var(--green-light)",
+          "40": "rgb(var(--green-rgb), 0.4)",
+        },
         default: "var(--default)",
-        secondary: "var(--secondary)",
-        ["secondary-light"]: "var(--secondary-light)",
-        tertiary: "var(--tertiary)",
-        accent: "var(--accent)",
-        ["accent-light"]: "var(--accent-light)",
         background: "var(--background)",
       },
     },
