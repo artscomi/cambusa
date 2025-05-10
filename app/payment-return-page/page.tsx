@@ -28,8 +28,8 @@ export default function PaymentReturnPage() {
               await resetApiCallCount();
               console.log("API call count reset successfully");
               setSuccessPayment(true);
-              router.refresh()
-              setTimeout(() => router.push("/"), 2000); 
+              router.refresh();
+              setTimeout(() => router.push("/"), 2000);
             } catch (e) {
               console.error(`Error resetting API call count: ${e}`);
             }
@@ -49,7 +49,7 @@ export default function PaymentReturnPage() {
     if (searchParams.get("session_id")) {
       fetchStripeState();
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   return (
     <div className="return-page-container">

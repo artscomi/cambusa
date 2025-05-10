@@ -35,7 +35,7 @@ export const MealListComponent = ({
 
   useEffect(() => {
     setMealList(savedMealList);
-  }, [saveMealList]);
+  }, [savedMealList, setMealList]);
 
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
