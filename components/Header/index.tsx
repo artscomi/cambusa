@@ -2,7 +2,6 @@ import { getMaxAiCall } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import { getUserInfo } from "@/app/api/actions";
-import { RefreshCcw } from "lucide-react";
 import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
 import { ApiCallCountComponent } from "./ApiCallCountComponent";
