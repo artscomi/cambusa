@@ -27,7 +27,7 @@ export const handleMealListGeneration = async (
   setError(null);
 
   const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
-  const maxAiCall = getMaxAiCall(hasPaidForIncrease);
+  const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
 
   if (apiCallCount && apiCallCount >= maxAiCall) {
     openDialogStripe();

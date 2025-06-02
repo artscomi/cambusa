@@ -57,7 +57,7 @@ export const MealListComponent = ({
 
   const handleRegenerateMeal = async (mealTypeId: string, mealId: string) => {
     const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
-    const maxAiCall = getMaxAiCall(hasPaidForIncrease);
+    const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
 
     if (apiCallCount && apiCallCount >= maxAiCall) {
       openDialogStripe();

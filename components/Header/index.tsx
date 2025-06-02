@@ -11,7 +11,7 @@ export const Header = async () => {
   const { userId } = await auth();
 
   const { apiCallCount, hasPaidForIncrease, name } = await getUserInfo();
-  const maxAiCall = getMaxAiCall(hasPaidForIncrease);
+  const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
   const aiCallLeft = maxAiCall - apiCallCount;
 
   return (
