@@ -155,7 +155,7 @@ export const MealListComponent = () => {
 
                             {meal.dishes?.map((dish) => (
                               <ul key={dish.id} className="mb-4">
-                                <p className="mb-3 text-lg font-medium tracking-wide bg-primary/10 text-primary px-2 py-0.5 rounded-sm inline-block">
+                                <p className="mb-3 text-lg font-medium tracking-wide bg-primary/10 text-primary py-0.5 rounded-sm inline-block">
                                   {dish.dishName}
                                 </p>
                                 {dish.ingredients?.map(
