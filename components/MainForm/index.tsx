@@ -1,7 +1,14 @@
 "use client";
 
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { Dispatch, SetStateAction, useMemo, useState, useRef } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from "react";
 import { Button } from "@/components/Button";
 import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
@@ -120,9 +127,16 @@ export const MainForm = ({
       return;
     }
 
-    sessionStorage.setItem("formState", JSON.stringify(formState));
+    const formData = {
+      dietaryPreferences,
+      breakfast: formState.breakfast,
+      lunch: formState.lunch,
+      dinner: formState.dinner,
+      people,
+    };
 
     if (!user) {
+      sessionStorage.setItem("pendingFormData", JSON.stringify(formData));
       openSignIn();
       return;
     }
@@ -143,6 +157,35 @@ export const MainForm = ({
       openDialogStripe
     );
   };
+
+  useEffect(() => {
+    const handlePostLogin = async () => {
+      if (user) {
+        const pendingFormData = sessionStorage.getItem("pendingFormData");
+        if (pendingFormData) {
+          const formData = JSON.parse(pendingFormData);
+          await handleMealListGeneration(
+            user.id,
+            formData.dietaryPreferences,
+            {
+              breakfast: formData.breakfast,
+              lunch: formData.lunch,
+              dinner: formData.dinner,
+              people: formData.people,
+            },
+            setError,
+            startTransition,
+            setMealList,
+            router,
+            openDialogStripe
+          );
+          sessionStorage.removeItem("pendingFormData");
+        }
+      }
+    };
+
+    handlePostLogin();
+  }, [user]);
 
   const nextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
