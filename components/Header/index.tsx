@@ -1,11 +1,7 @@
-import {
-  getMaxAiCall,
-  UNLIMITED_ACCOUNTS,
-  UNLIMITED_API_CALLS,
-} from "@/utils/user";
+import { UNLIMITED_API_CALLS } from "@/utils/constants";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
-import { getUserInfo } from "@/app/api/actions";
+import { getUserInfo, getMaxAiCall } from "@/app/api/actions";
 import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
 import { ApiCallCountComponent } from "./ApiCallCountComponent";
@@ -16,11 +12,9 @@ export const Header = async () => {
 
   const { apiCallCount, hasPaidForIncrease, name } = await getUserInfo();
   const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
-  const isSpecialAccount = userId && UNLIMITED_ACCOUNTS.includes(userId);
 
-  const aiCallLeft = isSpecialAccount
-    ? UNLIMITED_API_CALLS
-    : maxAiCall - apiCallCount;
+  const aiCallLeft =
+    maxAiCall === UNLIMITED_API_CALLS ? maxAiCall : maxAiCall - apiCallCount;
 
   return (
     <header className="bg-white fixed w-full z-20">

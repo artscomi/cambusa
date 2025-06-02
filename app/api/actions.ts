@@ -10,6 +10,12 @@ import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
 import { mealMenuSchema, mealSchema } from "./schemas/meal-menu";
 import { FormState } from "@/hooks/useFormConfig";
 import { fakeOpenAiCall } from "@/utils/mockMealList";
+import {
+  UNLIMITED_API_CALLS,
+  PAID_TIER_API_CALLS,
+  FREE_TIER_API_CALLS,
+  UNLIMITED_USERS,
+} from "@/utils/constants";
 
 export const getUserInfo = async () => {
   const { userId } = await auth();
@@ -425,4 +431,19 @@ export const getMealListFromDB = async () => {
   } catch (error) {
     console.error("Error getting meal list from DB:", error);
   }
+};
+
+export const checkSpecialAccount = async () => {
+  const { userId } = await auth();
+  return userId && UNLIMITED_USERS.includes(userId);
+};
+
+export const getMaxAiCall = async (hasPaidForIncrease: boolean) => {
+  const isSpecialAccount = await checkSpecialAccount();
+
+  if (isSpecialAccount) {
+    return UNLIMITED_API_CALLS;
+  }
+
+  return hasPaidForIncrease ? PAID_TIER_API_CALLS : FREE_TIER_API_CALLS;
 };

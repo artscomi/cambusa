@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import { getMaxAiCall } from "./user";
 import {
+  getMaxAiCall,
   getMealListFromAi,
   getUserInfo,
   saveMealList,

@@ -5,10 +5,10 @@ import { EmptyMealList } from "./EmptyMealList";
 import { CreateShoppingListCta } from "./CreateShoppingListCta";
 import { useUser } from "@clerk/nextjs";
 import { useFormConfig } from "@/hooks/useFormConfig";
-import { getMaxAiCall } from "@/utils/user";
 import { useEffect, useState } from "react";
 import { DialogStripe } from "../ui/dialogs/Stripe";
 import {
+  getMaxAiCall,
   getUserInfo,
   regenerateSingleMeal,
   saveMealList,
