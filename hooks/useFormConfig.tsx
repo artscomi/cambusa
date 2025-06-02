@@ -134,7 +134,6 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       placeholder:
         "Inserisci le tue preferenze alimentari, allergie o intolleranze...",
       onChange: handleChange("dietaryPreferences"),
-      required: true,
       rows: 4,
     },
   ];

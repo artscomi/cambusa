@@ -34,11 +34,6 @@ export const PageContent: React.FC<{
     preference: string
   ) => {
     e.preventDefault();
-    if (!foodPreferences.trim()) {
-      setFieldError("Le preferenze sono obbligatorie");
-      return;
-    }
-
     setIsLoading(true);
     try {
       const response = await fetch(`/api/groups/${groupId}/set-preferences`, {

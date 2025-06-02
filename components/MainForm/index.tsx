@@ -67,7 +67,6 @@ export const MainForm = ({
   groupData?: GroupData;
   startTransition: (callback: () => void) => void;
 }) => {
-  const formRef = useRef<HTMLFormElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const { inputConfig, formState } = useFormConfig(true);
   const { setMealList } = useMealContext();
@@ -103,12 +102,7 @@ export const MainForm = ({
         return;
       }
 
-      if (field === "dietaryPreferences") {
-        if (value.trim().length < 10) {
-          newErrors[field] =
-            "Inserisci almeno 10 caratteri per le preferenze alimentari";
-        }
-      } else if (value.trim() !== "") {
+      if (value.trim() !== "") {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue <= 0) {
           newErrors[field] = "Inserisci un numero valido maggiore di 0";
@@ -213,7 +207,6 @@ export const MainForm = ({
           {...config}
           error={errors[config.id]}
           rows={2}
-          required={true}
           placeholder="Non mangiamo carne. A colazione mangiamo yogurt e frutta."
         />
       );
