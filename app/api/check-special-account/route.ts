@@ -1,10 +1,6 @@
+import { UNLIMITED_ACCOUNTS } from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
-export const UNLIMITED_ACCOUNTS = [
-  process.env.NEXT_PUBLIC_SPECIAL_USER_1,
-  process.env.NEXT_PUBLIC_SPECIAL_USER_2,
-].filter(Boolean) as string[];
 
 export async function GET() {
   try {

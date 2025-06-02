@@ -1,4 +1,8 @@
-import { getMaxAiCall, UNLIMITED_API_CALLS } from "@/utils/user";
+import {
+  getMaxAiCall,
+  UNLIMITED_ACCOUNTS,
+  UNLIMITED_API_CALLS,
+} from "@/utils/user";
 import { auth } from "@clerk/nextjs/server";
 import { SignInButton } from "@clerk/nextjs";
 import { getUserInfo } from "@/app/api/actions";
@@ -6,7 +10,6 @@ import { DropdownMenuComponent } from "./Dropdown";
 import { Logo } from "./Logo";
 import { ApiCallCountComponent } from "./ApiCallCountComponent";
 import Link from "next/link";
-import { UNLIMITED_ACCOUNTS } from "@/app/api/check-special-account/route";
 
 export const Header = async () => {
   const { userId } = await auth();
