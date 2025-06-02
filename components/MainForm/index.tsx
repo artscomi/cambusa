@@ -102,7 +102,7 @@ export const MainForm = ({
         return;
       }
 
-      if (value.trim() !== "") {
+      if (field !== "dietaryPreferences" && value.trim() !== "") {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue <= 0) {
           newErrors[field] = "Inserisci un numero valido maggiore di 0";
