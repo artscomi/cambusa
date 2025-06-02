@@ -22,20 +22,12 @@ const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
 
-export const MealListComponent = ({
-  savedMealList,
-}: {
-  savedMealList: MealList;
-}) => {
+export const MealListComponent = () => {
   const { mealList, setMealList } = useMealContext();
   const { user } = useUser();
   const { formState } = useFormConfig();
   const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
   const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setMealList(savedMealList);
-  }, [savedMealList, setMealList]);
 
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
@@ -79,7 +71,7 @@ export const MealListComponent = ({
         });
 
         if (response.type === "success") {
-          const updatedMealList = savedMealList.map((mealType) => {
+          const updatedMealList = mealList.map((mealType) => {
             if (mealType.id === mealTypeId) {
               return {
                 ...mealType,

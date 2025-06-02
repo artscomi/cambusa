@@ -6,6 +6,7 @@ import React, {
   useContext,
   useEffect,
 } from "react";
+import { getMealListFromDB } from "@/app/api/actions";
 
 interface MyContextType {
   mealList: MealList | undefined;
@@ -24,10 +25,31 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
   const [mealList, setMealList] = useState<MealList>();
 
   useEffect(() => {
-    const storedMealList = localStorage.getItem("mealList");
-    if (storedMealList) {
-      setMealList(JSON.parse(storedMealList));
-    }
+    const loadInitialData = async () => {
+      try {
+        // First try to load from database
+        const dbMealList = await getMealListFromDB();
+        if (dbMealList) {
+          setMealList(JSON.parse(dbMealList));
+          return;
+        }
+
+        // If no data in DB, try localStorage as fallback
+        const storedMealList = localStorage.getItem("mealList");
+        if (storedMealList) {
+          setMealList(JSON.parse(storedMealList));
+        }
+      } catch (error) {
+        console.error("Error loading meal list:", error);
+        // If error loading from DB, try localStorage as fallback
+        const storedMealList = localStorage.getItem("mealList");
+        if (storedMealList) {
+          setMealList(JSON.parse(storedMealList));
+        }
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   useEffect(() => {
