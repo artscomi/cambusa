@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const UNLIMITED_ACCOUNTS = [
+export const UNLIMITED_ACCOUNTS = [
   process.env.NEXT_PUBLIC_SPECIAL_USER_1,
   process.env.NEXT_PUBLIC_SPECIAL_USER_2,
 ].filter(Boolean) as string[];

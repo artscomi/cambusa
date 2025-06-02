@@ -1,6 +1,6 @@
 export const FREE_TIER_API_CALLS = 3;
 export const PAID_TIER_API_CALLS = 5;
-export const UNLIMITED_API_CALLS = 999;
+export const UNLIMITED_API_CALLS = Infinity;
 
 export const getMaxAiCall = async (hasPaidForIncrease: boolean) => {
   try {
