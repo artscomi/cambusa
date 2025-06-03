@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/Button";
 import { TextInput, TextInputConfig } from "@/components/TextInput";
-import { TextArea } from "@/components/TextArea";
-import { Checkbox } from "@/components/Checkbox";
+import { TextArea, TextAreaConfig } from "@/components/TextArea";
+import { Checkbox, CheckboxProps } from "@/components/Checkbox";
 import { createGroupAction } from "@/app/api/actions";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { useRouter } from "next/navigation";
@@ -49,8 +49,10 @@ export const CreateGroupForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const config = inputConfig.find((c) => c.id === fieldId);
-    if (config?.onChange) {
-      config.onChange(e);
+    if (!config) return;
+
+    if ("onChange" in config && fieldId !== "sameBreakfast") {
+      config.onChange(e as React.ChangeEvent<HTMLInputElement>);
     }
     setErrors((prev) => {
       const newErrors = { ...prev };
@@ -70,13 +72,15 @@ export const CreateGroupForm = () => {
 
       const value = formState[fieldId as keyof typeof formState];
 
-      if (
-        config.required &&
-        (!value || (typeof value === "string" && value.trim() === ""))
-      ) {
-        newErrors[fieldId] = "Questo campo è obbligatorio";
-        isValid = false;
-      } else if (fieldId === "groupSize" && value) {
+      if (!value || (typeof value === "string" && value.trim() === "")) {
+        if ("required" in config && config.required) {
+          newErrors[fieldId] = "Questo campo è obbligatorio";
+          isValid = false;
+        }
+        return;
+      }
+
+      if (fieldId === "people" && value) {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue < 1 || numValue > 20) {
           newErrors[fieldId] = "Inserisci un numero tra 1 e 20";
@@ -103,10 +107,8 @@ export const CreateGroupForm = () => {
       setLoading(true);
       const formData = new FormData();
       Object.entries(formState).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((v) => formData.append(key, v));
-        } else {
-          formData.append(key, value);
+        if (value !== undefined) {
+          formData.append(key, String(value));
         }
       });
 
@@ -197,13 +199,38 @@ export const CreateGroupForm = () => {
                 if (!config) return null;
 
                 if (fieldId === "dietaryPreferences") {
+                  const textAreaConfig = config as TextAreaConfig;
                   return (
                     <TextArea
                       key={fieldId}
-                      {...config}
+                      {...textAreaConfig}
                       onChange={(e) => handleFieldChange(fieldId, e)}
                       error={showErrors ? errors[fieldId] : undefined}
                       rows={8}
+                    />
+                  );
+                }
+
+                if (fieldId === "sameBreakfast") {
+                  const checkboxConfig = config as CheckboxProps;
+                  return (
+                    <Checkbox
+                      key={fieldId}
+                      {...checkboxConfig}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const config = inputConfig.find(
+                          (c) => c.id === fieldId
+                        );
+                        if (config?.onChange) {
+                          config.onChange(e);
+                        }
+                        setErrors((prev) => {
+                          const newErrors = { ...prev };
+                          delete newErrors[fieldId];
+                          return newErrors;
+                        });
+                      }}
+                      error={showErrors ? errors[fieldId] : undefined}
                     />
                   );
                 }
