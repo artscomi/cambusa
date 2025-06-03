@@ -22,6 +22,13 @@ export default function Page() {
             display:
               typeof window !== "undefined" && isInWebview() ? "none" : "block",
           },
+          footerActionLink: {
+            color: "var(--clerk-primary)",
+          },
+        },
+        layout: {
+          termsPageUrl: "/termini",
+          privacyPageUrl: "/privacy",
         },
       }}
     />
