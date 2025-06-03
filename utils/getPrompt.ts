@@ -36,7 +36,7 @@ Ogni pasto deve avere:
   * ID univoco
   * Nome (con emoji)
   * Quantità
-  * Unità di misura (grammi, pezzi, tazze)
+  * Unità di misura (g, pezzi, tazze)
 `;
 
 export const getRegenerateMealPrompt = ({
@@ -68,5 +68,5 @@ Genera un oggetto JSON che rappresenti un pasto con:
   * ID univoco
   * Nome (con emoji)
   * Quantità
-  * Unità di misura (grammi, pezzi, tazze)
+  * Unità di misura (g, pezzi, tazze)
 `;
