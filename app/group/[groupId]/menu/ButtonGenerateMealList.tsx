@@ -18,6 +18,7 @@ export const ButtonGenerateMealList: React.FC<{
     lunch: string;
     dinner: string;
     people: string;
+    sameBreakfast: boolean;
   };
 }> = ({
   userId,

@@ -143,7 +143,13 @@ export const PageContent = ({
               startTransition={startTransition}
               userId={user.id}
               dietaryPreferences={preferenceString()}
-              groupMeals={{ breakfast, lunch, dinner, people }}
+              groupMeals={{
+                breakfast,
+                lunch,
+                dinner,
+                people,
+                sameBreakfast: false,
+              }}
             />
           </div>
         </div>
