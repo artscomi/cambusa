@@ -21,6 +21,7 @@ import { TextArea } from "../TextArea";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Utensils, Heart, ArrowRight } from "lucide-react";
+import { Checkbox } from "../Checkbox";
 
 export type Result = { type: "success"; menu: MealList } | ResultErrors;
 
