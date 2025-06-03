@@ -9,7 +9,7 @@ const findExistingIngredient = (acc: Ingredient[], ingredient: Ingredient) => {
 
 // Helper function to handle unit conversion from grams to kilograms
 const convertUnits = (ingredient: Ingredient) => {
-  if (ingredient.unit === "grammi" && ingredient.quantity >= 1000) {
+  if (ingredient.unit === "g" && ingredient.quantity >= 1000) {
     ingredient.quantity /= 1000;
     ingredient.unit = "kg";
   }
