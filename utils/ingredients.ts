@@ -10,7 +10,7 @@ const findExistingIngredient = (acc: Ingredient[], ingredient: Ingredient) => {
 // Helper function to handle unit conversion from grams to kilograms
 const convertUnits = (ingredient: Ingredient) => {
   if (ingredient.unit === "g" && ingredient.quantity >= 1000) {
-    ingredient.quantity /= 1000;
+    ingredient.quantity = Number((ingredient.quantity / 1000).toFixed(2));
     ingredient.unit = "kg";
   }
 };
@@ -24,7 +24,9 @@ export const sumIngredients = (mealList: MealList): Ingredient[] => {
           const existing = findExistingIngredient(acc, ingredient);
 
           if (existing) {
-            existing.quantity += ingredient.quantity;
+            existing.quantity = Number(
+              (existing.quantity + ingredient.quantity).toFixed(2)
+            );
           } else {
             acc.push({ ...ingredient });
           }

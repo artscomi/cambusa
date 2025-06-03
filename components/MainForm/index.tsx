@@ -246,6 +246,9 @@ export const MainForm = ({
         {...config}
         onChange={handleChange}
         error={errors[config.id]}
+        errorMessage={
+          formState[`${config.id}Error` as keyof typeof formState] as string
+        }
       />
     );
   };

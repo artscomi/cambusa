@@ -21,7 +21,7 @@ export const getMainPrompt = ({
  Genera un oggetto JSON che rappresenti un piano alimentare. L'oggetto deve avere tre categorie principali: "colazioni", "pranzi" e "cene".
 Per ogni categoria, includi il numero di pasti indicato.
 Ogni pasto deve avere almeno un piatto, e ogni piatto deve contenere 2-4 ingredienti.
-Ogni ingrediente deve avere un ID, nome dell'elemento (usando le emoji per gli alimenti), una quantità e un'unità di misura (ad es. grammi, pezzi, tazze).
+Ogni ingrediente deve avere un ID, nome dell'elemento (usando le emoji per gli alimenti), una quantità e un'unità di misura (ad es. g, pezzi, tazze). Converti in kg se la quantità è superiore a 1000g.
 Gli ID per ogni categoria, pasto, piatto e ingrediente devono essere unici.
 `;
 

@@ -15,6 +15,7 @@ export type TextInputConfig = {
   error?: string;
   name?: string;
   required?: boolean;
+  errorMessage?: string;
 };
 
 export const TextInput = ({
@@ -31,6 +32,7 @@ export const TextInput = ({
   error,
   name,
   required,
+  errorMessage,
 }: TextInputConfig) => (
   <div className={`${center ? "flex flex-col items-center" : ""}`}>
     <div className={`relative last:mb-0 ${error ? "mb-6" : ""}`}>
@@ -61,7 +63,7 @@ export const TextInput = ({
         name={name}
         required={required}
       />
-      {!!error && (
+      {(!!error || !!errorMessage) && (
         <div className="flex items-center gap-1 mt-1 text-red-500 text-sm animate-fadeIn">
           <svg
             className="w-4 h-4"
@@ -76,7 +78,7 @@ export const TextInput = ({
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p>{error}</p>
+          <p>{errorMessage || error}</p>
         </div>
       )}
     </div>

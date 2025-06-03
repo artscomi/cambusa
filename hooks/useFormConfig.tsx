@@ -11,6 +11,12 @@ export type FormState = {
   dinner: string;
   groupName?: string;
   sameBreakfast: boolean;
+  peopleError?: string;
+  dietaryPreferencesError?: string;
+  breakfastError?: string;
+  lunchError?: string;
+  dinnerError?: string;
+  groupNameError?: string;
 };
 
 export type FormStateKeys = keyof FormState;
@@ -47,7 +53,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
     (field: FormStateKeys) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const value = e.target.value;
-      const maxValue = field === "people" ? 20 : 7;
+      const maxValue = field === "people" ? 20 : 10;
 
       const numericValue = Number(value);
       if (field === "dietaryPreferences" || field === "groupName") {
@@ -60,6 +66,12 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
           numericValue < 0 ||
           numericValue > maxValue
         ) {
+          if (numericValue > maxValue) {
+            setFormState((prevState) => ({
+              ...prevState,
+              [`${field}Error`]: `Il numero massimo consentito è ${maxValue}`,
+            }));
+          }
           return;
         }
       }
@@ -67,6 +79,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       setFormState((prevState) => ({
         ...prevState,
         [field]: value,
+        [`${field}Error`]: undefined,
       }));
     };
 
