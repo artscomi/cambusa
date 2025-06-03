@@ -24,8 +24,15 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           id={id}
           checked={checked}
           onChange={onChange}
+          style={{
+            accentColor: "var(--accent-light)",
+            width: "1.5rem",
+            height: "1.5rem",
+            marginRight: "0.75rem",
+            cursor: "pointer",
+          }}
           className={cn(
-            "w-4 h-4 rounded border-2 border-secondary checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
+            "rounded border-2 border-secondary checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
             error && "border-red-500"
           )}
         />

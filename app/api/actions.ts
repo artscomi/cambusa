@@ -175,10 +175,12 @@ export const getMealListFromAi = async ({
   | { type: "user-not-found"; error: string }
 > => {
   "use server";
+  // log the prompt
+  console.log("prompt", getMainPrompt(formValues));
 
   try {
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4o-mini"),
@@ -211,10 +213,8 @@ export const getMealListFromAi = async ({
       },
     });
 
-    // Log prompts and result
-    console.log("prompt", getMainPrompt(formValues));
+    // Log result
     console.log("result", result.object);
-    console.log("api call", user.apiCallCount);
 
     // Return success response
     return { type: "success", menu: result.object.menu };

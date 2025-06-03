@@ -2,7 +2,7 @@ export type TextInputConfig = {
   id: string;
   label: string;
   value: string | undefined;
-  type?: "number" | "text";
+  type?: "number" | "text" | "checkbox";
   placeholder: string;
   inputType?: "numeric" | "text";
   onChange: (

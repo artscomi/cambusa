@@ -16,6 +16,7 @@ export const handleMealListGeneration = async (
     lunch: string;
     dinner: string;
     people: string;
+    sameBreakfast: boolean;
   },
   setError: Dispatch<SetStateAction<string | null>>,
   startTransition: (callback: () => void) => void,
@@ -25,6 +26,8 @@ export const handleMealListGeneration = async (
 ) => {
   scrollTo(0, 0);
   setError(null);
+
+  console.log({ groupMeals });
 
   const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
   const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
@@ -42,6 +45,7 @@ export const handleMealListGeneration = async (
           dinner: groupMeals.dinner,
           dietaryPreferences,
           people: groupMeals.people,
+          sameBreakfast: groupMeals.sameBreakfast,
         },
         userId,
       });

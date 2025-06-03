@@ -20,7 +20,7 @@ import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Utensils, Heart, ArrowRight, ArrowLeft } from "lucide-react";
+import { Users, Utensils, Heart, ArrowRight } from "lucide-react";
 
 export type Result = { type: "success"; menu: MealList } | ResultErrors;
 
@@ -48,7 +48,7 @@ const steps: Step[] = [
     title: "Pasti",
     description: "Quanti pasti prevede il tuo viaggio?",
     icon: <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />,
-    fields: ["breakfast", "lunch", "dinner"],
+    fields: ["breakfast", "sameBreakfast", "lunch", "dinner"],
   },
   {
     title: "Preferenze",
@@ -95,14 +95,22 @@ export const MainForm = ({
 
       if (!config) return;
 
-      if (!value || value.trim() === "") {
-        if (config.required) {
+      if (config.id === "sameBreakfast") {
+        return; // Skip validation for checkbox
+      }
+
+      if (!value || (typeof value === "string" && value.trim() === "")) {
+        if ("required" in config && config.required) {
           newErrors[field] = "Questo campo è obbligatorio";
         }
         return;
       }
 
-      if (field !== "dietaryPreferences" && value.trim() !== "") {
+      if (
+        field !== "dietaryPreferences" &&
+        typeof value === "string" &&
+        value.trim() !== ""
+      ) {
         const numValue = Number(value);
         if (isNaN(numValue) || numValue <= 0) {
           newErrors[field] = "Inserisci un numero valido maggiore di 0";
@@ -127,6 +135,7 @@ export const MainForm = ({
       lunch: formState.lunch,
       dinner: formState.dinner,
       people,
+      sameBreakfast: formState.sameBreakfast,
     };
 
     if (!user) {
@@ -143,6 +152,7 @@ export const MainForm = ({
         lunch: formState.lunch,
         dinner: formState.dinner,
         people,
+        sameBreakfast: formState.sameBreakfast,
       },
       setError,
       startTransition,
@@ -166,6 +176,7 @@ export const MainForm = ({
               lunch: formData.lunch,
               dinner: formData.dinner,
               people: formData.people,
+              sameBreakfast: formData.sameBreakfast,
             },
             setError,
             startTransition,
@@ -203,13 +214,11 @@ export const MainForm = ({
     const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-      // Clear error for this field when input changes
       setErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[config.id];
         return newErrors;
       });
-      // Call the original onChange if it exists
       config.onChange?.(e);
     };
 
@@ -225,6 +234,11 @@ export const MainForm = ({
         />
       );
     }
+
+    if (config.id === "sameBreakfast") {
+      return <Checkbox key={config.id} {...config} onChange={handleChange} />;
+    }
+
     return (
       <TextInput
         key={config.id}
@@ -249,7 +263,7 @@ export const MainForm = ({
       )}
 
       {/* Progress Bar */}
-      <div className="mb-16 z-10 relative">
+      <div className="mb-8 z-10 relative">
         <div ref={progressRef} className="flex justify-between mb-2">
           {steps.map((step, index) => (
             <p

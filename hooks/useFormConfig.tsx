@@ -1,5 +1,6 @@
 import { TextInputConfig } from "@/components/TextInput";
 import { TextAreaConfig } from "@/components/TextArea";
+import { CheckboxProps } from "@/components/Checkbox";
 import { useState } from "react";
 
 export type FormState = {
@@ -9,6 +10,7 @@ export type FormState = {
   lunch: string;
   dinner: string;
   groupName?: string;
+  sameBreakfast: boolean;
 };
 
 export type FormStateKeys = keyof FormState;
@@ -20,6 +22,7 @@ const initialState: FormState = {
   dinner: "",
   groupName: "",
   breakfast: "",
+  sameBreakfast: false,
 };
 
 const getStoredState = (): FormState => {
@@ -67,7 +70,7 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       }));
     };
 
-  const inputConfig: (TextInputConfig | TextAreaConfig)[] = [
+  const inputConfig: (TextInputConfig | TextAreaConfig | CheckboxProps)[] = [
     ...(!isSimpleFlow
       ? [
           {
@@ -92,6 +95,18 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       type: "number",
       inputType: "numeric",
       onChange: handleChange("breakfast"),
+    },
+    {
+      name: "sameBreakfast",
+      id: "sameBreakfast",
+      label: "Vorrei la stessa colazione ogni giorno",
+      checked: formState.sameBreakfast,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormState((prev) => ({
+          ...prev,
+          sameBreakfast: e.target.checked,
+        }));
+      },
     },
     {
       name: "lunch",
