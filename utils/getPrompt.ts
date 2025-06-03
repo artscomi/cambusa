@@ -15,7 +15,7 @@ export const getMainPrompt = ({
   I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici ed evita l'uso del forno.
   Per le colazioni, ${
     sameBreakfast
-      ? "usa lo stesso menu per tutti i giorni"
+      ? "usa lo stesso menu per tutti i giorni ma crea un pasto per ogni giorno anche se è lo stesso"
       : "usa un menu diverso per ogni giorno"
   }.
  Genera un oggetto JSON che rappresenti un piano alimentare. L'oggetto deve avere tre categorie principali: "colazioni", "pranzi" e "cene".
