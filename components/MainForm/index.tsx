@@ -200,18 +200,39 @@ export const MainForm = ({
   );
 
   const renderInput = (config: any) => {
+    const handleChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+      // Clear error for this field when input changes
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[config.id];
+        return newErrors;
+      });
+      // Call the original onChange if it exists
+      config.onChange?.(e);
+    };
+
     if (config.id === "dietaryPreferences") {
       return (
         <TextArea
           key={config.id}
           {...config}
+          onChange={handleChange}
           error={errors[config.id]}
           rows={2}
           placeholder="Non mangiamo carne. A colazione mangiamo yogurt e frutta."
         />
       );
     }
-    return <TextInput key={config.id} {...config} error={errors[config.id]} />;
+    return (
+      <TextInput
+        key={config.id}
+        {...config}
+        onChange={handleChange}
+        error={errors[config.id]}
+      />
+    );
   };
 
   return (
