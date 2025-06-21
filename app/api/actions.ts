@@ -108,7 +108,7 @@ export const regenerateSingleMeal = async ({
     }
 
     const result = await generateObject({
-      model: openai("gpt-4o-mini"),
+      model: openai("gpt-4o"),
       prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
       schema: mealSchema,
     });
@@ -180,7 +180,7 @@ export const getMealListFromAi = async ({
 
   try {
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4o-mini"),
@@ -214,7 +214,7 @@ export const getMealListFromAi = async ({
     });
 
     // Log result
-    console.log("result", result.object);
+    console.log("result", JSON.stringify(result.object, null, 2));
 
     // Return success response
     return { type: "success", menu: result.object.menu };
