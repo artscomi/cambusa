@@ -185,37 +185,42 @@ export default function BlogPost() {
           </div>
         </section>
 
-        {/* 4. Tortillas con Verdure e Tonno */}
+        {/* 4. Panini con Prosciutto e Mozzarella */}
         <section className="mb-12">
-          <h2>4. Tortillas con Verdure e Tonno</h2>
+          <h2>4. Panini con Prosciutto e Mozzarella</h2>
           {/* <div className="mt-4 mb-6">
             <Image
-              src="/images/blog/tortillas-tonno.png"
-              alt="Tortillas tonno e verdure"
+              src="/images/blog/panini-prosciutto-mozzarella.png"
+              alt="Panini prosciutto e mozzarella"
               width={800}
               height={600}
               className="rounded-xl shadow object-cover w-full h-auto"
             />
           </div> */}
           <p>
-            Le tortillas di grano sono ideali da farcire al volo. Tonno
-            sgocciolato, mais, insalata croccante e maionese leggera: arrotola e
-            il gioco è fatto!
+            Un classico della tradizione italiana! Panini freschi farciti con
+            prosciutto crudo, mozzarella fresca, rucola e un filo d&apos;olio
+            extravergine. Semplice, gustoso e perfetto per un pranzo veloce in
+            navigazione.
           </p>
 
           <div className="bg-gray-50 p-6 rounded-xl mt-6">
             <h3 className="text-xl font-semibold">Ricetta:</h3>
             <ul className="list-inside list-disc mt-4">
-              <li>4 tortillas di grano</li>
-              <li>1 scatola di tonno sott&apos;olio</li>
-              <li>100g di mais</li>
-              <li>Insalata mista</li>
-              <li>2 cucchiai di maionese leggera</li>
+              <li>4 fette di pane in cassetta</li>
+              <li>200g di prosciutto crudo</li>
+              <li>200g di mozzarella fresca</li>
+              <li>Rucola fresca</li>
+              <li>Insalata lattuga</li>
+              <li>Olio extravergine d&apos;oliva</li>
+              <li>Sale e pepe q.b.</li>
             </ul>
             <h4 className="font-semibold mt-4">Preparazione:</h4>
             <ol className="list-decimal pl-5">
-              <li>Unisci tonno, mais, insalata e maionese.</li>
-              <li>Farcisci le tortillas e arrotolale.</li>
+              <li>Taglia i panini a metà e spalma un filo d&apos;olio.</li>
+              <li>Adagia il prosciutto crudo su ogni metà.</li>
+              <li>Aggiungi fette di mozzarella, rucola e insalata.</li>
+              <li>Condisci con sale, pepe e un altro filo d&apos;olio.</li>
             </ol>
           </div>
         </section>
