@@ -13,6 +13,15 @@ export const metadata: Metadata = {
 const articles = [
   {
     title:
+      "Cibi Contro il Mal di Mare: Alimentazione per Navigare Senza Nausea",
+    description:
+      "Scopri quali cibi mangiare per prevenire il mal di mare e mantenere l'equilibrio durante la navigazione. Consigli pratici per una crociera senza nausea.",
+    slug: "cibi-contro-mal-di-mare",
+    date: "2024-03-21",
+    readTime: "6 min",
+  },
+  {
+    title:
       "Come Organizzare una Cambusa Efficiente: Guida Completa per Evitare gli Sprechi",
     description:
       "Scopri i segreti per una gestione ottimale della cambusa in barca. Dalla pianificazione alla conservazione, impara a evitare gli sprechi e mantenere una dieta equilibrata durante la navigazione.",
