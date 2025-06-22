@@ -26,6 +26,14 @@ interface Step {
   options?: StepOption[];
 }
 
+// Helper function to build URLs without double slashes
+const buildUrl = (baseUrl: string | undefined, path: string): string => {
+  if (!baseUrl) return `https://www.cambusa-online.com/${path}`;
+  const cleanBaseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+  const cleanPath = path.replace(/^\//, ""); // Remove leading slash
+  return `${cleanBaseUrl}/${cleanPath}`;
+};
+
 export const PageContent: React.FC<{
   groupId: string;
   group: {
@@ -67,7 +75,7 @@ export const PageContent: React.FC<{
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
-  const groupLink = isTheGroupOwner && `${baseUrl}/group/${groupId}/`;
+  const groupLink = isTheGroupOwner && buildUrl(baseUrl, `group/${groupId}/`);
 
   const steps: Step[] = [
     {

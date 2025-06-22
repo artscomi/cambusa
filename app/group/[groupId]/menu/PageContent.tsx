@@ -5,6 +5,7 @@ import { Loading } from "@/components/Loading";
 import { useUser } from "@clerk/nextjs";
 import { GroupInfo } from "@/types/types";
 import { ToastError } from "@/components/ToastError";
+import { Button } from "@/components/Button";
 import CopyLink from "@/components/CopyLinkButton";
 import {
   CookingPot,
@@ -29,6 +30,14 @@ interface GroupedPreference {
   groupId: string;
   preference: string;
 }
+
+// Helper function to build URLs without double slashes
+const buildUrl = (baseUrl: string | undefined, path: string): string => {
+  if (!baseUrl) return `https://www.cambusa-online.com/${path}`;
+  const cleanBaseUrl = baseUrl.replace(/\/$/, ""); // Remove trailing slash
+  const cleanPath = path.replace(/^\//, ""); // Remove leading slash
+  return `${cleanBaseUrl}/${cleanPath}`;
+};
 
 export const PageContent = ({
   group,
@@ -214,7 +223,10 @@ export const PageContent = ({
               </div>
               <div className="flex-shrink-0">
                 <CopyLink
-                  url={`${process.env.NEXT_PUBLIC_BASE_URL}/group/${group.groupId}`}
+                  url={buildUrl(
+                    process.env.NEXT_PUBLIC_BASE_URL,
+                    `group/${group.groupId}`
+                  )}
                 />
               </div>
             </div>
