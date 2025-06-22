@@ -89,6 +89,72 @@ h2 {
   }
 }
 
+/* Blog-specific styles */
+@layer components {
+  .blog-card {
+    @apply bg-white rounded-2xl shadow-sm transition-all duration-500 overflow-hidden border border-gray-100;
+  }
+  
+  .blog-gradient-text {
+    @apply bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent;
+  }
+  
+  .blog-button {
+    @apply bg-gradient-to-r from-primary to-primary-light text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg transition-all duration-300;
+  }
+  
+  .blog-button:hover {
+    @apply transform scale-105;
+  }
+  
+  .blog-button-secondary {
+    @apply bg-white text-primary border-2 border-primary px-8 py-4 rounded-full font-semibold text-lg hover:bg-primary hover:text-white transition-all duration-300;
+  }
+  
+  .blog-button-secondary:hover {
+    @apply transform scale-105;
+  }
+  
+  .blog-category-badge {
+    @apply bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm;
+  }
+  
+  .blog-header-gradient {
+    @apply bg-gradient-to-br from-primary to-primary-light;
+  }
+  
+  .blog-cta-background {
+    @apply bg-gradient-to-r from-primary-40 to-secondary-40 rounded-3xl;
+  }
+  
+  .blog-cta-card {
+    @apply bg-white/80 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-gray-100 shadow-lg;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
 /*remove arrows/spinners from input type number */
 input[type="number"] {
   -moz-appearance: textfield;
