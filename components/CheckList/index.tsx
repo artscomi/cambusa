@@ -361,7 +361,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900 text-primary">
                   Aggiungi ingrediente
                 </h2>
                 <button

@@ -1,14 +1,7 @@
 "use client";
 
 import { useFormConfig } from "@/hooks/useFormConfig";
-import {
-  Dispatch,
-  SetStateAction,
-  useMemo,
-  useState,
-  useRef,
-  useEffect,
-} from "react";
+import { Dispatch, SetStateAction, useState, useRef, useEffect } from "react";
 import { Button } from "@/components/Button";
 import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
@@ -19,7 +12,6 @@ import { GroupData, MealList } from "@/types/types";
 import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
 import { Select } from "../Select";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Users,
@@ -106,13 +98,6 @@ export const MainForm = ({
   const { openDialogStripe } = useStripeModal();
   const [currentStep, setCurrentStep] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const LottieAnimation = useMemo(
-    () =>
-      dynamic(() => import("@/components/LottieAnimation"), {
-        ssr: false,
-      }),
-    []
-  );
 
   const validateStep = (stepIndex: number): boolean => {
     const stepFields = steps[stepIndex].fields;
@@ -366,7 +351,7 @@ export const MainForm = ({
   };
 
   return (
-    <div className="z-10 md:rounded-lg p-8 md:p-14 md:shadow-md relative max-sm:-mx-8 overflow-y-clip bg-white">
+    <div className="z-10 relative w-full">
       {groupData ? (
         <h1 className="mb-10 text-3xl">{`Genera la tua cambusa per il gruppo ${groupData.id}`}</h1>
       ) : (
@@ -402,10 +387,7 @@ export const MainForm = ({
         </div>
       </div>
 
-      <form
-        className="z-10 flex-1 relative bg-white p-4 rounded-lg"
-        onSubmit={handleSubmit}
-      >
+      <form className="z-10 flex-1 relative w-full" onSubmit={handleSubmit}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -454,10 +436,6 @@ export const MainForm = ({
           )}
         </div>
       </form>
-
-      <div className="absolute left-0 right-0 top-0 bottom-0 sm:overflow-hidden sm:hidden">
-        <LottieAnimation name="waveBig" isResponsive={false} speed={0.1} />
-      </div>
     </div>
   );
 };

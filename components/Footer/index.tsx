@@ -1,7 +1,7 @@
 import { Instagram } from "lucide-react";
 
 export const Footer = () => (
-  <footer className="text-primary py-4 mt-24">
+  <footer className="text-primary py-2 mt-16">
     <div className="container mx-auto">
       <div className="flex flex-col md:flex-row items-center justify-between gap-2 mb-5">
         {/* <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6 justify-end mb-3">

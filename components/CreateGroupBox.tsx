@@ -1,29 +1,60 @@
 "use client";
 
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export const CreateGroupBox = () => {
-  return (
-    <form className="z-10 relative p-4 rounded-lg">
-      <p className="text-center text-primary mb-3 font-semibold text-lg">
-        Oppure
-      </p>
-      <span role="img" className="text-center block mb-2 text-2xl">
-        👫👬👭
-      </span>
-      <h2 className="mb-8 text-center text-balance text-xl text-gray-500">
-        Crea il tuo gruppo per raccogliere
-        <br />
-        <span className="text-white highlight">le preferenze alimentari</span>
-        <br />
-        di tutta la ciurma!
-      </h2>
+export const CreateGroupBox: React.FC = () => {
+  const [isHovered, setIsHovered] = useState(false);
 
-      <Link href="/group/create-group">
-        <button className="h-15 p-2 underline leading-32 block m-auto font-cta text-primary text-lg">
+  return (
+    <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      className="bg-gradient-to-br from-primary to-primary-light rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 text-white w-full h-full flex flex-col justify-center cursor-pointer"
+      role="button"
+      tabIndex={0}
+      aria-label="Crea un gruppo"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={() => (window.location.href = "/group/create-group")}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          window.location.href = "/group/create-group";
+        }
+      }}
+    >
+      <div className="text-center">
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-4 sm:mb-6">
+          <Users className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+        </div>
+
+        <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-white">
           Crea un gruppo
-        </button>
-      </Link>
-    </form>
+        </h2>
+
+        <p className="text-base sm:text-lg mb-6 sm:mb-8 text-white/95 leading-relaxed">
+          Raccogli le preferenze alimentari di tutta la ciurma in un unico posto
+        </p>
+
+        <motion.button
+          animate={{ scale: isHovered ? 1.02 : 1 }}
+          whileTap={{ scale: 0.98 }}
+          className="bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto w-full sm:w-auto justify-center"
+        >
+          <span>Crea un gruppo</span>
+          <motion.div
+            animate={{ x: isHovered ? 5 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <ArrowRight size={18} className="sm:w-5 sm:h-5" />
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.div>
   );
 };

@@ -11,7 +11,7 @@ export const Logo = () => {
   return (
     <Link href="/">
       <p className="text-primary text-2xl font-display font-bold relative py-2">
-        Cambusa<span className="text-secondary">Ai</span>
+        Cambusa<span className="text-secondary">ai</span>
       </p>
     </Link>
   );

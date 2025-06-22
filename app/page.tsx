@@ -2,14 +2,21 @@
 
 import { CreateGroupBox } from "@/components/CreateGroupBox";
 import { Loading } from "@/components/Loading";
-import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
+import { FeaturesCarousel } from "@/components/FeaturesCarousel";
+import { MenuFormBox } from "@/components/MenuFormBox";
 import { useEffect, useState, useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Toast from "@/components/Toast";
 import { resetApiCallCount } from "./api/actions";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  containerVariants,
+  itemVariants,
+  blogHeaderVariants,
+} from "@/animations/framer-variants";
+import { Anchor, Users, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -53,56 +60,87 @@ export default function Home() {
   return isPending ? (
     <Loading />
   ) : (
-    <>
-      <main
-        className="max-sm:flex max-sm:-mt-10 flex-col justify-center pb-safe"
-        role="main"
-      >
-        <header className="max-md:pt-10 md:mb-16 max-w-[800px]">
-          <h1 className="text-5xl sm:text-6xl font-display font-bold relative">
-            <Link href="/" aria-label="Torna alla home di cambusaai">
-              Cambusa<span className="text-secondary">ai</span>
-            </Link>
-          </h1>
-
-          <p
-            className={
-              "text-base lg:text-xl text-left text-pretty font-subtitle text-gray-700 mb-4 mt-4"
-            }
-            role="doc-subtitle"
-          >
-            Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti a
-            salpare? ⛵
-          </p>
-        </header>
-
-        <section
-          className="w-full items-center"
-          aria-label="Strumenti di pianificazione menu"
-          aria-describedby="section-description"
+    <AnimatePresence>
+      <main className="min-h-screen">
+        {/* Hero Section */}
+        <motion.section
+          variants={blogHeaderVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative pt-4 sm:pt-8 pb-4 sm:pb-8 px-4"
         >
-          <div id="section-description" className="sr-only">
-            Sezione per la creazione e pianificazione del menu settimanale per
-            l'equipaggio
-          </div>
-          <div className="flex flex-col md:flex-row justify-items-center gap-8 md:gap-16 items-center">
-            <div
-              className="flex-1 w-full"
-              role="complementary"
-              aria-label="Form di creazione menu"
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <motion.header
+              variants={itemVariants}
+              className="text-center mb-8 sm:mb-12"
             >
-              <MainForm startTransition={startTransition} setError={setError} />
-            </div>
-            <div
-              className="flex-1 w-full md:mt-0 -mt-4"
-              role="complementary"
-              aria-label="Creazione gruppo"
-            >
-              <CreateGroupBox />
-            </div>
-          </div>
-        </section>
+              <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6">
+                <Link
+                  href="/"
+                  aria-label="Torna alla home di cambusaai"
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  Cambusa<span className="text-primary">ai</span>
+                </Link>
+              </h1>
 
+              <motion.p
+                variants={itemVariants}
+                className="text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-2"
+                role="doc-subtitle"
+              >
+                Crea il menu perfetto per tutto l&apos;equipaggio.
+                <br className="hidden sm:block" /> Siete pronti a salpare? ⛵
+              </motion.p>
+            </motion.header>
+
+            {/* Features Grid */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="mb-8 sm:mb-12"
+            >
+              <FeaturesCarousel />
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Main Content Section */}
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative px-4"
+          aria-label="Strumenti di pianificazione menu"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-stretch">
+              {/* Menu Form Box */}
+              <motion.div
+                variants={itemVariants}
+                className="order-1 w-full h-full"
+                role="complementary"
+                aria-label="Box di creazione menu"
+              >
+                <MenuFormBox />
+              </motion.div>
+
+              {/* Create Group Box */}
+              <motion.div
+                variants={itemVariants}
+                className="order-2 w-full h-full"
+                role="complementary"
+                aria-label="Creazione gruppo"
+              >
+                <CreateGroupBox />
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Toast Notifications */}
         <div role="alert" aria-live="polite">
           <ToastError error={error} setError={setError} />
           <Toast
@@ -113,41 +151,6 @@ export default function Home() {
           />
         </div>
       </main>
-
-      <aside aria-hidden="true" className="decorative-elements">
-        <Image
-          alt="Mela decorativa per la pianificazione dei pasti di Cambusa"
-          height={60}
-          width={60}
-          priority
-          src="/apple.png"
-          className="absolute top-20 right-28 rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-0 max-sm:top-16"
-        />
-        <Image
-          alt="Cestino della spesa per la cambusa della barca a vela"
-          height={120}
-          width={120}
-          src="/basket.png"
-          priority
-          className="absolute top-[66px] right-[150px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:right-2 max-sm:top-[51px]"
-        />
-        <Image
-          alt="Avocado fresco per il menu settimanale della cambusa"
-          height={80}
-          width={80}
-          src="/avocado.png"
-          priority
-          className="absolute bottom-36 right-5 sm:right-20 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:right-4"
-        />
-        <Image
-          alt="Broccoli freschi per la spesa dell'equipaggio"
-          height={150}
-          width={150}
-          src="/broccoli.png"
-          priority
-          className="absolute bottom-36 max-sm:left-0 sm:right-[140px] -rotate-12 w-auto h-auto max-sm:scale-50 max-sm:bottom-16 max-sm:left-4"
-        />
-      </aside>
-    </>
+    </AnimatePresence>
   );
 }
