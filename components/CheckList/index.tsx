@@ -340,7 +340,6 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
               width={25}
             />
           </motion.button>
-          <EverlyButton ingredients={items} className="p-4 rounded shadow-md" />
         </div>
       </div>
 
