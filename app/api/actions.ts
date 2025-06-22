@@ -180,7 +180,7 @@ export const getMealListFromAi = async ({
 
   try {
     const result =
-      process.env.NODE_ENV !== "development"
+      process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4o-mini"),
