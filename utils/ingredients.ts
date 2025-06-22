@@ -39,3 +39,25 @@ export const sumIngredients = (mealList: MealList): Ingredient[] => {
     return acc;
   }, []);
 };
+
+// Function to combine food ingredients with alcohol ingredients
+export const combineIngredients = (
+  foodIngredients: Ingredient[],
+  alcoholIngredients: Ingredient[]
+): Ingredient[] => {
+  const allIngredients = [...foodIngredients];
+
+  alcoholIngredients.forEach((alcoholIngredient) => {
+    const existing = findExistingIngredient(allIngredients, alcoholIngredient);
+
+    if (existing) {
+      existing.quantity = Number(
+        (existing.quantity + alcoholIngredient.quantity).toFixed(2)
+      );
+    } else {
+      allIngredients.push({ ...alcoholIngredient });
+    }
+  });
+
+  return allIngredients;
+};

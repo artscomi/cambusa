@@ -18,10 +18,18 @@ import { useStripeModal } from "@/context/useStripeModalContext";
 import { GroupData, MealList } from "@/types/types";
 import { TextInput } from "../TextInput";
 import { TextArea } from "../TextArea";
+import { Select } from "../Select";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Utensils, Heart, ArrowRight } from "lucide-react";
-import { Checkbox } from "../Checkbox";
+import {
+  Users,
+  Utensils,
+  Heart,
+  ArrowRight,
+  Wine,
+  Droplets,
+} from "lucide-react";
+import { Checkbox } from "../Checkbox/index";
 
 export type Result = { type: "success"; menu: MealList } | ResultErrors;
 
@@ -52,10 +60,22 @@ const steps: Step[] = [
     fields: ["breakfast", "sameBreakfast", "lunch", "dinner"],
   },
   {
-    title: "Preferenze",
+    title: "Preferenze alimentari",
     description: "Aggiungi le preferenze alimentari del gruppo",
     icon: <Heart className="w-5 h-5 sm:w-6 sm:h-6" />,
     fields: ["dietaryPreferences"],
+  },
+  {
+    title: "Preferenze sugli alcolici",
+    description: "Aggiungi le preferenze sugli alcolici del gruppo",
+    icon: <Wine className="w-5 h-5 sm:w-6 sm:h-6" />,
+    fields: ["alcoholPreferences"],
+  },
+  {
+    title: "Preferenza acqua",
+    description: "Che tipo di acqua preferisci?",
+    icon: <Droplets className="w-5 h-5 sm:w-6 sm:h-6" />,
+    fields: ["waterPreference"],
   },
 ];
 
@@ -70,8 +90,15 @@ export const MainForm = ({
 }) => {
   const progressRef = useRef<HTMLDivElement>(null);
   const { inputConfig, formState } = useFormConfig(true);
-  const { setMealList } = useMealContext();
-  const { dietaryPreferences, people } = formState;
+  const {
+    setMealList,
+    setAlcoholPreferences,
+    setWaterPreference,
+    setPeople,
+    setGroupAlcoholPreferences,
+  } = useMealContext();
+  const { dietaryPreferences, alcoholPreferences, waterPreference, people } =
+    formState;
   const { user } = useUser();
   const router = useRouter();
   const { openSignIn } = useClerk();
@@ -101,7 +128,14 @@ export const MainForm = ({
       }
 
       if (!value || (typeof value === "string" && value.trim() === "")) {
-        if ("required" in config && config.required) {
+        if (field === "alcoholPreferences" || field === "dietaryPreferences") {
+          newErrors[field] =
+            field === "alcoholPreferences"
+              ? "Inserisci le preferenze sugli alcolici o specifica se non ne hai"
+              : "Questo campo è obbligatorio";
+        } else if (field === "waterPreference") {
+          newErrors[field] = "Seleziona una preferenza per l'acqua";
+        } else if ("required" in config && config.required) {
           newErrors[field] = "Questo campo è obbligatorio";
         }
         return;
@@ -109,6 +143,8 @@ export const MainForm = ({
 
       if (
         field !== "dietaryPreferences" &&
+        field !== "alcoholPreferences" &&
+        field !== "waterPreference" &&
         typeof value === "string" &&
         value.trim() !== ""
       ) {
@@ -132,11 +168,13 @@ export const MainForm = ({
 
     const formData = {
       dietaryPreferences,
+      alcoholPreferences,
       breakfast: formState.breakfast,
       lunch: formState.lunch,
       dinner: formState.dinner,
       people,
       sameBreakfast: formState.sameBreakfast,
+      waterPreference,
     };
 
     if (!user) {
@@ -148,6 +186,8 @@ export const MainForm = ({
     await handleMealListGeneration(
       user.id,
       dietaryPreferences,
+      alcoholPreferences,
+      waterPreference,
       {
         breakfast: formState.breakfast,
         lunch: formState.lunch,
@@ -158,6 +198,10 @@ export const MainForm = ({
       setError,
       startTransition,
       setMealList,
+      setAlcoholPreferences,
+      setWaterPreference,
+      setPeople,
+      setGroupAlcoholPreferences,
       router,
       openDialogStripe
     );
@@ -172,6 +216,8 @@ export const MainForm = ({
           await handleMealListGeneration(
             user.id,
             formData.dietaryPreferences,
+            formData.alcoholPreferences,
+            formData.waterPreference,
             {
               breakfast: formData.breakfast,
               lunch: formData.lunch,
@@ -182,6 +228,10 @@ export const MainForm = ({
             setError,
             startTransition,
             setMealList,
+            setAlcoholPreferences,
+            setWaterPreference,
+            setPeople,
+            setGroupAlcoholPreferences,
             router,
             openDialogStripe
           );
@@ -213,7 +263,9 @@ export const MainForm = ({
 
   const renderInput = (config: any) => {
     const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
     ) => {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -223,7 +275,23 @@ export const MainForm = ({
       config.onChange?.(e);
     };
 
-    if (config.id === "dietaryPreferences") {
+    if (config.type === "select") {
+      return (
+        <Select
+          key={config.id}
+          {...config}
+          onChange={
+            handleChange as (e: React.ChangeEvent<HTMLSelectElement>) => void
+          }
+          error={errors[config.id]}
+        />
+      );
+    }
+
+    if (
+      config.id === "dietaryPreferences" ||
+      config.id === "alcoholPreferences"
+    ) {
       return (
         <TextArea
           key={config.id}
@@ -231,8 +299,49 @@ export const MainForm = ({
           onChange={handleChange}
           error={errors[config.id]}
           rows={2}
-          placeholder="Non mangiamo carne. A colazione mangiamo yogurt e frutta."
+          placeholder={
+            config.id === "dietaryPreferences"
+              ? "Non mangiamo carne. A colazione mangiamo yogurt e frutta."
+              : "Es. Non bevo alcolici, preferisco vino bianco, niente superalcolici..."
+          }
         />
+      );
+    }
+
+    if (config.id === "waterPreference") {
+      const waterOptions = [
+        { value: "naturale", label: "Acqua naturale" },
+        { value: "gassata", label: "Acqua gassata" },
+        { value: "indifferente", label: "Indifferente" },
+      ];
+
+      return (
+        <div key={config.id}>
+          <label className="block text-sm font-medium text-gray-700 mb-4">
+            {config.label}
+          </label>
+          <div className="space-y-3">
+            {waterOptions.map((option) => (
+              <label
+                key={option.value}
+                className="flex items-center cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name={config.id}
+                  value={option.value}
+                  checked={config.value === option.value}
+                  onChange={(e) => config.onChange(e)}
+                  className="h-4 w-4 text-primary border-gray-300 focus:ring-primary"
+                />
+                <span className="ml-3 text-gray-700">{option.label}</span>
+              </label>
+            ))}
+          </div>
+          {errors[config.id] && (
+            <p className="mt-1 text-sm text-red-600">{errors[config.id]}</p>
+          )}
+        </div>
       );
     }
 

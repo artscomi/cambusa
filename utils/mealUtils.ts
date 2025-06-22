@@ -11,6 +11,7 @@ import { MealList } from "@/types/types";
 export const handleMealListGeneration = async (
   userId: string,
   dietaryPreferences: string,
+  alcoholPreferences: string,
   groupMeals: {
     breakfast: string;
     lunch: string;
@@ -44,6 +45,7 @@ export const handleMealListGeneration = async (
           lunch: groupMeals.lunch,
           dinner: groupMeals.dinner,
           dietaryPreferences,
+          alcoholPreferences,
           people: groupMeals.people,
           sameBreakfast: groupMeals.sameBreakfast,
         },

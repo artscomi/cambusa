@@ -271,6 +271,8 @@ export const createGroupAction = async (formData: FormData) => {
     groupLunch: formData.get("lunch") as string,
     groupDinner: formData.get("dinner") as string,
     dietaryPreferences: formData.get("dietaryPreferences") as string,
+    alcoholPreferences: formData.get("alcoholPreferences") as string,
+    waterPreference: formData.get("waterPreference") as string,
   };
 
   try {
@@ -297,6 +299,28 @@ export const createGroupAction = async (formData: FormData) => {
           userId: user.id,
           groupId: group.id,
           preference: rawFormdata.dietaryPreferences,
+        },
+      });
+    }
+
+    // Create the initial alcohol preference for the group owner
+    if (rawFormdata.alcoholPreferences) {
+      await db.alcoholPreference.create({
+        data: {
+          userId: user.id,
+          groupId: group.id,
+          preference: rawFormdata.alcoholPreferences,
+        },
+      });
+    }
+
+    // Create the initial water preference for the group owner
+    if (rawFormdata.waterPreference) {
+      await db.waterPreference.create({
+        data: {
+          userId: user.id,
+          groupId: group.id,
+          preference: rawFormdata.waterPreference,
         },
       });
     }

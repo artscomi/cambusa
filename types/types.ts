@@ -39,3 +39,10 @@ export type Preference = {
   groupId: string;
   preference: string;
 };
+
+export type AlcoholPreference = {
+  id: string;
+  userId: string;
+  groupId: string;
+  preference: string;
+};

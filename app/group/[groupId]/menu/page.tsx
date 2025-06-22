@@ -23,7 +23,40 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
     },
   });
 
-  return <PageContent group={group} preferences={preferences} />;
+  const alcoholPreferences = await db.alcoholPreference.findMany({
+    where: {
+      groupId: groupId,
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  const waterPreferences = await db.waterPreference.findMany({
+    where: {
+      groupId: groupId,
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  return (
+    <PageContent
+      group={group}
+      preferences={preferences}
+      alcoholPreferences={alcoholPreferences}
+      waterPreferences={waterPreferences}
+    />
+  );
 };
 
 export default GroupMenu;

@@ -21,6 +21,8 @@ model User {
   ownedGroups        Group[]           @relation("GroupOwner")
   memberships        GroupMembership[] // Relation to the groups the user is a member of
   foodPreferences    FoodPreference[] // Food preferences of the user
+  alcoholPreferences AlcoholPreference[] // Alcohol preferences of the user
+  waterPreferences   WaterPreference[] // Water preferences of the user
   apiCallCount       Int               @default(0)
   hasPaidForIncrease Boolean           @default(false)
   lastApiCall        DateTime?
@@ -28,19 +30,39 @@ model User {
 }
 
 model Group {
-  id              String            @id @default(cuid())
-  name            String
-  ownerId         String
-  owner           User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
-  members         GroupMembership[]
-  foodPreferences FoodPreference[]
-  breakfast       String @default("0")
-  lunch           String
-  dinner          String
-  people          String
+  id                 String            @id @default(cuid())
+  name               String
+  ownerId            String
+  owner              User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
+  members            GroupMembership[]
+  foodPreferences    FoodPreference[]
+  alcoholPreferences AlcoholPreference[]
+  waterPreferences   WaterPreference[]
+  breakfast          String @default("0")
+  lunch              String
+  dinner             String
+  people             String
 }
 
 model FoodPreference {
+  id         String @id @default(cuid())
+  userId     String
+  user       User   @relation(fields: [userId], references: [clerkUserId])
+  groupId    String
+  group      Group  @relation(fields: [groupId], references: [id])
+  preference String
+}
+
+model AlcoholPreference {
+  id         String @id @default(cuid())
+  userId     String
+  user       User   @relation(fields: [userId], references: [clerkUserId])
+  groupId    String
+  group      Group  @relation(fields: [groupId], references: [id])
+  preference String
+}
+
+model WaterPreference {
   id         String @id @default(cuid())
   userId     String
   user       User   @relation(fields: [userId], references: [clerkUserId])

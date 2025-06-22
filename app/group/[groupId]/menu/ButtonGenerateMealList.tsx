@@ -13,6 +13,8 @@ export const ButtonGenerateMealList: React.FC<{
   setError: Dispatch<SetStateAction<string | null>>;
   userId: string;
   dietaryPreferences: string;
+  alcoholPreferences: string;
+  waterPreference: string;
   groupMeals: {
     breakfast: string;
     lunch: string;
@@ -20,14 +22,28 @@ export const ButtonGenerateMealList: React.FC<{
     people: string;
     sameBreakfast: boolean;
   };
+  groupAlcoholPreferences: Array<{
+    userId: string;
+    preference: string;
+    user: { name: string };
+  }>;
 }> = ({
   userId,
   dietaryPreferences,
+  alcoholPreferences,
+  waterPreference,
   groupMeals,
+  groupAlcoholPreferences,
   startTransition,
   setError,
 }) => {
-  const { setMealList } = useMealContext();
+  const {
+    setMealList,
+    setAlcoholPreferences,
+    setWaterPreference,
+    setPeople,
+    setGroupAlcoholPreferences,
+  } = useMealContext();
   const router = useRouter();
   const { openSignIn } = useClerk();
   const { openDialogStripe } = useStripeModal();
@@ -41,10 +57,16 @@ export const ButtonGenerateMealList: React.FC<{
     await handleMealListGeneration(
       userId,
       dietaryPreferences,
+      alcoholPreferences,
+      waterPreference,
       groupMeals,
       setError,
       startTransition,
       setMealList,
+      setAlcoholPreferences,
+      setWaterPreference,
+      setPeople,
+      setGroupAlcoholPreferences,
       router,
       openDialogStripe
     );

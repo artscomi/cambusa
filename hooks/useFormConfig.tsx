@@ -1,11 +1,24 @@
 import { TextInputConfig } from "@/components/TextInput";
 import { TextAreaConfig } from "@/components/TextArea";
-import { CheckboxProps } from "@/components/Checkbox";
+import { CheckboxProps } from "@/components/Checkbox/index";
 import { useState } from "react";
+
+export type SelectConfig = {
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  type: "select";
+  options: { value: string; label: string }[];
+  error?: string;
+};
 
 export type FormState = {
   people: string;
   dietaryPreferences: string;
+  alcoholPreferences: string;
+  waterPreference: string;
   breakfast: string;
   lunch: string;
   dinner: string;
@@ -13,6 +26,8 @@ export type FormState = {
   sameBreakfast: boolean;
   peopleError?: string;
   dietaryPreferencesError?: string;
+  alcoholPreferencesError?: string;
+  waterPreferenceError?: string;
   breakfastError?: string;
   lunchError?: string;
   dinnerError?: string;
@@ -24,6 +39,8 @@ export type FormStateKeys = keyof FormState;
 const initialState: FormState = {
   people: "",
   dietaryPreferences: "",
+  alcoholPreferences: "",
+  waterPreference: "",
   lunch: "",
   dinner: "",
   groupName: "",
@@ -51,12 +68,21 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
 
   const handleChange =
     (field: FormStateKeys) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      >
+    ) => {
       const value = e.target.value;
       const maxValue = field === "people" ? 20 : 10;
 
       const numericValue = Number(value);
-      if (field === "dietaryPreferences" || field === "groupName") {
+      if (
+        field === "dietaryPreferences" ||
+        field === "groupName" ||
+        field === "alcoholPreferences" ||
+        field === "waterPreference"
+      ) {
         if (numericValue) {
           return;
         }
@@ -83,7 +109,12 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
       }));
     };
 
-  const inputConfig: (TextInputConfig | TextAreaConfig | CheckboxProps)[] = [
+  const inputConfig: (
+    | TextInputConfig
+    | TextAreaConfig
+    | CheckboxProps
+    | SelectConfig
+  )[] = [
     ...(!isSimpleFlow
       ? [
           {
@@ -163,6 +194,22 @@ export const useFormConfig = (isSimpleFlow?: boolean) => {
         "Inserisci le tue preferenze alimentari, allergie o intolleranze...",
       onChange: handleChange("dietaryPreferences"),
       rows: 4,
+    },
+    {
+      id: "alcoholPreferences",
+      label: "Preferenze sugli alcolici",
+      value: formState.alcoholPreferences,
+      placeholder:
+        "Es. Non bevo alcolici, preferisco vino bianco, niente superalcolici...",
+      onChange: handleChange("alcoholPreferences"),
+      rows: 3,
+    },
+    {
+      id: "waterPreference",
+      label: "Preferenza acqua",
+      value: formState.waterPreference,
+      placeholder: "Seleziona la tua preferenza",
+      onChange: handleChange("waterPreference"),
     },
   ];
 
