@@ -17,6 +17,8 @@ interface MyContextType {
   setWaterPreference: (preference: string) => void;
   people: number;
   setPeople: (people: number) => void;
+  days: number;
+  setDays: (days: number) => void;
   groupAlcoholPreferences:
     | Array<{ userId: string; preference: string; user: { name: string } }>
     | undefined;
@@ -40,6 +42,7 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
   const [alcoholPreferences, setAlcoholPreferences] = useState<string>("");
   const [waterPreference, setWaterPreference] = useState<string>("");
   const [people, setPeople] = useState<number>(0);
+  const [days, setDays] = useState<number>(0);
   const [groupAlcoholPreferences, setGroupAlcoholPreferences] = useState<
     | Array<{ userId: string; preference: string; user: { name: string } }>
     | undefined
@@ -124,6 +127,21 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     }
   }, [people]);
 
+  // Load days count from localStorage
+  useEffect(() => {
+    const storedDays = localStorage.getItem("days");
+    if (storedDays) {
+      setDays(parseInt(storedDays));
+    }
+  }, []);
+
+  // Save days count to localStorage
+  useEffect(() => {
+    if (days > 0) {
+      localStorage.setItem("days", days.toString());
+    }
+  }, [days]);
+
   return (
     <MealContext.Provider
       value={{
@@ -135,6 +153,8 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
         setWaterPreference,
         people,
         setPeople,
+        days,
+        setDays,
         groupAlcoholPreferences,
         setGroupAlcoholPreferences,
       }}

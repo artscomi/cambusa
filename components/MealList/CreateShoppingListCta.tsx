@@ -18,6 +18,7 @@ export const CreateShoppingListCta = () => {
     alcoholPreferences,
     waterPreference,
     people,
+    days,
     groupAlcoholPreferences,
   } = useMealContext();
   const router = useRouter();
@@ -33,12 +34,8 @@ export const CreateShoppingListCta = () => {
     console.log("Alcohol preferences from context:", alcoholPreferences);
     console.log("Water preferences from context:", waterPreference);
 
-    // Calculate total days from meal list
-    const totalDays = Math.max(
-      mealList.reduce((maxDays, mealType) => {
-        return Math.max(maxDays, mealType.meals.length);
-      }, 0)
-    );
+    // Use days from context, default to 1 if not available
+    const totalDays = days || 1;
 
     // Use people count from context, default to 1 if not available
     const peopleCount = people || 1;

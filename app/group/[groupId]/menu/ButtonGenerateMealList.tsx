@@ -42,6 +42,7 @@ export const ButtonGenerateMealList: React.FC<{
     setAlcoholPreferences,
     setWaterPreference,
     setPeople,
+    setDays,
     setGroupAlcoholPreferences,
   } = useMealContext();
   const router = useRouter();
@@ -66,6 +67,7 @@ export const ButtonGenerateMealList: React.FC<{
       setAlcoholPreferences,
       setWaterPreference,
       setPeople,
+      setDays,
       setGroupAlcoholPreferences,
       router,
       openDialogStripe

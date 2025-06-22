@@ -95,6 +95,7 @@ export const MainForm = ({
     setAlcoholPreferences,
     setWaterPreference,
     setPeople,
+    setDays,
     setGroupAlcoholPreferences,
   } = useMealContext();
   const { dietaryPreferences, alcoholPreferences, waterPreference, people } =
@@ -201,6 +202,7 @@ export const MainForm = ({
       setAlcoholPreferences,
       setWaterPreference,
       setPeople,
+      setDays,
       setGroupAlcoholPreferences,
       router,
       openDialogStripe
@@ -231,6 +233,7 @@ export const MainForm = ({
             setAlcoholPreferences,
             setWaterPreference,
             setPeople,
+            setDays,
             setGroupAlcoholPreferences,
             router,
             openDialogStripe

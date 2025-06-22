@@ -325,9 +325,14 @@ export const generateGroupAlcoholIngredients = (
   // Analyze each user's preferences
   alcoholPreferences.forEach(({ preference }) => {
     const pref = preference.toLowerCase();
+    console.log("Processing preference:", pref);
 
     if (pref.includes("non bevo") || pref.includes("niente alcolici")) {
       preferenceCounts.noAlcohol++;
+      console.log(
+        "Found non-drinker, noAlcohol count:",
+        preferenceCounts.noAlcohol
+      );
     } else {
       if (pref.includes("vino bianco") || pref.includes("bianco"))
         preferenceCounts.whiteWine++;
@@ -339,8 +344,13 @@ export const generateGroupAlcoholIngredients = (
         pref.includes("champagne")
       )
         preferenceCounts.prosecco++;
-      if (pref.includes("birra") || pref.includes("beer"))
+      if (pref.includes("birra") || pref.includes("beer")) {
         preferenceCounts.beer++;
+        console.log(
+          "Found beer preference, beer count:",
+          preferenceCounts.beer
+        );
+      }
       if (
         pref.includes("aperitivo") ||
         pref.includes("aperol") ||
@@ -358,6 +368,7 @@ export const generateGroupAlcoholIngredients = (
     }
   });
 
+  console.log("Final preference counts:", preferenceCounts);
   const totalUsers = alcoholPreferences.length;
   const drinkersCount = totalUsers - preferenceCounts.noAlcohol;
 
@@ -404,10 +415,19 @@ export const generateGroupAlcoholIngredients = (
         unit: getBottleUnit(proseccoBottles),
       });
     }
+    console.log("preferenceCounts", preferenceCounts.beer);
 
-    // Birra - 2 birre per bevitore per giorno
+    // Birra - 2 birre per persona che beve birra per giorno
     if (preferenceCounts.beer > 0) {
-      const beerBottles = drinkersCount * days * 2;
+      const beerBottles = preferenceCounts.beer * days * 2;
+      console.log(
+        "Beer calculation: preferenceCounts.beer =",
+        preferenceCounts.beer,
+        "days =",
+        days,
+        "result =",
+        beerBottles
+      );
       ingredients.push({
         id: "alcohol_beer_group",
         item: "🍺 Birra",

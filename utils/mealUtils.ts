@@ -26,6 +26,7 @@ export const handleMealListGeneration = async (
   setAlcoholPreferences: (preferences: string) => void,
   setWaterPreference: (preference: string) => void,
   setPeople: (people: number) => void,
+  setDays: (days: number) => void,
   setGroupAlcoholPreferences: (
     preferences:
       | Array<{ userId: string; preference: string; user: { name: string } }>
@@ -76,6 +77,8 @@ export const handleMealListGeneration = async (
         waterPreference,
         setPeople,
         parseInt(groupMeals.people),
+        setDays,
+        parseInt(groupMeals.dinner),
         setGroupAlcoholPreferences,
         groupAlcoholPreferences,
         router,
@@ -99,6 +102,8 @@ const handleResult = async (
   waterPreference: string,
   setPeople: (people: number) => void,
   people: number,
+  setDays: (days: number) => void,
+  days: number,
   setGroupAlcoholPreferences: (
     preferences:
       | Array<{ userId: string; preference: string; user: { name: string } }>
@@ -115,6 +120,7 @@ const handleResult = async (
     setAlcoholPreferences(alcoholPreferences);
     setWaterPreference(waterPreference);
     setPeople(people);
+    setDays(days);
     setGroupAlcoholPreferences(groupAlcoholPreferences);
     await saveMealList(JSON.stringify(result.menu));
     router.push("/meal-menu");
