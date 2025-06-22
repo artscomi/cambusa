@@ -69,10 +69,10 @@ export const generateAlcoholIngredients = (
     });
   }
 
-  // Birra - 2 birre per persona per giorno
+  // Birra - 1 birre per persona per giorno
   if (preferences.includes("birra") || preferences.includes("beer")) {
     console.log("Adding beer");
-    const beerBottles = people * days * 2;
+    const beerBottles = people * days;
     ingredients.push({
       id: "alcohol_beer",
       item: "🍺 Birra",

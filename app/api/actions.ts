@@ -273,6 +273,7 @@ export const createGroupAction = async (formData: FormData) => {
     dietaryPreferences: formData.get("dietaryPreferences") as string,
     alcoholPreferences: formData.get("alcoholPreferences") as string,
     waterPreference: formData.get("waterPreference") as string,
+    sameBreakfast: formData.get("sameBreakfast") === "on",
   };
 
   try {
@@ -284,6 +285,7 @@ export const createGroupAction = async (formData: FormData) => {
         lunch: rawFormdata.groupLunch || "0",
         dinner: rawFormdata.groupDinner || "0",
         people: rawFormdata.groupPeople || "0",
+        sameBreakfast: rawFormdata.sameBreakfast,
         members: {
           create: {
             userId: user.id, // Add the owner to the members list as well
@@ -350,6 +352,7 @@ export const getGroupInfo = async (
       lunch: true,
       dinner: true,
       people: true,
+      sameBreakfast: true,
       owner: {
         select: {
           name: true,
@@ -380,6 +383,7 @@ export const getGroupInfo = async (
     people: group.people,
     ownerName: group.owner.name,
     ownerGender,
+    sameBreakfast: group.sameBreakfast,
   };
 };
 

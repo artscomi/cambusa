@@ -54,7 +54,13 @@ export const PageContent = ({
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
   if (!user) return;
-  const { breakfast = "0", lunch = "0", dinner = "0", people = "0" } = group;
+  const {
+    breakfast = "0",
+    lunch = "0",
+    dinner = "0",
+    people = "0",
+    sameBreakfast = false,
+  } = group;
 
   const groupedData = preferences.reduce(
     (acc: Record<string, UserPreference>, item: GroupedPreference) => {
@@ -203,7 +209,7 @@ export const PageContent = ({
                 lunch,
                 dinner,
                 people,
-                sameBreakfast: false,
+                sameBreakfast,
               }}
               groupAlcoholPreferences={alcoholPreferences}
             />

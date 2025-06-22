@@ -31,6 +31,7 @@ export type GroupInfo = {
   people: string;
   ownerName: string;
   ownerGender: string;
+  sameBreakfast: boolean;
 };
 
 export type Preference = {

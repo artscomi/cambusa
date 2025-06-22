@@ -42,6 +42,7 @@ model Group {
   lunch              String
   dinner             String
   people             String
+  sameBreakfast      Boolean @default(false)
 }
 
 model FoodPreference {

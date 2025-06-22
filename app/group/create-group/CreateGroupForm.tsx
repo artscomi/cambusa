@@ -29,7 +29,7 @@ const steps: Step[] = [
   {
     title: "Pasti",
     description: "Quanti pasti prevede il tuo viaggio?",
-    fields: ["breakfast", "lunch", "dinner"],
+    fields: ["breakfast", "sameBreakfast", "lunch", "dinner"],
   },
   {
     title: "Preferenze alimentari",
@@ -67,7 +67,7 @@ export const CreateGroupForm = () => {
     const config = inputConfig.find((c) => c.id === fieldId);
     if (!config) return;
 
-    if ("onChange" in config && fieldId !== "sameBreakfast") {
+    if ("onChange" in config) {
       config.onChange(e as any);
     }
     setErrors((prev) => {
@@ -85,6 +85,10 @@ export const CreateGroupForm = () => {
     currentStepFields.forEach((fieldId) => {
       const config = inputConfig.find((c) => c.id === fieldId);
       if (!config) return;
+
+      if (fieldId === "sameBreakfast") {
+        return;
+      }
 
       const value = formState[fieldId as keyof typeof formState];
 
@@ -135,7 +139,13 @@ export const CreateGroupForm = () => {
       const formData = new FormData();
       Object.entries(formState).forEach(([key, value]) => {
         if (value !== undefined) {
-          formData.append(key, String(value));
+          if (key === "sameBreakfast") {
+            if (value === true) {
+              formData.append(key, "on");
+            }
+          } else {
+            formData.append(key, String(value));
+          }
         }
       });
 
