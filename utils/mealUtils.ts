@@ -12,6 +12,7 @@ export const handleMealListGeneration = async (
   userId: string,
   dietaryPreferences: string,
   alcoholPreferences: string,
+  waterPreference: string,
   groupMeals: {
     breakfast: string;
     lunch: string;
@@ -22,13 +23,26 @@ export const handleMealListGeneration = async (
   setError: Dispatch<SetStateAction<string | null>>,
   startTransition: (callback: () => void) => void,
   setMealList: (mealList: MealList) => void,
+  setAlcoholPreferences: (preferences: string) => void,
+  setWaterPreference: (preference: string) => void,
+  setPeople: (people: number) => void,
+  setGroupAlcoholPreferences: (
+    preferences:
+      | Array<{ userId: string; preference: string; user: { name: string } }>
+      | undefined
+  ) => void,
   router: any,
-  openDialogStripe: () => void
+  openDialogStripe: () => void,
+  groupAlcoholPreferences?: Array<{
+    userId: string;
+    preference: string;
+    user: { name: string };
+  }>
 ) => {
   scrollTo(0, 0);
   setError(null);
 
-  console.log({ groupMeals });
+  console.log({ groupMeals, alcoholPreferences, waterPreference });
 
   const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
   const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
@@ -46,13 +60,27 @@ export const handleMealListGeneration = async (
           dinner: groupMeals.dinner,
           dietaryPreferences,
           alcoholPreferences,
+          waterPreference,
           people: groupMeals.people,
           sameBreakfast: groupMeals.sameBreakfast,
         },
         userId,
       });
 
-      handleResult(result, setMealList, router, setError);
+      handleResult(
+        result,
+        setMealList,
+        setAlcoholPreferences,
+        alcoholPreferences,
+        setWaterPreference,
+        waterPreference,
+        setPeople,
+        parseInt(groupMeals.people),
+        setGroupAlcoholPreferences,
+        groupAlcoholPreferences,
+        router,
+        setError
+      );
     } catch (error) {
       setError(
         "Ops.. qualcosa è andato storto durante la generazione del menu"
@@ -65,11 +93,29 @@ export const handleMealListGeneration = async (
 const handleResult = async (
   result: Result,
   setMealList: (mealList: MealList) => void,
+  setAlcoholPreferences: (preferences: string) => void,
+  alcoholPreferences: string,
+  setWaterPreference: (preference: string) => void,
+  waterPreference: string,
+  setPeople: (people: number) => void,
+  people: number,
+  setGroupAlcoholPreferences: (
+    preferences:
+      | Array<{ userId: string; preference: string; user: { name: string } }>
+      | undefined
+  ) => void,
+  groupAlcoholPreferences:
+    | Array<{ userId: string; preference: string; user: { name: string } }>
+    | undefined,
   router: any,
   setError: Dispatch<SetStateAction<string | null>>
 ) => {
   if (result.type === "success") {
     setMealList(result.menu);
+    setAlcoholPreferences(alcoholPreferences);
+    setWaterPreference(waterPreference);
+    setPeople(people);
+    setGroupAlcoholPreferences(groupAlcoholPreferences);
     await saveMealList(JSON.stringify(result.menu));
     router.push("/meal-menu");
   } else {
