@@ -22,7 +22,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   const [showToast, setShowToast] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<Ingredient | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newItem, setNewItem] = useState({
     item: "",
     quantity: 1,
@@ -157,8 +157,18 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
 
       setShoppingList([...shoppingList, newIngredient]);
       setNewItem({ item: "", quantity: 1, unit: "pezzi" });
-      setShowAddForm(false);
+      setShowAddModal(false);
     }
+  };
+
+  const openAddModal = () => {
+    setShowAddModal(true);
+    setNewItem({ item: "", quantity: 1, unit: "pezzi" });
+  };
+
+  const closeAddModal = () => {
+    setShowAddModal(false);
+    setNewItem({ item: "", quantity: 1, unit: "pezzi" });
   };
 
   const handleCopyToClipboard = () => {
@@ -293,7 +303,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         <div className="flex gap-2 fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10">
           <motion.button
             whileTap={{ scale: 0.97 }}
-            onClick={() => setShowAddForm(!showAddForm)}
+            onClick={openAddModal}
             className="p-4 rounded bg-primary text-white shadow-md"
             title="Aggiungi ingrediente"
           >
@@ -330,67 +340,124 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
               width={25}
             />
           </motion.button>
+          <EverlyButton ingredients={items} className="p-4 rounded shadow-md" />
         </div>
       </div>
 
-      {/* Add Item Form */}
-      {showAddForm && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          className="mb-8 bg-white rounded-lg p-6 shadow-md"
-        >
-          <h3 className="text-lg font-semibold mb-4">Aggiungi ingrediente</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <input
-              type="text"
-              placeholder="Nome ingrediente"
-              value={newItem.item}
-              onChange={(e) => setNewItem({ ...newItem, item: e.target.value })}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <input
-              type="number"
-              min="1"
-              placeholder="Quantità"
-              value={newItem.quantity}
-              onChange={(e) =>
-                setNewItem({
-                  ...newItem,
-                  quantity: parseInt(e.target.value) || 1,
-                })
-              }
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <select
-              value={newItem.unit}
-              onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-              className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+      {/* Add Item Modal */}
+      <AnimatePresence>
+        {showAddModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            onClick={closeAddModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
             >
-              <option value="pezzi">pezzi</option>
-              <option value="g">grammi</option>
-              <option value="kg">chilogrammi</option>
-              <option value="ml">millilitri</option>
-              <option value="l">litri</option>
-              <option value="tazze">tazze</option>
-              <option value="cucchiai">cucchiai</option>
-              <option value="bottiglia">bottiglia</option>
-              <option value="bottiglie">bottiglie</option>
-              <option value="vasetto">vasetto</option>
-              <option value="vasetti">vasetti</option>
-              <option value="fette">fette</option>
-              <option value="spicchi">spicchi</option>
-            </select>
-            <button
-              onClick={handleAddItem}
-              className="p-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Aggiungi
-            </button>
-          </div>
-        </motion.div>
-      )}
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Aggiungi ingrediente
+                </h2>
+                <button
+                  onClick={closeAddModal}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome ingrediente
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Es. Pomodori"
+                    value={newItem.item}
+                    onChange={(e) =>
+                      setNewItem({ ...newItem, item: e.target.value })
+                    }
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quantità
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      placeholder="1"
+                      value={newItem.quantity}
+                      onChange={(e) =>
+                        setNewItem({
+                          ...newItem,
+                          quantity: parseInt(e.target.value) || 1,
+                        })
+                      }
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Unità di misura
+                    </label>
+                    <select
+                      value={newItem.unit}
+                      onChange={(e) =>
+                        setNewItem({ ...newItem, unit: e.target.value })
+                      }
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    >
+                      <option value="pezzi">pezzi</option>
+                      <option value="g">grammi</option>
+                      <option value="kg">chilogrammi</option>
+                      <option value="ml">millilitri</option>
+                      <option value="l">litri</option>
+                      <option value="tazze">tazze</option>
+                      <option value="cucchiai">cucchiai</option>
+                      <option value="bottiglia">bottiglia</option>
+                      <option value="bottiglie">bottiglie</option>
+                      <option value="vasetto">vasetto</option>
+                      <option value="vasetti">vasetti</option>
+                      <option value="fette">fette</option>
+                      <option value="spicchi">spicchi</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 justify-end mt-6">
+                  <button
+                    onClick={closeAddModal}
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    onClick={handleAddItem}
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    disabled={!newItem.item.trim() || newItem.quantity <= 0}
+                  >
+                    Salva
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Food Ingredients Section */}
       {renderIngredientList(
