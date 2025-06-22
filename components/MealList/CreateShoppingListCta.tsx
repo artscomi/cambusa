@@ -30,10 +30,6 @@ export const CreateShoppingListCta = () => {
   const handleCreatehoppingList = () => {
     const foodIngredients = sumIngredients(mealList) as Ingredient[];
 
-    console.log("Food ingredients:", foodIngredients);
-    console.log("Alcohol preferences from context:", alcoholPreferences);
-    console.log("Water preferences from context:", waterPreference);
-
     // Use days from context, default to 1 if not available
     const totalDays = days || 1;
 
@@ -56,16 +52,11 @@ export const CreateShoppingListCta = () => {
       totalDays
     );
 
-    console.log("Generated alcohol ingredients:", alcoholIngredients);
-    console.log("Generated water ingredients:", waterIngredients);
-
     // Combine food ingredients with alcohol and water ingredients
     const allIngredients = combineIngredients(foodIngredients, [
       ...alcoholIngredients,
       ...waterIngredients,
     ]);
-
-    console.log("Final combined ingredients:", allIngredients);
 
     setShoppingList(allIngredients);
     router.push("/shopping-list");
