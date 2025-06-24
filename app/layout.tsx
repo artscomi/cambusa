@@ -12,7 +12,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   title:
-    "Cambusaaia - Crea la cambusa perfetta per la tua vacanza in barca a vela",
+    "Cambusaai - Crea la cambusa perfetta per la tua vacanza in barca a vela",
   description:
     "Cerchi idee per organizzare la cambusa della tua vacanza in barca a vela? Con Cambusa AI puoi creare un menu personalizzato, modificare i piatti e generare una lista cambusa completa per una settimana in barca, il tutto facilmente online. Pianifica la cambusa perfetta e scopri come fare cambusa online per un viaggio senza pensieri!",
 };
