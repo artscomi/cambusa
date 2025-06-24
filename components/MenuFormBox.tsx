@@ -28,8 +28,8 @@ export const MenuFormBox: React.FC = () => {
       }}
     >
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-4 sm:mb-6">
-          <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16  bg-primary rounded-full mb-4 sm:mb-6">
+          <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
         </div>
 
         <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-primary">
@@ -38,8 +38,6 @@ export const MenuFormBox: React.FC = () => {
 
         <p className="text-base sm:text-lg mb-6 sm:mb-8 text-gray-700 leading-relaxed">
           La scelta più diretta quando il gruppo è omogeneo.
-          <br className="hidden sm:block" />
-          Pianifica subito i pasti per la tua vacanza in barca.
         </p>
 
         <motion.button
