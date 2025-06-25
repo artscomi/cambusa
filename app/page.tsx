@@ -20,7 +20,6 @@ import {
   itemVariants,
   blogHeaderVariants,
 } from "@/animations/framer-variants";
-import { Anchor, Users, ArrowRight } from "lucide-react";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();

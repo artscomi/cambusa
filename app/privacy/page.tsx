@@ -59,7 +59,7 @@ export default function PrivacyPage() {
         <h2 className="text-2xl font-semibold mb-4">6. Contatti</h2>
         <p className="mb-4">
           Per qualsiasi domanda sulla privacy, contattaci all&apos;indirizzo
-          email: cristina.luerti@gmail.com
+          email: artscomi.web@gmail.com
         </p>
 
         <h2 className="text-2xl font-semibold mb-4">

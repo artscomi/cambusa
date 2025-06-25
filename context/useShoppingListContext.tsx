@@ -19,19 +19,26 @@ const ShoppingContext = createContext<ShoppingContextProps | undefined>(
 
 export const ShoppingProvider = ({ children }: { children: ReactNode }) => {
   const [shoppingList, setShoppingList] = useState<Ingredient[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const storedShoppingList = localStorage.getItem("shoppingList");
     if (storedShoppingList) {
       setShoppingList(JSON.parse(storedShoppingList));
     }
-  }, []);
+  }, [isMounted]);
 
   useEffect(() => {
-    if (shoppingList) {
+    if (shoppingList && isMounted && typeof window !== "undefined") {
       localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
     }
-  }, [shoppingList]);
+  }, [shoppingList, isMounted]);
 
   return (
     <ShoppingContext.Provider value={{ shoppingList, setShoppingList }}>

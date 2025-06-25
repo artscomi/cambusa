@@ -1,9 +1,11 @@
 export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID!;
 
 export const pageview = (url: string) => {
-  window.gtag("config", GA_TRACKING_ID, {
-    page_path: url,
-  });
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("config", GA_TRACKING_ID, {
+      page_path: url,
+    });
+  }
 };
 
 export const GAevent = ({
@@ -17,9 +19,11 @@ export const GAevent = ({
   label?: string;
   value?: number;
 }) => {
-  window.gtag("event", action, {
-    event_category: category,
-    event_label: label,
-    value,
-  });
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", action, {
+      event_category: category,
+      event_label: label,
+      value,
+    });
+  }
 };

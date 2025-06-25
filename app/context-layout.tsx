@@ -6,7 +6,7 @@ import { StripeModalProvider } from "@/context/useStripeModalContext";
 import { useSaveUser } from "@/hooks/useSaveUser";
 import { pageview } from "@/lib/gtag";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function ContextLayout({
   children,
@@ -14,13 +14,18 @@ export default function ContextLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
   useSaveUser();
 
   useEffect(() => {
-    if (pathname) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && pathname && typeof window !== "undefined") {
       pageview(pathname);
     }
-  }, [pathname]);
+  }, [pathname, isMounted]);
 
   return (
     <StripeModalProvider>

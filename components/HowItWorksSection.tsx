@@ -47,7 +47,7 @@ export const HowItWorksSection: React.FC = () => {
   return (
     <motion.section
       variants={itemVariants}
-      className="py-12 sm:py-10 mt-24 md:py-20 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
+      className="py-12 sm:py-10 mt-16 md:py-20 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
     >
       <div className="w-full px-10 sm:px-6 md:px-10">
         <motion.div

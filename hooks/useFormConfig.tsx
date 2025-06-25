@@ -1,7 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { TextInputConfig } from "@/components/TextInput";
 import { TextAreaConfig } from "@/components/TextArea";
 import { CheckboxProps } from "@/components/Checkbox/index";
-import { useState } from "react";
 
 export type SelectConfig = {
   id: string;
@@ -48,23 +50,34 @@ const initialState: FormState = {
   sameBreakfast: false,
 };
 
-const getStoredState = (): FormState => {
-  if (typeof window !== "undefined") {
-    const stored = sessionStorage.getItem("formState");
-    const parsedState = stored ? JSON.parse(stored) : initialState;
-
-    return {
-      ...parsedState,
-    };
-  }
-  return initialState;
-};
-
-const storedState: FormState = getStoredState();
-
 export const useFormConfig = (isSimpleFlow?: boolean) => {
-  const [formState, setFormState] = useState<FormState>(storedState);
+  const [formState, setFormState] = useState<FormState>(initialState);
+  const [isMounted, setIsMounted] = useState(false);
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
+    const stored = sessionStorage.getItem("formState");
+    if (stored) {
+      try {
+        const parsedState = JSON.parse(stored);
+        setFormState(parsedState);
+      } catch (error) {
+        console.error("Error parsing stored form state:", error);
+      }
+    }
+  }, [isMounted]);
+
+  useEffect(() => {
+    if (isMounted && typeof window !== "undefined") {
+      sessionStorage.setItem("formState", JSON.stringify(formState));
+    }
+  }, [formState, isMounted]);
 
   const handleChange =
     (field: FormStateKeys) =>

@@ -3,10 +3,24 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Users, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const CreateGroupBox: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (typeof window !== "undefined") {
+      router.push("/group/create-group");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
 
   return (
     <motion.div
@@ -20,13 +34,8 @@ export const CreateGroupBox: React.FC = () => {
       aria-label="Crea un gruppo"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => (window.location.href = "/group/create-group")}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          window.location.href = "/group/create-group";
-        }
-      }}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
     >
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-full mb-4 sm:mb-6">

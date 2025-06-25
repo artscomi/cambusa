@@ -108,7 +108,7 @@ export const regenerateSingleMeal = async ({
     }
 
     const result = await generateObject({
-      model: openai("gpt-4o"),
+      model: openai("gpt-4o-mini"),
       prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
       schema: mealSchema,
     });

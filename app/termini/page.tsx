@@ -55,7 +55,7 @@ export default function TermsPage() {
         <h2 className="text-2xl font-semibold mb-4">6. Contatto</h2>
         <p className="mb-4">
           Per qualsiasi domanda riguardante questi termini, contattaci
-          all&apos;indirizzo email: cristina.luerti@gmail.com
+          all&apos;indirizzo email: artscomi.web@gmail.com
         </p>
       </div>
     </div>

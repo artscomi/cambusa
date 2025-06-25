@@ -367,7 +367,7 @@ export const MainForm = ({
       <div className="mb-8 z-10 relative">
         <div ref={progressRef} className="flex justify-between mb-2">
           {steps.map((step, index) => (
-            <p
+            <div
               key={step.title}
               className={`flex-1 text-center font-bold text-sm sm:text-base ${
                 index <= currentStep ? "text-primary" : "text-gray-400"
@@ -376,7 +376,7 @@ export const MainForm = ({
               <div className="flex flex-col items-center gap-1 mb-2">
                 {step.icon}
               </div>
-            </p>
+            </div>
           ))}
         </div>
         <div className="h-1.5 sm:h-2 bg-secondary rounded-full">

@@ -1,8 +1,25 @@
+"use client";
+
 import { SignIn } from "@clerk/nextjs";
 import { isInWebview } from "@/app/utils";
+import { useEffect, useState } from "react";
 
 export default function Page() {
-  if (typeof window !== "undefined" && isInWebview()) {
+  const [isMounted, setIsMounted] = useState(false);
+  const [isWebview, setIsWebview] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (typeof window !== "undefined") {
+      setIsWebview(isInWebview());
+    }
+  }, []);
+
+  if (!isMounted) {
+    return null; // Return null during SSR to prevent hydration mismatch
+  }
+
+  if (isWebview) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Accesso non disponibile</h1>
@@ -19,8 +36,7 @@ export default function Page() {
       appearance={{
         elements: {
           socialButtonsBlockButton: {
-            display:
-              typeof window !== "undefined" && isInWebview() ? "none" : "block",
+            display: isWebview ? "none" : "block",
           },
           footerActionLink: {
             color: "var(--clerk-primary)",

@@ -21,8 +21,13 @@ const LottieAnimation = ({
   autoplay?: boolean;
 }) => {
   const [animationData, setAnimationData] = useState<unknown>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   const calculateHeight = () => {
+    if (!isMounted || typeof window === "undefined") {
+      return 220; // Default height for SSR
+    }
+
     if (window.innerWidth < 600) {
       return 200;
     } else if (window.innerWidth < 1024) {
@@ -44,6 +49,11 @@ const LottieAnimation = ({
   );
 
   if (speed) setSpeed(speed);
+
+  // Set mounted state
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Load the animation data based on the name
   useEffect(() => {

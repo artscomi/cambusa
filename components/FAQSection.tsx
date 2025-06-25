@@ -128,7 +128,7 @@ export const FAQSection: React.FC = () => {
             Non hai trovato la risposta che cercavi?
           </p>
           <a
-            href="mailto:info@cambusa-online.com"
+            href="mailto:artscomi.web@gmail.com"
             className="inline-flex items-center gap-2 text-primary hover:text-primary-light font-semibold transition-colors duration-200"
           >
             Contattaci

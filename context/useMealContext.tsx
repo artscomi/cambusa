@@ -47,8 +47,15 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     | Array<{ userId: string; preference: string; user: { name: string } }>
     | undefined
   >();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const loadInitialData = async () => {
       try {
         // First try to load from database
@@ -59,88 +66,100 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
         }
 
         // If no data in DB, try localStorage as fallback
-        const storedMealList = localStorage.getItem("mealList");
-        if (storedMealList) {
-          setMealList(JSON.parse(storedMealList));
+        if (typeof window !== "undefined") {
+          const storedMealList = localStorage.getItem("mealList");
+          if (storedMealList) {
+            setMealList(JSON.parse(storedMealList));
+          }
         }
       } catch (error) {
         console.error("Error loading meal list:", error);
         // If error loading from DB, try localStorage as fallback
-        const storedMealList = localStorage.getItem("mealList");
-        if (storedMealList) {
-          setMealList(JSON.parse(storedMealList));
+        if (typeof window !== "undefined") {
+          const storedMealList = localStorage.getItem("mealList");
+          if (storedMealList) {
+            setMealList(JSON.parse(storedMealList));
+          }
         }
       }
     };
 
     loadInitialData();
-  }, []);
+  }, [isMounted]);
 
   useEffect(() => {
-    if (mealList) {
+    if (mealList && isMounted && typeof window !== "undefined") {
       localStorage.setItem("mealList", JSON.stringify(mealList));
     }
-  }, [mealList]);
+  }, [mealList, isMounted]);
 
   // Load alcohol preferences from localStorage
   useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const storedAlcoholPreferences = localStorage.getItem("alcoholPreferences");
     if (storedAlcoholPreferences) {
       setAlcoholPreferences(storedAlcoholPreferences);
     }
-  }, []);
+  }, [isMounted]);
 
   // Save alcohol preferences to localStorage
   useEffect(() => {
-    if (alcoholPreferences) {
+    if (alcoholPreferences && isMounted && typeof window !== "undefined") {
       localStorage.setItem("alcoholPreferences", alcoholPreferences);
     }
-  }, [alcoholPreferences]);
+  }, [alcoholPreferences, isMounted]);
 
   // Load water preferences from localStorage
   useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const storedWaterPreference = localStorage.getItem("waterPreference");
     if (storedWaterPreference) {
       setWaterPreference(storedWaterPreference);
     }
-  }, []);
+  }, [isMounted]);
 
   // Save water preferences to localStorage
   useEffect(() => {
-    if (waterPreference) {
+    if (waterPreference && isMounted && typeof window !== "undefined") {
       localStorage.setItem("waterPreference", waterPreference);
     }
-  }, [waterPreference]);
+  }, [waterPreference, isMounted]);
 
   // Load people count from localStorage
   useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const storedPeople = localStorage.getItem("people");
     if (storedPeople) {
       setPeople(parseInt(storedPeople));
     }
-  }, []);
+  }, [isMounted]);
 
   // Save people count to localStorage
   useEffect(() => {
-    if (people > 0) {
+    if (people > 0 && isMounted && typeof window !== "undefined") {
       localStorage.setItem("people", people.toString());
     }
-  }, [people]);
+  }, [people, isMounted]);
 
   // Load days count from localStorage
   useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+
     const storedDays = localStorage.getItem("days");
     if (storedDays) {
       setDays(parseInt(storedDays));
     }
-  }, []);
+  }, [isMounted]);
 
   // Save days count to localStorage
   useEffect(() => {
-    if (days > 0) {
+    if (days > 0 && isMounted && typeof window !== "undefined") {
       localStorage.setItem("days", days.toString());
     }
-  }, [days]);
+  }, [days, isMounted]);
 
   return (
     <MealContext.Provider

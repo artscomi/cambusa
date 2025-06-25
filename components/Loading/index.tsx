@@ -4,7 +4,9 @@ import dynamic from "next/dynamic";
 
 export const Loading = () => {
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
   }, []);
 
   const LottieAnimation = dynamic(
@@ -26,7 +28,7 @@ export const Loading = () => {
           initial={{ opacity: 0 }}
           className="md:text-lg mt-8 mb-8"
         >
-          🗑️ Dai un’occhiata: se un pasto non ti convince, puoi rimuoverlo dalla
+          🗑️ Dai un'occhiata: se un pasto non ti convince, puoi rimuoverlo dalla
           lista
         </motion.p>
         <motion.p
