@@ -5,6 +5,10 @@ import { Loading } from "@/components/Loading";
 import { ToastError } from "@/components/ToastError";
 import { FeaturesCarousel } from "@/components/FeaturesCarousel";
 import { MenuFormBox } from "@/components/MenuFormBox";
+import { HowItWorksSection } from "@/components/HowItWorksSection";
+import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { FAQSection } from "@/components/FAQSection";
+import { CTASection } from "@/components/CTASection";
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -67,7 +71,7 @@ export default function Home() {
           variants={blogHeaderVariants}
           initial="hidden"
           animate="visible"
-          className="relative pt-4 sm:pt-8 pb-4 sm:pb-8 px-4"
+          className="relative pt-4 sm:pt-8 pb-4 sm:pb-8 px-6 md:px-10"
         >
           <div className="max-w-7xl mx-auto">
             {/* Header */}
@@ -112,7 +116,7 @@ export default function Home() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative px-4"
+          className="relative px-6 md:px-32 max-w-7xl mx-auto"
           aria-label="Strumenti di pianificazione menu"
         >
           <div className="max-w-7xl mx-auto">
@@ -139,6 +143,42 @@ export default function Home() {
             </div>
           </div>
         </motion.section>
+
+        {/* How It Works Section */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <HowItWorksSection />
+        </motion.div>
+
+        {/* Testimonials Section */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <TestimonialsSection />
+        </motion.div>
+
+        {/* FAQ Section */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <FAQSection />
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <CTASection />
+        </motion.div>
 
         {/* Toast Notifications */}
         <div role="alert" aria-live="polite">

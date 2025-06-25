@@ -3,9 +3,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const MenuFormBox: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
+
+  const handleNavigateToForm = () => {
+    router.push("/menu/create");
+  };
 
   return (
     <motion.div
@@ -19,11 +25,11 @@ export const MenuFormBox: React.FC = () => {
       aria-label="Apri form di creazione menu"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => (window.location.href = "/menu/create")}
+      onClick={handleNavigateToForm}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          window.location.href = "/menu/create";
+          handleNavigateToForm();
         }
       }}
     >
@@ -43,6 +49,7 @@ export const MenuFormBox: React.FC = () => {
         <motion.button
           animate={{ scale: isHovered ? 1.02 : 1 }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleNavigateToForm}
           className="inline-flex items-center gap-2 bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
         >
           <span>Inizia ora</span>
