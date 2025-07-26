@@ -97,7 +97,7 @@ export const Footer = () => {
         <div className="border-t border-gray-200 pt-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm text-gray-600 text-center md:text-left">
-              © 2024 cambusaai
+              © {new Date().getFullYear()} cambusaai
             </div>
 
             <div className="flex items-center gap-2 text-sm text-gray-600">
