@@ -32,6 +32,32 @@ export default function RootLayout({
       >
         <head>
           <meta name="theme-color" content="#0895c5" />
+          
+          {/* Preconnect resource hints for performance optimization */}
+          {/* Stripe - Payment processing */}
+          <link rel="preconnect" href="https://m.stripe.com" />
+          <link rel="preconnect" href="https://js.stripe.com" />
+          <link rel="dns-prefetch" href="https://m.stripe.com" />
+          <link rel="dns-prefetch" href="https://js.stripe.com" />
+          
+          {/* Google Analytics */}
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
+          <link rel="preconnect" href="https://www.google-analytics.com" />
+          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+          
+          {/* Microsoft Clarity */}
+          <link rel="preconnect" href="https://www.clarity.ms" />
+          <link rel="dns-prefetch" href="https://www.clarity.ms" />
+          
+          {/* Hotjar */}
+          <link rel="preconnect" href="https://static.hotjar.com" />
+          <link rel="dns-prefetch" href="https://static.hotjar.com" />
+          
+          {/* Ahrefs Analytics */}
+          <link rel="preconnect" href="https://analytics.ahrefs.com" />
+          <link rel="dns-prefetch" href="https://analytics.ahrefs.com" />
+          
           {/* Hotjar - Solo se l'utente ha accettato i cookie analitici */}
           {isProduction && (
             <Script id="hotjar" strategy="afterInteractive">
