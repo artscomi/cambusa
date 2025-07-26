@@ -8,8 +8,7 @@ import { BlogCta } from "@/app/components/BlogCta";
 
 export const metadata: Metadata = {
   title: "Pasti veloci in barca: 5 idee pratiche | Cambusa Online",
-  description:
-    "Scopri 5 idee semplici per organizzare la tua cambusa in barca senza stress. Pianifica la tua cambusa in pochi click su cambusa-online.com!",
+  description:"Cerchi idee per mangiare bene in barca senza cucinare? Scopri 5 pasti freddi e veloci: insalata di riso, cous cous, piadine, panini e frutta fresca.",
 };
 
 export default function BlogPost() {
