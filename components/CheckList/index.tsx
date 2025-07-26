@@ -136,9 +136,13 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         return item;
       });
       setShoppingList(updatedList);
+      setShowQuantityModal(false);
+      setEditingQuantity(null);
+    } else {
+      // If quantity is 0 or negative, don't save and keep modal open
+      // You could also show an error message here
+      console.warn("Quantity must be greater than 0");
     }
-    setShowQuantityModal(false);
-    setEditingQuantity(null);
   };
 
   const openQuantityModal = (item: Ingredient) => {
@@ -529,14 +533,29 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                 <input
                   type="number"
                   min="1"
-                  value={editingQuantity.quantity}
-                  onChange={(e) =>
-                    setEditingQuantity({
-                      ...editingQuantity,
-                      quantity: parseInt(e.target.value) || 1,
-                    })
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={editingQuantity.quantity === 0 ? "" : editingQuantity.quantity}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "") {
+                      setEditingQuantity({
+                        ...editingQuantity,
+                        quantity: 0,
+                      });
+                    } else {
+                      const parsedValue = parseInt(value);
+                      if (!isNaN(parsedValue) && parsedValue > 0) {
+                        setEditingQuantity({
+                          ...editingQuantity,
+                          quantity: parsedValue,
+                        });
+                      }
+                    }
+                  }}
+                  className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
+                    editingQuantity.quantity <= 0 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-gray-300 focus:ring-primary'
+                  }`}
                   autoFocus
                 />
               </div>
@@ -594,7 +613,12 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                     editingQuantity.quantity
                   )
                 }
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                disabled={editingQuantity.quantity <= 0}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  editingQuantity.quantity <= 0
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-primary text-white hover:bg-primary/90'
+                }`}
               >
                 Salva
               </button>
