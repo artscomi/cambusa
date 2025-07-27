@@ -48,30 +48,48 @@ export const TestimonialsSection: React.FC = () => {
           variants={itemVariants}
           className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8"
         >
-          <div className="text-center">
+          <motion.div 
+            className="text-center"
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
               500+
             </div>
             <div className="text-gray-600 text-sm sm:text-base">
               Menu Generati
             </div>
-          </div>
-          <div className="text-center">
+          </motion.div>
+          <motion.div 
+            className="text-center"
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+          >
             <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
               4.9/5
             </div>
             <div className="text-gray-600 text-sm sm:text-base">
               Valutazione Media
             </div>
-          </div>
-          <div className="text-center">
+          </motion.div>
+          <motion.div 
+            className="text-center"
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+          >
             <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
               1000+
             </div>
             <div className="text-gray-600 text-sm sm:text-base">
               Navigatori Soddisfatti
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </motion.section>

@@ -134,13 +134,20 @@ export const FAQSection: React.FC = () => {
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <FAQItem
+            <motion.div
               key={index}
-              question={faq.question}
-              answer={faq.answer}
-              isOpen={openIndex === index}
-              onToggle={() => handleToggle(index)}
-            />
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
+            >
+              <FAQItem
+                question={faq.question}
+                answer={faq.answer}
+                isOpen={openIndex === index}
+                onToggle={() => handleToggle(index)}
+              />
+            </motion.div>
           ))}
         </div>
 
