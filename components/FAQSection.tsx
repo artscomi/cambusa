@@ -36,8 +36,15 @@ const faqs = [
     question: "Come vengono utilizzati i miei dati?",
     answer: (
       <>
-        I dati raccolti vengono utilizzati esclusivamente per permetterti di accedere ai menu generati in un secondo momento e per migliorare Cambusaai. Monitoriamo l'utilizzo dell'app in modo anonimo per aggiungere nuove funzionalità e correggere eventuali errori. Tutto è garantito nell'anonimato e puoi leggere i dettagli completi nella{" "}
-        <Link href="/privacy-policy" className="text-primary hover:text-primary-dark underline">
+        I dati raccolti vengono utilizzati esclusivamente per permetterti di
+        accedere ai menu generati in un secondo momento e per migliorare
+        Cambusaai. Monitoriamo l'utilizzo dell'app in modo anonimo per
+        aggiungere nuove funzionalità e correggere eventuali errori. Tutto è
+        garantito nell'anonimato e puoi leggere i dettagli completi nella{" "}
+        <Link
+          href="/privacy-policy"
+          className="text-primary hover:text-primary-dark underline"
+        >
           privacy policy
         </Link>
         .
@@ -46,8 +53,7 @@ const faqs = [
   },
   {
     question: "Quanto costa utilizzare Cambusaai?",
-    answer:
-      `Le prime 3 generazioni di menu sono completamente gratuite.
+    answer: `Le prime 3 generazioni di menu sono completamente gratuite.
 Dopo di che, puoi continuare con un piccolo contributo di 0,99€ per 5 nuove generazioni.
 Se sei uno skipper, contattaci: potremmo offrirti generazioni illimitate in cambio di feedback sull'app. Ci farebbe piacere coinvolgerti per rendere il servizio sempre più utile agli amanti del mare!`,
   },
@@ -93,7 +99,7 @@ const FAQItem: React.FC<FAQItemProps> = ({
       >
         <div className="px-6 pb-4 bg-gray-50">
           <div className="text-gray-700 text-sm sm:text-base leading-relaxed">
-            {typeof answer === 'string' ? answer : answer}
+            {typeof answer === "string" ? answer : answer}
           </div>
         </div>
       </motion.div>
@@ -138,13 +144,7 @@ export const FAQSection: React.FC = () => {
           ))}
         </div>
 
-        <motion.div variants={itemVariants} className="text-center mt-8 pt-8 border-t border-gray-200">
-          <p className="text-gray-500 text-sm">
-            Ultimo aggiornamento: 27 luglio 2025
-          </p>
-        </motion.div>
-
-        {/* <motion.div variants={itemVariants} className="text-center mt-12">
+        <motion.div variants={itemVariants} className="text-center mt-12">
           <p className="text-gray-600 text-sm sm:text-base mb-4">
             Non hai trovato la risposta che cercavi?
           </p>
@@ -154,7 +154,7 @@ export const FAQSection: React.FC = () => {
           >
             Contattaci
           </a>
-        </motion.div> */}
+        </motion.div>
       </div>
     </motion.section>
   );
