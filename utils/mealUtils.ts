@@ -43,7 +43,6 @@ export const handleMealListGeneration = async (
   scrollTo(0, 0);
   setError(null);
 
-  console.log({ groupMeals, alcoholPreferences, waterPreference });
 
   const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
   const maxAiCall = await getMaxAiCall(hasPaidForIncrease);

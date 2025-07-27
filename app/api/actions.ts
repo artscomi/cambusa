@@ -4,7 +4,7 @@ import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { GroupInfo, Meal, MealList } from "@/types/types";
-import { generateObject, JSONParseError, TypeValidationError } from "ai";
+import { generateObject, streamObject, JSONParseError, TypeValidationError } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
 import { mealMenuSchema, mealSchema } from "./schemas/meal-menu";
@@ -180,12 +180,15 @@ export const getMealListFromAi = async ({
 
   try {
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4o-mini"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
+            providerOptions: {
+              openai: { reasoningEffort: 'low' },
+            },
           });
 
     revalidatePath("/meal-menu", "layout");
@@ -474,4 +477,113 @@ export const getMaxAiCall = async (hasPaidForIncrease: boolean) => {
   }
 
   return hasPaidForIncrease ? PAID_TIER_API_CALLS : FREE_TIER_API_CALLS;
+};
+
+export const getMealListFromAiStream = async ({
+  formValues,
+  userId,
+}: {
+  formValues: FormState;
+  userId: string;
+}) => {
+  "use server";
+  
+  try {
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: {
+        id: true,
+        apiCallCount: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update API call count
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        apiCallCount: user.apiCallCount + 1,
+        lastApiCall: new Date(),
+      },
+    });
+
+    // Create streaming result
+    const result = await streamObject({
+      model: openai("gpt-4o-mini"),
+      prompt: getMainPrompt(formValues),
+      schema: mealMenuSchema,
+      providerOptions: {
+        openai: { reasoningEffort: 'low' },
+      },
+    });
+
+    revalidatePath("/meal-menu", "layout");
+    
+    // Wait for the final object and return only serializable data
+    const finalObject = await result.object;
+    return { 
+      type: "success" as const, 
+      menu: finalObject.menu 
+    };
+  } catch (error) {
+    console.error("Error in streaming meal generation:", error);
+    throw error;
+  }
+};
+
+export const regenerateSingleMealStream = async ({
+  dietaryPreferences,
+  userId,
+  meal,
+}: {
+  dietaryPreferences: string;
+  userId: string;
+  meal: Meal;
+}) => {
+  "use server";
+
+  try {
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: {
+        id: true,
+        apiCallCount: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update API call count
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        apiCallCount: user.apiCallCount + 1,
+        lastApiCall: new Date(),
+      },
+    });
+
+    // Create streaming result
+    const result = await streamObject({
+      model: openai("gpt-4o-mini"),
+      prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
+      schema: mealSchema,
+    });
+
+    revalidatePath("/meal-menu", "layout");
+    
+    // Wait for the final object and return only serializable data
+    const finalObject = await result.object;
+    return { 
+      type: "success" as const, 
+      meal: finalObject 
+    };
+  } catch (error) {
+    console.error("Error in streaming meal regeneration:", error);
+    throw error;
+  }
 };

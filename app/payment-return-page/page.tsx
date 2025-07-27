@@ -26,7 +26,6 @@ export default function PaymentReturnPage() {
           if (data.status === "complete") {
             try {
               await resetApiCallCount();
-              console.log("API call count reset successfully");
               setSuccessPayment(true);
               router.refresh();
               setTimeout(() => router.push("/"), 2000);

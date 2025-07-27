@@ -34,7 +34,6 @@ export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
   const onComplete = useCallback(async () => {
     try {
       await resetApiCallCount();
-      console.log("API call count reset successfully");
       setTimeout(() => setIsOpen(false), 4000);
     } catch (error) {
       console.error("Error resetting API call count:");

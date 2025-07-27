@@ -12,29 +12,17 @@ export const generateAlcoholIngredients = (
 ): Ingredient[] => {
   const ingredients: Ingredient[] = [];
 
-  console.log(
-    "generateAlcoholIngredients called with:",
-    alcoholPreferences,
-    "people:",
-    people,
-    "days:",
-    days
-  );
-
   if (!alcoholPreferences || alcoholPreferences.trim() === "") {
-    console.log("No alcohol preferences provided, returning empty array");
     return ingredients;
   }
 
   const preferences = alcoholPreferences.toLowerCase();
-  console.log("Processing preferences:", preferences);
 
   // Calculate wine bottles: 1 bottle per person every 7 days
   const wineBottles = people * Math.ceil(days / 7);
 
   // Vino bianco
   if (preferences.includes("vino bianco") || preferences.includes("bianco")) {
-    console.log("Adding white wine");
     ingredients.push({
       id: "alcohol_white_wine",
       item: "🍷 Vino bianco",
@@ -45,7 +33,6 @@ export const generateAlcoholIngredients = (
 
   // Vino rosso
   if (preferences.includes("vino rosso") || preferences.includes("rosso")) {
-    console.log("Adding red wine");
     ingredients.push({
       id: "alcohol_red_wine",
       item: "🍷 Vino rosso",
@@ -60,7 +47,6 @@ export const generateAlcoholIngredients = (
     preferences.includes("spumante") ||
     preferences.includes("champagne")
   ) {
-    console.log("Adding prosecco");
     ingredients.push({
       id: "alcohol_prosecco",
       item: "🥂 Prosecco",
@@ -71,7 +57,6 @@ export const generateAlcoholIngredients = (
 
   // Birra - 1 birre per persona per giorno
   if (preferences.includes("birra") || preferences.includes("beer")) {
-    console.log("Adding beer");
     const beerBottles = people * days;
     ingredients.push({
       id: "alcohol_beer",
@@ -87,7 +72,6 @@ export const generateAlcoholIngredients = (
     preferences.includes("aperol") ||
     preferences.includes("campari")
   ) {
-    console.log("Adding aperitif");
     const aperitifBottles = Math.ceil(days / 7);
     ingredients.push({
       id: "alcohol_aperitif",
@@ -99,7 +83,6 @@ export const generateAlcoholIngredients = (
 
   // Limoncello - 1 bottiglia per gruppo ogni 3 giorni
   if (preferences.includes("limoncello") || preferences.includes("digestivo")) {
-    console.log("Adding limoncello");
     const limoncelloBottles = Math.ceil(days / 3);
     ingredients.push({
       id: "alcohol_limoncello",
@@ -111,7 +94,6 @@ export const generateAlcoholIngredients = (
 
   // Gin - 1 bottiglia per gruppo ogni 7 giorni
   if (preferences.includes("gin") || preferences.includes("tonic")) {
-    console.log("Adding gin and tonic");
     const ginBottles = Math.ceil(days / 7);
     ingredients.push({
       id: "alcohol_gin",
@@ -129,7 +111,6 @@ export const generateAlcoholIngredients = (
 
   // Vodka - 1 bottiglia per gruppo ogni 7 giorni
   if (preferences.includes("vodka")) {
-    console.log("Adding vodka");
     const vodkaBottles = Math.ceil(days / 7);
     ingredients.push({
       id: "alcohol_vodka",
@@ -141,7 +122,6 @@ export const generateAlcoholIngredients = (
 
   // Rum - 1 bottiglia per gruppo ogni 7 giorni
   if (preferences.includes("rum")) {
-    console.log("Adding rum");
     const rumBottles = Math.ceil(days / 7);
     ingredients.push({
       id: "alcohol_rum",
@@ -153,7 +133,6 @@ export const generateAlcoholIngredients = (
 
   // Whisky - 1 bottiglia per gruppo ogni 7 giorni
   if (preferences.includes("whisky") || preferences.includes("whiskey")) {
-    console.log("Adding whisky");
     const whiskyBottles = Math.ceil(days / 7);
     ingredients.push({
       id: "alcohol_whisky",
@@ -169,7 +148,6 @@ export const generateAlcoholIngredients = (
     !preferences.includes("non bevo") &&
     !preferences.includes("niente alcolici")
   ) {
-    console.log("No specific preferences found, adding default wines");
     ingredients.push({
       id: "alcohol_white_wine_default",
       item: "🍷 Vino bianco",
@@ -184,7 +162,6 @@ export const generateAlcoholIngredients = (
     });
   }
 
-  console.log("Final alcohol ingredients:", ingredients);
   return ingredients;
 };
 
@@ -195,20 +172,10 @@ export const generateWaterIngredients = (
 ): Ingredient[] => {
   const ingredients: Ingredient[] = [];
 
-  console.log(
-    "generateWaterIngredients called with:",
-    waterPreference,
-    "people:",
-    people,
-    "days:",
-    days
-  );
-
   // Calculate total bottles needed: 2 bottles per person per day
   const totalBottles = people * days * 2;
 
   if (!waterPreference || waterPreference.trim() === "") {
-    console.log("No water preference provided, adding default water");
     ingredients.push({
       id: "water_natural_default",
       item: "💧 Acqua naturale",
@@ -219,11 +186,9 @@ export const generateWaterIngredients = (
   }
 
   const preferences = waterPreference.toLowerCase();
-  console.log("Processing water preferences:", preferences);
 
   // Acqua naturale
   if (preferences === "naturale") {
-    console.log("Adding natural water");
     ingredients.push({
       id: "water_natural",
       item: "💧 Acqua naturale",
@@ -234,7 +199,6 @@ export const generateWaterIngredients = (
 
   // Acqua gassata
   if (preferences === "gassata") {
-    console.log("Adding sparkling water");
     ingredients.push({
       id: "water_sparkling",
       item: "💧 Acqua gassata",
@@ -245,7 +209,6 @@ export const generateWaterIngredients = (
 
   // Indifferente - aggiungi entrambe (metà per tipo)
   if (preferences === "indifferente") {
-    console.log("Adding both types of water");
     const bottlesPerType = Math.ceil(totalBottles / 2);
     ingredients.push({
       id: "water_natural_indifferent",
@@ -263,9 +226,6 @@ export const generateWaterIngredients = (
 
   // Se non ci sono preferenze specifiche, aggiungi acqua naturale di default
   if (ingredients.length === 0) {
-    console.log(
-      "No specific water preferences found, adding default natural water"
-    );
     ingredients.push({
       id: "water_natural_default",
       item: "💧 Acqua naturale",
@@ -274,7 +234,6 @@ export const generateWaterIngredients = (
     });
   }
 
-  console.log("Final water ingredients:", ingredients);
   return ingredients;
 };
 
@@ -290,17 +249,7 @@ export const generateGroupAlcoholIngredients = (
 ): Ingredient[] => {
   const ingredients: Ingredient[] = [];
 
-  console.log(
-    "generateGroupAlcoholIngredients called with:",
-    alcoholPreferences,
-    "people:",
-    people,
-    "days:",
-    days
-  );
-
   if (!alcoholPreferences || alcoholPreferences.length === 0) {
-    console.log("No alcohol preferences provided, returning empty array");
     return ingredients;
   }
 
@@ -325,14 +274,9 @@ export const generateGroupAlcoholIngredients = (
   // Analyze each user's preferences
   alcoholPreferences.forEach(({ preference }) => {
     const pref = preference.toLowerCase();
-    console.log("Processing preference:", pref);
 
     if (pref.includes("non bevo") || pref.includes("niente alcolici")) {
       preferenceCounts.noAlcohol++;
-      console.log(
-        "Found non-drinker, noAlcohol count:",
-        preferenceCounts.noAlcohol
-      );
     } else {
       if (pref.includes("vino bianco") || pref.includes("bianco"))
         preferenceCounts.whiteWine++;
@@ -346,10 +290,6 @@ export const generateGroupAlcoholIngredients = (
         preferenceCounts.prosecco++;
       if (pref.includes("birra") || pref.includes("beer")) {
         preferenceCounts.beer++;
-        console.log(
-          "Found beer preference, beer count:",
-          preferenceCounts.beer
-        );
       }
       if (
         pref.includes("aperitivo") ||
@@ -368,7 +308,6 @@ export const generateGroupAlcoholIngredients = (
     }
   });
 
-  console.log("Final preference counts:", preferenceCounts);
   const totalUsers = alcoholPreferences.length;
   const drinkersCount = totalUsers - preferenceCounts.noAlcohol;
 
@@ -415,19 +354,10 @@ export const generateGroupAlcoholIngredients = (
         unit: getBottleUnit(proseccoBottles),
       });
     }
-    console.log("preferenceCounts", preferenceCounts.beer);
 
     // Birra - 2 birre per persona che beve birra per giorno
     if (preferenceCounts.beer > 0) {
       const beerBottles = preferenceCounts.beer * days * 2;
-      console.log(
-        "Beer calculation: preferenceCounts.beer =",
-        preferenceCounts.beer,
-        "days =",
-        days,
-        "result =",
-        beerBottles
-      );
       ingredients.push({
         id: "alcohol_beer_group",
         item: "🍺 Birra",
@@ -510,7 +440,6 @@ export const generateGroupAlcoholIngredients = (
 
     // If no specific preferences but people drink, add default wines
     if (ingredients.length === 0) {
-      console.log("No specific preferences found, adding default wines");
       ingredients.push({
         id: "alcohol_white_wine_default_group",
         item: "🍷 Vino bianco",
@@ -526,6 +455,5 @@ export const generateGroupAlcoholIngredients = (
     }
   }
 
-  console.log("Final group alcohol ingredients:", ingredients);
   return ingredients;
 };

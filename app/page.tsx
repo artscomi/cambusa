@@ -40,7 +40,6 @@ export default function Home() {
           if (data.status === "complete") {
             try {
               await resetApiCallCount();
-              console.log("API call count reset successfully");
               setSuccessPayment(true);
             } catch (e) {
               console.error("Error resetting API call count:");
