@@ -34,7 +34,9 @@ const faqs = [
   {
     question: "Quanto costa utilizzare Cambusaai?",
     answer:
-      "Offriamo un piano gratuito con limiti di utilizzo e piani premium per uso intensivo. Controlla la sezione prezzi per tutti i dettagli sui nostri piani.",
+      `Le prime 3 generazioni di menu sono completamente gratuite.
+Dopo di che, puoi continuare con un piccolo contributo di 0,99€ per 5 nuove generazioni.
+Se sei uno skipper, contattaci: potremmo offrirti generazioni illimitate in cambio di feedback sull'app. Ci farebbe piacere coinvolgerti per rendere il servizio sempre più utile agli amanti del mare!`,
   },
 ];
 
