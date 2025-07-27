@@ -14,6 +14,7 @@ import {
   Users,
   Wine,
   Droplets,
+  Share2,
 } from "lucide-react";
 
 interface UserPreference {
@@ -53,6 +54,8 @@ export const PageContent = ({
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
+  const [isSharing, setIsSharing] = useState(false);
+  
   if (!user) return;
   const {
     breakfast = "0",
@@ -162,6 +165,39 @@ export const PageContent = ({
       .join(" ");
   };
 
+  const handleShare = async () => {
+    if (!navigator.share) {
+      // Fallback for browsers that don't support Web Share API
+      const shareText = `Gruppo: ${group.groupName}\nPersone: ${group.people}\nPranzi: ${group.lunch}\nCene: ${group.dinner}\n\nVisualizza su Cambusa: ${window.location.origin}/group/${group.groupId}/menu`;
+      
+      try {
+        await navigator.clipboard.writeText(shareText);
+        alert("Informazioni del gruppo copiate negli appunti!");
+      } catch (err) {
+        console.error("Errore durante la copia negli appunti:", err);
+      }
+      return;
+    }
+
+    setIsSharing(true);
+    
+    try {
+      const shareData = {
+        title: `Gruppo ${group.groupName} - Cambusa`,
+        text: `Gruppo: ${group.groupName}\nPersone: ${group.people}\nPranzi: ${group.lunch}\nCene: ${group.dinner}`,
+        url: `${window.location.origin}/group/${group.groupId}/menu`,
+      };
+
+      await navigator.share(shareData);
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        console.error("Errore durante la condivisione:", err);
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   return isPending ? (
     <Loading />
   ) : (
@@ -222,18 +258,32 @@ export const PageContent = ({
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   Condividi il link del gruppo
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 text-sm ">
                   Condividi questo link con i membri del gruppo per permettere
                   loro di aggiungere le loro preferenze
                 </p>
               </div>
-              <div className="flex-shrink-0">
-                <CopyLink
-                  url={buildUrl(
-                    process.env.NEXT_PUBLIC_BASE_URL,
-                    `group/${group.groupId}`
-                  )}
-                />
+              <div className="flex-shrink-0 max-w-full">
+                {/* Show share button on mobile, copy link on desktop */}
+                <div className="md:hidden">
+                  <button
+                    onClick={handleShare}
+                    disabled={isSharing}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Condividi gruppo"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    {isSharing ? "Condividendo..." : "Condividi"}
+                  </button>
+                </div>
+                <div className="hidden md:block">
+                  <CopyLink
+                    url={buildUrl(
+                      process.env.NEXT_PUBLIC_BASE_URL,
+                      `group/${group.groupId}`
+                    )}
+                  />
+                </div>
               </div>
             </div>
           </div>

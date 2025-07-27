@@ -7,8 +7,8 @@ const Gruppi = async () => {
   if (!userGroups.group) return null;
 
   return (
-    <>
-      <h1>I miei gruppi</h1>
+    <div className="max-w-4xl mx-auto px-4">
+      <h1 className="text-3xl font-bold mb-8 text-primary">I miei gruppi</h1>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5">
         {userGroups.group?.filter(group => group.group.name).map((group) => {
           const { group: groupItem } = group;
@@ -36,7 +36,7 @@ const Gruppi = async () => {
           );
         })}
       </div>
-    </>
+    </div>
   );
 };
 
