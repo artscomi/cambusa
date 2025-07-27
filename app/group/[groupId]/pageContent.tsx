@@ -72,7 +72,6 @@ export const PageContent: React.FC<{
   const [showToastSuccess, setShowToastSuccess] = useState(false);
   const [arePreferencesSaved, setArePreferencesSaved] = useState(false);
   const [error, setError] = useState("");
-  const [isSharing, setIsSharing] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
@@ -232,23 +231,14 @@ export const PageContent: React.FC<{
   const handleShare = async () => {
     if (!navigator.share) {
       // Fallback for browsers that don't support Web Share API
-      const shareText = `Gruppo: ${group.groupName}\n\nVisualizza su Cambusa: ${window.location.origin}/group/${groupId}`;
-      
-      try {
-        await navigator.clipboard.writeText(shareText);
-        alert("Informazioni del gruppo copiate negli appunti!");
-      } catch (err) {
-        console.error("Errore durante la copia negli appunti:", err);
-      }
+      // Show the copy link button instead of copying to clipboard
       return;
     }
 
-    setIsSharing(true);
-    
     try {
       const shareData = {
         title: `Gruppo ${group.groupName} - Cambusa`,
-        text: `Gruppo: ${group.groupName}`,
+        text: `Ciao! Sei stato invitato a prendere parte al gruppo: ${group.groupName} su Cambusa. Clicca qui per aggiungere le tue preferenze alimentari: ${window.location.origin}/group/${groupId}`,
         url: `${window.location.origin}/group/${groupId}`,
       };
 
@@ -257,8 +247,6 @@ export const PageContent: React.FC<{
       if ((err as Error).name !== 'AbortError') {
         console.error("Errore durante la condivisione:", err);
       }
-    } finally {
-      setIsSharing(false);
     }
   };
 
@@ -284,12 +272,11 @@ export const PageContent: React.FC<{
               <div className="md:hidden">
                 <button
                   onClick={handleShare}
-                  disabled={isSharing}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 mx-auto"
                   title="Condividi gruppo"
                 >
                   <Share2 className="w-4 h-4" />
-                  {isSharing ? "Condividendo..." : "Condividi"}
+                  Condividi
                 </button>
               </div>
               <div className="hidden md:block">
@@ -476,12 +463,11 @@ export const PageContent: React.FC<{
             <div className="md:hidden">
               <button
                 onClick={handleShare}
-                disabled={isSharing}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 mx-auto"
                 title="Condividi gruppo"
               >
                 <Share2 className="w-4 h-4" />
-                {isSharing ? "Condividendo..." : "Condividi"}
+                Condividi
               </button>
             </div>
             <div className="hidden md:block">
