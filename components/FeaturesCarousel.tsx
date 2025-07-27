@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { Users, ChefHat, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   carouselVariants,
   swipeConfidenceThreshold,
@@ -14,22 +15,26 @@ const features = [
     icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Equipaggio",
     description: "Gestisci le preferenze di tutta la ciurma",
+    href: "/group/create-group",
   },
   {
     icon: <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Menu Intelligente",
     description: "AI che crea pasti equilibrati e gustosi",
+    href: "/menu/create",
   },
   {
     icon: <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Lista Spesa",
     description: "Genera automaticamente la lista della spesa",
+    href: "/shopping-list",
   },
 ];
 
 export const FeaturesCarousel: React.FC = () => {
   const [[page, direction], setPage] = useState([0, 0]);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const router = useRouter();
 
   // Auto-play functionality
   useEffect(() => {
@@ -66,6 +71,17 @@ export const FeaturesCarousel: React.FC = () => {
   const handleMouseEnter = () => setIsAutoPlaying(false);
   const handleMouseLeave = () => setIsAutoPlaying(true);
 
+  const handleFeatureClick = (href: string) => {
+    router.push(href);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, href: string) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleFeatureClick(href);
+    }
+  };
+
   return (
     <div className="relative">
       {/* Desktop Grid */}
@@ -76,7 +92,12 @@ export const FeaturesCarousel: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="text-center p-4 sm:p-6"
+            className="text-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors duration-200"
+            role="button"
+            tabIndex={0}
+            aria-label={`Vai a ${feature.title}`}
+            onClick={() => handleFeatureClick(feature.href)}
+            onKeyDown={(e) => handleKeyDown(e, feature.href)}
           >
             <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full mb-3 sm:mb-4">
               {feature.icon}
@@ -115,7 +136,14 @@ export const FeaturesCarousel: React.FC = () => {
             onDragEnd={handleDragEnd}
             className="absolute w-full h-full flex items-center justify-center"
           >
-            <div className="text-center p-4 w-full pb-16">
+            <div 
+              className="text-center p-4 w-full pb-16 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors duration-200"
+              role="button"
+              tabIndex={0}
+              aria-label={`Vai a ${features[page].title}`}
+              onClick={() => handleFeatureClick(features[page].href)}
+              onKeyDown={(e) => handleKeyDown(e, features[page].href)}
+            >
               <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
                 {features[page].icon}
               </div>

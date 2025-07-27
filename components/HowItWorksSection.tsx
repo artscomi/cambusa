@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { itemVariants } from "@/animations/framer-variants";
+import { useRouter } from "next/navigation";
 import {
   Anchor,
   Users,
@@ -17,33 +18,53 @@ const steps = [
     title: "Pianifica il Viaggio",
     description:
       "Inserisci durata, numero di pasti e preferenze alimentari del tuo equipaggio",
+    href: null, // Informational step
   },
   {
     icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Gestisci l'Equipaggio",
     description:
       "Aggiungi le preferenze e restrizioni alimentari di ogni membro",
+    href: "/group/create-group",
   },
   {
     icon: <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Genera il Menu",
     description:
       "L'AI crea un menu personalizzato e bilanciato per tutto il viaggio",
+    href: "/menu/create",
   },
   {
     icon: <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Lista della Spesa",
     description:
       "Ricevi automaticamente la lista completa degli ingredienti necessari",
+    href: "/shopping-list",
   },
   {
     icon: <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Salpa Sereno",
     description: "Tutto pronto per una crociera senza pensieri alimentari!",
+    href: null, // Informational step
   },
 ];
 
 export const HowItWorksSection: React.FC = () => {
+  const router = useRouter();
+
+  const handleStepClick = (href: string | null) => {
+    if (href) {
+      router.push(href);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, href: string | null) => {
+    if (href && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      handleStepClick(href);
+    }
+  };
+
   return (
     <motion.section
       variants={itemVariants}
@@ -77,7 +98,16 @@ export const HowItWorksSection: React.FC = () => {
               </div>
 
               {/* Step Card */}
-              <div className="bg-white rounded-xl p-4 shadow-md border border-gray-100">
+              <div 
+                className={`bg-white rounded-xl p-4 shadow-md border border-gray-100 ${
+                  step.href ? 'cursor-pointer hover:shadow-lg hover:bg-gray-50 transition-all duration-200' : ''
+                }`}
+                role={step.href ? "button" : undefined}
+                tabIndex={step.href ? 0 : undefined}
+                aria-label={step.href ? `Vai a ${step.title}` : undefined}
+                onClick={() => handleStepClick(step.href)}
+                onKeyDown={(e) => handleKeyDown(e, step.href)}
+              >
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0">
                     <div className="inline-flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
@@ -121,7 +151,16 @@ export const HowItWorksSection: React.FC = () => {
                 </div>
 
                 {/* Step Card */}
-                <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full relative">
+                <div 
+                  className={`bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full relative ${
+                    step.href ? 'cursor-pointer hover:shadow-xl hover:bg-gray-50 transition-all duration-200' : ''
+                  }`}
+                  role={step.href ? "button" : undefined}
+                  tabIndex={step.href ? 0 : undefined}
+                  aria-label={step.href ? `Vai a ${step.title}` : undefined}
+                  onClick={() => handleStepClick(step.href)}
+                  onKeyDown={(e) => handleKeyDown(e, step.href)}
+                >
                   <div className="flex flex-col items-center text-center h-full">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
                       {step.icon}
@@ -162,7 +201,16 @@ export const HowItWorksSection: React.FC = () => {
               </div>
 
               {/* Step Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 h-full relative">
+              <div 
+                className={`bg-white rounded-2xl p-6 shadow-lg border border-gray-100 h-full relative ${
+                  step.href ? 'cursor-pointer hover:shadow-xl hover:bg-gray-50 transition-all duration-200' : ''
+                }`}
+                role={step.href ? "button" : undefined}
+                tabIndex={step.href ? 0 : undefined}
+                aria-label={step.href ? `Vai a ${step.title}` : undefined}
+                onClick={() => handleStepClick(step.href)}
+                onKeyDown={(e) => handleKeyDown(e, step.href)}
+              >
                 <div className="flex flex-col items-center text-center h-full">
                   <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-full mb-3">
                     {step.icon}
