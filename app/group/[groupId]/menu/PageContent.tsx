@@ -6,14 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { GroupInfo } from "@/types/types";
 import { ToastError } from "@/components/ToastError";
 import { ShareSection } from "@/components/ShareSection";
-import {
-  CookingPot,
-  Heart,
-  Sandwich,
-  Users,
-  Wine,
-  Droplets,
-} from "lucide-react";
+import { CookingPot, Heart, Sandwich, Users } from "lucide-react";
 import React from "react";
 
 interface UserPreference {
@@ -53,13 +46,13 @@ export const PageContent = ({
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
-  
+
   const shareUrl = `${window.location.origin}/group/${group.groupId}/menu`;
   const copyLinkUrl = buildUrl(
     process.env.NEXT_PUBLIC_BASE_URL,
     `group/${group.groupId}/menu`
   );
-  
+
   if (!user) return;
   const {
     breakfast = "0",
@@ -195,62 +188,6 @@ export const PageContent = ({
         </ul>
       </div>
 
-      {/* Group Owner / Non Group Owner Section */}
-      {group.isTheGroupOwner ? (
-        <div className="bg-white p-8 rounded-lg shadow-md mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-lg text-center sm:text-left">
-              Solo tu in quanto{" "}
-              <strong className="text-primary">group owner</strong> puoi
-              generare il menu 👨‍🍳
-            </p>
-            <ButtonGenerateMealList
-              setError={setError}
-              startTransition={startTransition}
-              userId={user.id}
-              dietaryPreferences={preferenceString()}
-              alcoholPreferences={alcoholPreferenceString()}
-              waterPreference={waterPreferenceString()}
-              groupMeals={{
-                breakfast,
-                lunch,
-                dinner,
-                people,
-                sameBreakfast,
-              }}
-              groupAlcoholPreferences={alcoholPreferences}
-            />
-          </div>
-
-          {/* Share Group Link Section */}
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <ShareSection
-              groupName={group.groupName}
-              shareUrl={shareUrl}
-              copyLinkUrl={copyLinkUrl}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="bg-white p-8 rounded-lg shadow-md mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="text-center sm:text-left">
-              <p className="text-lg mb-2">
-                Solo <strong className="text-primary">{group.ownerName}</strong>{" "}
-                può generare la lista dei pasti.
-              </p>
-              <p className="text-gray-600 text-sm">
-                Aspetta che il group owner generi il menu per vedere i pasti del
-                gruppo 🍽️
-              </p>
-            </div>
-            <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
-              <CookingPot className="w-8 h-8 text-gray-400" />
-            </div>
-          </div>
-        </div>
-      )}
-
       <h2 className="text-2xl font-bold mb-6 text-primary">
         Preferenze alimentari del gruppo
       </h2>
@@ -353,6 +290,64 @@ export const PageContent = ({
           </div>
         ))}
       </div>
+
+      {/* Group Owner / Non Group Owner Section */}
+      {group.isTheGroupOwner ? (
+        <>
+          <div className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <div className="flex flex-col justify-between items-center gap-4">
+              <p className="text-lg text-center sm:text-left">
+                Solo tu in quanto{" "}
+                <strong className="text-primary">group owner</strong> puoi
+                generare il menu 👨‍🍳
+              </p>
+              <ButtonGenerateMealList
+                setError={setError}
+                startTransition={startTransition}
+                userId={user.id}
+                dietaryPreferences={preferenceString()}
+                alcoholPreferences={alcoholPreferenceString()}
+                waterPreference={waterPreferenceString()}
+                groupMeals={{
+                  breakfast,
+                  lunch,
+                  dinner,
+                  people,
+                  sameBreakfast,
+                }}
+                groupAlcoholPreferences={alcoholPreferences}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-lg shadow-md mb-8">
+            <ShareSection
+              groupName={group.groupName}
+              shareUrl={shareUrl}
+              copyLinkUrl={copyLinkUrl}
+              title="Condividi il link del gruppo"
+            />
+          </div>
+        </>
+      ) : (
+        <div className="bg-white p-8 rounded-lg shadow-md mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="text-center sm:text-left">
+              <p className="text-lg mb-2">
+                Solo <strong className="text-primary">{group.ownerName}</strong>{" "}
+                può generare la lista dei pasti.
+              </p>
+              <p className="text-gray-600 text-sm">
+                Aspetta che il group owner generi il menu per vedere i pasti del
+                gruppo 🍽️
+              </p>
+            </div>
+            <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
+              <CookingPot className="w-8 h-8 text-gray-400" />
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastError error={error} setError={setError} />
     </div>

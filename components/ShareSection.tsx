@@ -16,17 +16,23 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
   groupName,
   shareUrl,
   copyLinkUrl,
-  title = "Condividi il link del gruppo",
-  description = "Condividi questo link con i membri del gruppo per permettere loro di aggiungere le loro preferenze"
+  title,
+  description = " Ora puoi condividere il link con i tuoi compagni di viaggio.",
 }) => {
   const [supportsShare, setSupportsShare] = useState(false);
 
   // Check if Web Share API is supported
   useEffect(() => {
-    setSupportsShare(typeof navigator !== 'undefined' && 'share' in navigator);
+    setSupportsShare(typeof navigator !== "undefined" && "share" in navigator);
   }, []);
 
-  const handleShare = async ({ groupName, url }: { groupName: string; url: string }) => {
+  const handleShare = async ({
+    groupName,
+    url,
+  }: {
+    groupName: string;
+    url: string;
+  }) => {
     try {
       const shareData = {
         title: `Gruppo ${groupName} - Cambusa`,
@@ -36,30 +42,30 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
 
       await navigator.share(shareData);
     } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
+      if ((err as Error).name !== "AbortError") {
         console.error("Errore durante la condivisione:", err);
       }
     }
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div className="text-center sm:text-left">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-          {title}
-        </h3>
-        <p className="text-gray-600 text-sm">
-          {description}
-        </p>
+    <div className="flex flex-col items-center text-center gap-4">
+      <div>
+        {title && (
+          <h3 className="text-lg font-semibold text-primary mb-2">{title}</h3>
+        )}
+        {description && <p className="text-gray-600 text-l">{description}</p>}
       </div>
-      <div className="flex-shrink-0 max-w-full">
+      <div className="flex-shrink-0">
         {/* Show share button if navigator.share is supported, copy link if not */}
         {supportsShare ? (
           <button
-            onClick={() => handleShare({
-              groupName,
-              url: shareUrl,
-            })}
+            onClick={() =>
+              handleShare({
+                groupName,
+                url: shareUrl,
+              })
+            }
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200"
             title="Condividi gruppo"
           >
@@ -72,4 +78,4 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
       </div>
     </div>
   );
-}; 
+};

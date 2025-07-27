@@ -238,25 +238,24 @@ export const PageContent: React.FC<{
   if (hasExistingPreferences) {
     return (
       <>
-        <div className="border rounded-lg p-8 mb-8 bg-white">
-          <div className="text-center">
-            <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
-              <Heart className="w-8 h-8 text-green-600" />
+        {/* Group Owner Section - Only show if user is the group owner */}
+        {isTheGroupOwner && groupLink && (
+          <div className="border rounded-lg p-8 mb-8 bg-white">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+                <Heart className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">
+                Gruppo creato con successo!
+              </h2>
             </div>
-            <h2 className="text-2xl font-bold mb-4">
-              Preferenze già inserite!
-            </h2>
-            <p className="mb-6">
-              Hai già aggiunto le tue preferenze a questo gruppo. Ora puoi
-              monitorare le preferenze degli altri membri.
-            </p>
-            <Link href={`${groupId}/menu`}>
-              <Button center className="px-8 py-3 text-lg">
-                Vai alla pagina del gruppo
-              </Button>
-            </Link>
+            <ShareSection
+              groupName={group.groupName}
+              shareUrl={shareUrl}
+              copyLinkUrl={groupLink}
+            />
           </div>
-        </div>
+        )}
       </>
     );
   }
@@ -401,18 +400,6 @@ export const PageContent: React.FC<{
           />
         )}
       </div>
-
-      {/* Group Owner Section */}
-      {isTheGroupOwner && groupLink && (
-        <div className="bg-gray-50 border-t border-gray-200 p-8">
-            
-            <ShareSection
-              groupName={group.groupName}
-              shareUrl={shareUrl}
-              copyLinkUrl={groupLink}
-            />
-        </div>
-      )}
 
       {/* Navigation Section */}
       {(arePreferencesSaved || isTheGroupOwner) && (
