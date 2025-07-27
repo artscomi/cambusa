@@ -21,7 +21,7 @@ export default function TermsPage() {
           Termini di Servizio
         </h1>
         <p className="text-gray-600 text-lg">
-          Ultimo aggiornamento: {new Date().toLocaleDateString("it-IT")}
+          Ultimo aggiornamento: 27 luglio 2025
         </p>
       </motion.div>
 

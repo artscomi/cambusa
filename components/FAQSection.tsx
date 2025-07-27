@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { itemVariants } from "@/animations/framer-variants";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import Link from "next/link";
 
 const faqs = [
   {
@@ -32,6 +33,18 @@ const faqs = [
       "Sì, tutti i menu sono progettati considerando le limitazioni di spazio e conservazione in barca. Privilegiamo ingredienti che si conservano bene e ricette che non richiedono attrezzature complesse.",
   },
   {
+    question: "Come vengono utilizzati i miei dati?",
+    answer: (
+      <>
+        I dati raccolti vengono utilizzati esclusivamente per permetterti di accedere ai menu generati in un secondo momento e per migliorare Cambusaai. Monitoriamo l'utilizzo dell'app in modo anonimo per aggiungere nuove funzionalità e correggere eventuali errori. Tutto è garantito nell'anonimato e puoi leggere i dettagli completi nella{" "}
+        <Link href="/privacy-policy" className="text-primary hover:text-primary-dark underline">
+          privacy policy
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
     question: "Quanto costa utilizzare Cambusaai?",
     answer:
       `Le prime 3 generazioni di menu sono completamente gratuite.
@@ -42,7 +55,7 @@ Se sei uno skipper, contattaci: potremmo offrirti generazioni illimitate in camb
 
 interface FAQItemProps {
   question: string;
-  answer: string;
+  answer: string | React.ReactNode;
   isOpen: boolean;
   onToggle: () => void;
 }
@@ -79,9 +92,9 @@ const FAQItem: React.FC<FAQItemProps> = ({
         className="overflow-hidden"
       >
         <div className="px-6 pb-4 bg-gray-50">
-          <p className="text-gray-700 text-sm sm:text-base leading-relaxed">
-            {answer}
-          </p>
+          <div className="text-gray-700 text-sm sm:text-base leading-relaxed">
+            {typeof answer === 'string' ? answer : answer}
+          </div>
         </div>
       </motion.div>
     </motion.div>
@@ -124,6 +137,12 @@ export const FAQSection: React.FC = () => {
             />
           ))}
         </div>
+
+        <motion.div variants={itemVariants} className="text-center mt-8 pt-8 border-t border-gray-200">
+          <p className="text-gray-500 text-sm">
+            Ultimo aggiornamento: 27 luglio 2025
+          </p>
+        </motion.div>
 
         {/* <motion.div variants={itemVariants} className="text-center mt-12">
           <p className="text-gray-600 text-sm sm:text-base mb-4">
