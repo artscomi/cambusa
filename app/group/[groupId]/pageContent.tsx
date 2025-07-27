@@ -5,9 +5,9 @@ import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
-import CopyLink from "@/components/CopyLinkButton";
 import Link from "next/link";
-import { Heart, Wine, Droplets, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
+import { Heart, Wine, Droplets, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShareSection } from "@/components/ShareSection";
 
 interface StepOption {
   value: string;
@@ -76,6 +76,8 @@ export const PageContent: React.FC<{
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
   const groupLink = isTheGroupOwner && buildUrl(baseUrl, `group/${groupId}/`);
+
+  const shareUrl = `${window.location.origin}/group/${groupId}`;
 
   const steps: Step[] = [
     {
@@ -228,28 +230,6 @@ export const PageContent: React.FC<{
     }
   };
 
-  const handleShare = async () => {
-    if (!navigator.share) {
-      // Fallback for browsers that don't support Web Share API
-      // Show the copy link button instead of copying to clipboard
-      return;
-    }
-
-    try {
-      const shareData = {
-        title: `Gruppo ${group.groupName} - Cambusa`,
-        text: `Ciao! Sei stato invitato a prendere parte al gruppo: ${group.groupName} su Cambusa. Clicca qui per aggiungere le tue preferenze alimentari: ${window.location.origin}/group/${groupId}`,
-        url: `${window.location.origin}/group/${groupId}`,
-      };
-
-      await navigator.share(shareData);
-    } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
-        console.error("Errore durante la condivisione:", err);
-      }
-    }
-  };
-
   const currentStepData = steps[currentStep - 1];
 
   if (!user) return null;
@@ -258,33 +238,6 @@ export const PageContent: React.FC<{
   if (hasExistingPreferences) {
     return (
       <>
-        {/* Group Owner Section */}
-        {isTheGroupOwner && groupLink && (
-          <div className="border rounded-lg p-8 mb-8 bg-white">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Gruppo creato con successo!
-              </h3>
-              <p className="text-gray-600 mb-6 text-center">
-                Ora puoi condividere il link con il resto della ciurma:
-              </p>
-              {/* Show share button on mobile, copy link on desktop */}
-              <div className="md:hidden">
-                <button
-                  onClick={handleShare}
-                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 mx-auto"
-                  title="Condividi gruppo"
-                >
-                  <Share2 className="w-4 h-4" />
-                  Condividi
-                </button>
-              </div>
-              <div className="hidden md:block">
-                <CopyLink url={groupLink} />
-              </div>
-            </div>
-          </div>
-        )}
         <div className="border rounded-lg p-8 mb-8 bg-white">
           <div className="text-center">
             <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
@@ -452,28 +405,12 @@ export const PageContent: React.FC<{
       {/* Group Owner Section */}
       {isTheGroupOwner && groupLink && (
         <div className="bg-gray-50 border-t border-gray-200 p-8">
-          <div className="text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
-              Gruppo creato con successo!
-            </h3>
-            <p className="text-gray-600 mb-6">
-              Ora puoi condividere il link con il resto della ciurma:
-            </p>
-            {/* Show share button on mobile, copy link on desktop */}
-            <div className="md:hidden">
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 mx-auto"
-                title="Condividi gruppo"
-              >
-                <Share2 className="w-4 h-4" />
-                Condividi
-              </button>
-            </div>
-            <div className="hidden md:block">
-              <CopyLink url={groupLink} />
-            </div>
-          </div>
+            
+            <ShareSection
+              groupName={group.groupName}
+              shareUrl={shareUrl}
+              copyLinkUrl={groupLink}
+            />
         </div>
       )}
 

@@ -5,8 +5,7 @@ import { Loading } from "@/components/Loading";
 import { useUser } from "@clerk/nextjs";
 import { GroupInfo } from "@/types/types";
 import { ToastError } from "@/components/ToastError";
-import { Button } from "@/components/Button";
-import CopyLink from "@/components/CopyLinkButton";
+import { ShareSection } from "@/components/ShareSection";
 import {
   CookingPot,
   Heart,
@@ -14,8 +13,8 @@ import {
   Users,
   Wine,
   Droplets,
-  Share2,
 } from "lucide-react";
+import React from "react";
 
 interface UserPreference {
   name: string;
@@ -54,6 +53,12 @@ export const PageContent = ({
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
+  
+  const shareUrl = `${window.location.origin}/group/${group.groupId}/menu`;
+  const copyLinkUrl = buildUrl(
+    process.env.NEXT_PUBLIC_BASE_URL,
+    `group/${group.groupId}/menu`
+  );
   
   if (!user) return;
   const {
@@ -164,28 +169,6 @@ export const PageContent = ({
       .join(" ");
   };
 
-  const handleShare = async () => {
-    if (!navigator.share) {
-      // Fallback for browsers that don't support Web Share API
-      // Show the copy link button instead of copying to clipboard
-      return;
-    }
-
-    try {
-      const shareData = {
-        title: `Gruppo ${group.groupName} - Cambusa`,
-        text: `Ciao! Sei stato invitato a prendere parte al gruppo: ${group.groupName} su Cambusa. Clicca qui per aggiungere le tue preferenze alimentari: ${window.location.origin}/group/${group.groupId}/menu`,
-        url: `${window.location.origin}/group/${group.groupId}/menu`,
-      };
-
-      await navigator.share(shareData);
-    } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
-        console.error("Errore durante la condivisione:", err);
-      }
-    }
-  };
-
   return isPending ? (
     <Loading />
   ) : (
@@ -241,38 +224,11 @@ export const PageContent = ({
 
           {/* Share Group Link Section */}
           <div className="mt-8 pt-6 border-t border-gray-100">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-center sm:text-left">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                  Condividi il link del gruppo
-                </h3>
-                <p className="text-gray-600 text-sm ">
-                  Condividi questo link con i membri del gruppo per permettere
-                  loro di aggiungere le loro preferenze
-                </p>
-              </div>
-              <div className="flex-shrink-0 max-w-full">
-                {/* Show share button on mobile, copy link on desktop */}
-                <div className="md:hidden">
-                  <button
-                    onClick={handleShare}
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200"
-                    title="Condividi gruppo"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    Condividi
-                  </button>
-                </div>
-                <div className="hidden md:block">
-                  <CopyLink
-                    url={buildUrl(
-                      process.env.NEXT_PUBLIC_BASE_URL,
-                      `group/${group.groupId}/menu`
-                    )}
-                  />
-                </div>
-              </div>
-            </div>
+            <ShareSection
+              groupName={group.groupName}
+              shareUrl={shareUrl}
+              copyLinkUrl={copyLinkUrl}
+            />
           </div>
         </div>
       ) : (
