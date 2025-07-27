@@ -186,9 +186,7 @@ export const getMealListFromAi = async ({
             model: openai("gpt-4o-mini"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
-            providerOptions: {
-              openai: { reasoningEffort: 'low' },
-            },
+           
           });
 
     revalidatePath("/meal-menu", "layout");
