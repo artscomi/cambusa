@@ -7,7 +7,7 @@ import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
 import CopyLink from "@/components/CopyLinkButton";
 import Link from "next/link";
-import { Heart, Wine, Droplets, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Wine, Droplets, ChevronLeft, ChevronRight, Share2 } from "lucide-react";
 
 interface StepOption {
   value: string;
@@ -72,6 +72,7 @@ export const PageContent: React.FC<{
   const [showToastSuccess, setShowToastSuccess] = useState(false);
   const [arePreferencesSaved, setArePreferencesSaved] = useState(false);
   const [error, setError] = useState("");
+  const [isSharing, setIsSharing] = useState(false);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const { user } = useUser();
   const isTheGroupOwner = group?.isTheGroupOwner;
@@ -228,6 +229,39 @@ export const PageContent: React.FC<{
     }
   };
 
+  const handleShare = async () => {
+    if (!navigator.share) {
+      // Fallback for browsers that don't support Web Share API
+      const shareText = `Gruppo: ${group.groupName}\n\nVisualizza su Cambusa: ${window.location.origin}/group/${groupId}`;
+      
+      try {
+        await navigator.clipboard.writeText(shareText);
+        alert("Informazioni del gruppo copiate negli appunti!");
+      } catch (err) {
+        console.error("Errore durante la copia negli appunti:", err);
+      }
+      return;
+    }
+
+    setIsSharing(true);
+    
+    try {
+      const shareData = {
+        title: `Gruppo ${group.groupName} - Cambusa`,
+        text: `Gruppo: ${group.groupName}`,
+        url: `${window.location.origin}/group/${groupId}`,
+      };
+
+      await navigator.share(shareData);
+    } catch (err) {
+      if ((err as Error).name !== 'AbortError') {
+        console.error("Errore durante la condivisione:", err);
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const currentStepData = steps[currentStep - 1];
 
   if (!user) return null;
@@ -246,7 +280,21 @@ export const PageContent: React.FC<{
               <p className="text-gray-600 mb-6 text-center">
                 Ora puoi condividere il link con il resto della ciurma:
               </p>
-              <CopyLink url={groupLink} />
+              {/* Show share button on mobile, copy link on desktop */}
+              <div className="md:hidden">
+                <button
+                  onClick={handleShare}
+                  disabled={isSharing}
+                  className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+                  title="Condividi gruppo"
+                >
+                  <Share2 className="w-4 h-4" />
+                  {isSharing ? "Condividendo..." : "Condividi"}
+                </button>
+              </div>
+              <div className="hidden md:block">
+                <CopyLink url={groupLink} />
+              </div>
             </div>
           </div>
         )}
@@ -424,7 +472,21 @@ export const PageContent: React.FC<{
             <p className="text-gray-600 mb-6">
               Ora puoi condividere il link con il resto della ciurma:
             </p>
-            <CopyLink url={groupLink} />
+            {/* Show share button on mobile, copy link on desktop */}
+            <div className="md:hidden">
+              <button
+                onClick={handleShare}
+                disabled={isSharing}
+                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-accent rounded-md hover:bg-accent/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+                title="Condividi gruppo"
+              >
+                <Share2 className="w-4 h-4" />
+                {isSharing ? "Condividendo..." : "Condividi"}
+              </button>
+            </div>
+            <div className="hidden md:block">
+              <CopyLink url={groupLink} />
+            </div>
           </div>
         </div>
       )}
