@@ -7,9 +7,9 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const faqs = [
   {
-    question: "Come funziona l'AI di Cambusaai?",
+    question: "Come funziona Cambusaai?",
     answer:
-      "La nostra AI analizza le tue preferenze alimentari, la durata del viaggio e le esigenze dell'equipaggio per creare menu bilanciati e gustosi. Considera anche la conservabilità degli alimenti in barca e la facilità di preparazione.",
+      "Cambusaai analizza le tue preferenze alimentari, la durata del viaggio e le esigenze dell'equipaggio per creare menu bilanciati e gustosi. Considera anche la conservabilità degli alimenti in barca e la facilità di preparazione.",
   },
   {
     question: "Posso personalizzare i menu generati?",
