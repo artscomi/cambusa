@@ -4,7 +4,12 @@ import db from "@/utils/db";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { GroupInfo, Meal, MealList } from "@/types/types";
-import { generateObject, streamObject, JSONParseError, TypeValidationError } from "ai";
+import {
+  generateObject,
+  streamObject,
+  JSONParseError,
+  TypeValidationError,
+} from "ai";
 import { openai } from "@ai-sdk/openai";
 import { getMainPrompt, getRegenerateMealPrompt } from "@/utils/getPrompt";
 import { mealMenuSchema, mealSchema } from "./schemas/meal-menu";
@@ -176,19 +181,19 @@ export const getMealListFromAi = async ({
 > => {
   "use server";
   // log the prompt
+  console.log("start");
+
   console.log("prompt", getMainPrompt(formValues));
 
   try {
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4o-mini"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
-           
           });
-
     revalidatePath("/meal-menu", "layout");
 
     const user = await db.user.findUnique({
@@ -221,13 +226,15 @@ export const getMealListFromAi = async ({
     return { type: "success", menu: result.object.menu };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
-      console.log(JSON.stringify(e.value, null, 2));
+      console.error(JSON.stringify(e.value, null, 2));
       return { type: "validation-error", value: e.value };
     } else if (JSONParseError.isInstance(e)) {
       return { type: "parse-error", text: e.text };
     } else {
       return { type: "unknown-error", error: e };
     }
+  } finally {
+    console.log("end");
   }
 };
 
@@ -477,60 +484,6 @@ export const getMaxAiCall = async (hasPaidForIncrease: boolean) => {
   return hasPaidForIncrease ? PAID_TIER_API_CALLS : FREE_TIER_API_CALLS;
 };
 
-export const getMealListFromAiStream = async ({
-  formValues,
-  userId,
-}: {
-  formValues: FormState;
-  userId: string;
-}) => {
-  "use server";
-  
-  try {
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-      select: {
-        id: true,
-        apiCallCount: true,
-      },
-    });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    // Update API call count
-    await db.user.update({
-      where: { id: user.id },
-      data: {
-        apiCallCount: user.apiCallCount + 1,
-        lastApiCall: new Date(),
-      },
-    });
-
-    // Create streaming result
-    const result = await streamObject({
-      model: openai("gpt-4o-mini"),
-      prompt: getMainPrompt(formValues),
-      schema: mealMenuSchema,
-      providerOptions: {
-        openai: { reasoningEffort: 'low' },
-      },
-    });
-
-    revalidatePath("/meal-menu", "layout");
-    
-    // Wait for the final object and return only serializable data
-    const finalObject = await result.object;
-    return { 
-      type: "success" as const, 
-      menu: finalObject.menu 
-    };
-  } catch (error) {
-    console.error("Error in streaming meal generation:", error);
-    throw error;
-  }
-};
 
 export const regenerateSingleMealStream = async ({
   dietaryPreferences,
@@ -573,15 +526,84 @@ export const regenerateSingleMealStream = async ({
     });
 
     revalidatePath("/meal-menu", "layout");
-    
+
     // Wait for the final object and return only serializable data
     const finalObject = await result.object;
-    return { 
-      type: "success" as const, 
-      meal: finalObject 
+    return {
+      type: "success" as const,
+      meal: finalObject,
     };
   } catch (error) {
     console.error("Error in streaming meal regeneration:", error);
+    throw error;
+  }
+};
+
+export const getMealListFromAiStreamObject = async ({
+  formValues,
+  userId,
+}: {
+  formValues: FormState;
+  userId: string;
+}) => {
+  "use server";
+
+  console.log("🚀 STREAMOBJECT FUNCTION CALLED");
+
+  try {
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: {
+        id: true,
+        apiCallCount: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update API call count
+    await db.user.update({
+      where: { id: user.id },
+      data: {
+        apiCallCount: user.apiCallCount + 1,
+        lastApiCall: new Date(),
+      },
+    });
+
+    // Use streamObject for structured streaming
+    const result = await streamObject({
+      model: openai("gpt-4o-mini"),
+      schema: mealMenuSchema,
+      prompt: getMainPrompt(formValues),
+      maxTokens: 2000,
+    });
+
+    // Create a readable stream for the partial objects
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const partial of result.partialObjectStream) {
+            const chunk = JSON.stringify(partial) + '\n';
+            controller.enqueue(new TextEncoder().encode(chunk));
+          }
+          controller.close();
+        } catch (error) {
+          controller.error(error);
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
+  } catch (error) {
+    console.error('Error in streamObject meal generation:', error);
     throw error;
   }
 };
