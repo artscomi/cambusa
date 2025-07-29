@@ -1,6 +1,7 @@
 import "/styles/globals.css";
 import ContextLayout from "./context-layout";
 import { ClerkProvider } from "@clerk/nextjs";
+import { itIT } from '@clerk/localizations';
 import Image from "next/image";
 import { baloo, bebas, montserrat } from "@/styles/fonts";
 import Script from "next/script";
@@ -25,7 +26,7 @@ export default function RootLayout({
   const isProduction = process.env.NODE_ENV === "production";
 
   return (
-    <ClerkProvider dynamic>
+    <ClerkProvider localization={itIT} dynamic>
       <html
         lang="it"
         className={`${montserrat.variable} ${baloo.variable} ${bebas.variable} overflow-x-hidden`}
