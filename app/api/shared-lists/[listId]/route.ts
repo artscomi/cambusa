@@ -11,13 +11,6 @@ export async function GET(
     const { userId } = await auth();
     const { listId } = params;
 
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Non autorizzato" },
-        { status: 401 }
-      );
-    }
-
     const list = await prisma.sharedIngredientList.findUnique({
       where: {
         id: listId,
@@ -42,7 +35,14 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(list);
+    // Se l'utente è autenticato, aggiungi informazioni extra
+    const response = {
+      ...list,
+      canEdit: userId ? list.createdBy === userId : false,
+      canDelete: userId ? list.createdBy === userId : false,
+    };
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Errore nel recupero della lista:", error);
     return NextResponse.json(

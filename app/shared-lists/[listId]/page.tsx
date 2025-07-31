@@ -12,7 +12,7 @@ import { Share2, Edit } from "lucide-react";
 const SharedListPage = () => {
   const params = useParams();
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const [showShareModal, setShowShareModal] = useState(false);
   const [showEditNameModal, setShowEditNameModal] = useState(false);
   const [newListName, setNewListName] = useState("");
@@ -86,6 +86,36 @@ const SharedListPage = () => {
           >
             Torna alle liste
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Se l'utente non è autenticato, mostra un messaggio
+  if (!isSignedIn) {
+    return (
+      <div className="px-6 md:px-10 lg:px-32">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {currentList.name || `Lista della spesa ${listId.slice(-4)}`}
+          </h1>
+          <p className="text-lg text-gray-600 mb-8 max-w-md">
+            Per votare sugli ingredienti e modificare questa lista, devi accedere al tuo account.
+          </p>
+          <div className="flex gap-4">
+            <button
+              onClick={() => router.push("/sign-in")}
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            >
+              Accedi
+            </button>
+            <button
+              onClick={() => router.push("/sign-up")}
+              className="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-medium"
+            >
+              Registrati
+            </button>
+          </div>
         </div>
       </div>
     );
