@@ -16,10 +16,13 @@ const SharedListPage = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showEditNameModal, setShowEditNameModal] = useState(false);
   const [newListName, setNewListName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { 
     sharedLists, 
     setSharedLists,
-    setCurrentList, 
+    currentList, 
+    setCurrentList,
+    fetchList,
     addItemToList, 
     removeItemFromList, 
     toggleItemCompletion, 
@@ -31,26 +34,41 @@ const SharedListPage = () => {
   } = useSharedListContext();
   const listId = params.listId as string;
 
-  const currentList = sharedLists.find(list => list.id === listId);
+  useEffect(() => {
+    const loadList = async () => {
+      setIsLoading(true);
+      try {
+        await fetchList(listId);
+      } catch (error) {
+        console.error('Errore nel caricamento della lista:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (listId) {
+      loadList();
+    }
+  }, [listId, fetchList]);
 
   useEffect(() => {
     if (currentList) {
-      setCurrentList(currentList);
       setNewListName(currentList.name || "");
     }
-  }, [currentList, setCurrentList]);
+  }, [currentList]);
 
-  const handleUpdateListName = () => {
-    if (newListName.trim() && currentList) {
-      const updatedLists = sharedLists.map(list =>
-        list.id === listId
-          ? { ...list, name: newListName.trim() }
-          : list
-      );
-      setSharedLists(updatedLists);
-      setShowEditNameModal(false);
-    }
-  };
+  if (isLoading) {
+    return (
+      <div className="px-6 md:px-10 lg:px-32">
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Caricamento lista...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentList) {
     return (
@@ -216,7 +234,11 @@ const SharedListPage = () => {
                 Annulla
               </button>
               <button
-                onClick={handleUpdateListName}
+                onClick={() => {
+                  // TODO: Implement actual list name update logic
+                  console.log("Update list name:", newListName);
+                  setShowEditNameModal(false);
+                }}
                 className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
                 disabled={!newListName.trim()}
               >

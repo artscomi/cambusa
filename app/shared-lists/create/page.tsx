@@ -8,11 +8,11 @@ import { ArrowLeft, Save, Users } from "lucide-react";
 
 const CreateSharedListPage = () => {
   const router = useRouter();
-  const { setSharedLists, sharedLists } = useSharedListContext();
+  const { createList } = useSharedListContext();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    groupId: "",
+    groupId: "default-group", // Per ora usiamo un gruppo di default
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,24 +21,17 @@ const CreateSharedListPage = () => {
     setIsSubmitting(true);
 
     try {
-      const newList = {
-        id: `list_${Date.now()}_${Math.random()}`,
-        name: formData.name,
-        description: formData.description || undefined,
-        groupId: formData.groupId,
-        createdBy: "current-user", // Questo dovrebbe essere preso dal context dell'utente
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        isActive: true,
-        items: [],
-      };
-
-      setSharedLists([...sharedLists, newList]);
+      const newList = await createList(
+        formData.name,
+        formData.description,
+        formData.groupId
+      );
       
       // Reindirizza alla nuova lista
       router.push(`/shared-lists/${newList.id}`);
     } catch (error) {
       console.error("Errore nella creazione della lista:", error);
+      alert("Errore nella creazione della lista. Riprova.");
     } finally {
       setIsSubmitting(false);
     }

@@ -22,6 +22,9 @@ interface SharedListContextProps {
   voteOnItem: (listId: string, itemId: string, userId: string, vote: boolean) => void;
   getUserVote: (item: SharedIngredientItem, userId: string) => boolean | null;
   getItemVoteCount: (item: SharedIngredientItem) => number;
+  fetchLists: () => Promise<void>;
+  fetchList: (listId: string) => Promise<void>;
+  createList: (name: string, description: string, groupId: string) => Promise<SharedIngredientList>;
 }
 
 const SharedListContext = createContext<SharedListContextProps | undefined>(
@@ -37,25 +40,64 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isMounted || typeof window === "undefined") return;
+  const fetchLists = async () => {
+    try {
+      const response = await fetch('/api/shared-lists');
+      if (response.ok) {
+        const lists = await response.json();
+        setSharedLists(lists);
+      }
+    } catch (error) {
+      console.error('Errore nel recupero delle liste:', error);
+    }
+  };
 
-    const storedLists = localStorage.getItem("sharedLists");
-    if (storedLists) {
-      setSharedLists(JSON.parse(storedLists));
+  const fetchList = async (listId: string) => {
+    try {
+      const response = await fetch(`/api/shared-lists/${listId}`);
+      if (response.ok) {
+        const list = await response.json();
+        setCurrentList(list);
+      }
+    } catch (error) {
+      console.error('Errore nel recupero della lista:', error);
+    }
+  };
+
+  const createList = async (name: string, description: string, groupId: string): Promise<SharedIngredientList> => {
+    try {
+      const response = await fetch('/api/shared-lists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          groupId,
+        }),
+      });
+
+      if (response.ok) {
+        const newList = await response.json();
+        setSharedLists(prev => [newList, ...prev]);
+        return newList;
+      } else {
+        throw new Error('Errore nella creazione della lista');
+      }
+    } catch (error) {
+      console.error('Errore nella creazione della lista:', error);
+      throw error;
+    }
+  };
+
+  useEffect(() => {
+    if (isMounted) {
+      fetchLists();
     }
   }, [isMounted]);
 
-  useEffect(() => {
-    if (sharedLists && isMounted && typeof window !== "undefined") {
-      localStorage.setItem("sharedLists", JSON.stringify(sharedLists));
-    }
-  }, [sharedLists, isMounted]);
-
-  const addItemToList = (
-    listId: string,
-    item: Omit<SharedIngredientItem, "id" | "listId" | "createdAt" | "updatedAt">
-  ) => {
+  const addItemToList = (listId: string, item: Omit<SharedIngredientItem, "id" | "listId" | "createdAt" | "updatedAt">) => {
     const newItem: SharedIngredientItem = {
       ...item,
       id: `item_${Date.now()}_${Math.random()}`,
@@ -140,8 +182,6 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const voteOnItem = (listId: string, itemId: string, userId: string, vote: boolean) => {
-    // This function is now synchronous, so no need for fetch or async operations
-    // The state update will happen immediately after the function call.
     setSharedLists(prevLists =>
       prevLists.map(list =>
         list.id === listId
@@ -155,7 +195,10 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
                         ...item.votes,
                         [userId]: vote,
                       },
-                      totalVotes: calculateTotalVotes(item.votes || {}),
+                      totalVotes: calculateTotalVotes({
+                        ...item.votes,
+                        [userId]: vote,
+                      }),
                       updatedAt: new Date(),
                     }
                   : item
@@ -167,12 +210,10 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getUserVote = (item: SharedIngredientItem, userId: string): boolean | null => {
-    // This function is now synchronous, so no need for fetch or async operations
     return item.votes?.[userId] ?? null;
   };
 
   const getItemVoteCount = (item: SharedIngredientItem): number => {
-    // This function is now synchronous, so no need for fetch or async operations
     return calculateTotalVotes(item.votes || {});
   };
 
@@ -197,6 +238,9 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
         voteOnItem,
         getUserVote,
         getItemVoteCount,
+        fetchLists,
+        fetchList,
+        createList,
       }}
     >
       {children}
