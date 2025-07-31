@@ -113,7 +113,7 @@ export const regenerateSingleMeal = async ({
     }
 
     const result = await generateObject({
-      model: openai("gpt-4o-mini"),
+      model: openai("gpt-3.5-turbo"),
       prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
       schema: mealSchema,
     });
@@ -190,7 +190,7 @@ export const getMealListFromAi = async ({
       process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: openai("gpt-3.5-turbo"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
@@ -221,6 +221,9 @@ export const getMealListFromAi = async ({
 
     // Log result
     console.log("result", JSON.stringify(result.object, null, 2));
+
+    // Log the final menu generated
+    console.log("🍽️ MENU GENERATO (getMealListFromAi):", JSON.stringify(result.object.menu, null, 2));
 
     // Return success response
     return { type: "success", menu: result.object.menu };
@@ -392,6 +395,7 @@ export const getGroupInfo = async (
     ownerName: group.owner.name,
     ownerGender,
     sameBreakfast: group.sameBreakfast,
+    ownerId: group.ownerId,
   };
 };
 
@@ -520,7 +524,7 @@ export const regenerateSingleMealStream = async ({
 
     // Create streaming result
     const result = await streamObject({
-      model: openai("gpt-4o-mini"),
+      model: openai("gpt-3.5-turbo"),
       prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
       schema: mealSchema,
     });
@@ -574,11 +578,15 @@ export const getMealListFromAiStreamObject = async ({
 
     // Use streamObject for structured streaming
     const result = await streamObject({
-      model: openai("gpt-4o-mini"),
+      model: openai("gpt-3.5-turbo"),
       schema: mealMenuSchema,
       prompt: getMainPrompt(formValues),
       maxTokens: 2000,
     });
+
+    // Log the final menu generated
+    const finalObject = await result.object;
+    console.log("🍽️ MENU GENERATO:", JSON.stringify(finalObject, null, 2));
 
     // Create a readable stream for the partial objects
     const stream = new ReadableStream({

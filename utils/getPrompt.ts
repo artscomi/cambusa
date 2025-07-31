@@ -17,8 +17,7 @@ export const getMainPrompt = ({
       ? "usa lo stesso menu per tutti i giorni ma crea un pasto per ogni giorno anche se è lo stesso"
       : "usa un menu diverso per ogni giorno"
   }. Gli altri pasti devono avere sempre menu diversi. Non includere nel menu integratori alimentari. Proponi sempre sia carboidrati che proteine a pranzo e cena. Ma privilegia i carboidrati a pranzo e le proteine a cena.
-  Il menu deve essere italiano e deve prevedere degli ingredienti estivi e che possono conservarsi nel frigo di una barca che di norma non è molto potente. Non proporre piatti invernali come il risotto. I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici, veloci ed evita l'uso del forno. Proponi piatti che possono essere preparati in pochi minuti ma che siano gustosi e nutritivi.
-
+  Il menu deve essere italiano e deve prevedere degli ingredienti estivi e che possono conservarsi nel frigo di una barca che di norma non è molto potente. Non proporre piatti invernali come il risotto. I piatti devono essere adatti alla preparazione in barca, quindi privilegia preparazioni semplici, veloci ed evita l'uso del forno. Proponi piatti che possono essere preparati in pochi minuti ma che siano gustosi e nutritivi. Non proporre i tacos o le tortillas ma preferisci i piatti tipici italiani come le piadine o i panini ad esempio.
 IMPORTANTE: Genera SOLO un oggetto JSON valido con questa struttura esatta:
 {
   "menu": [
