@@ -254,6 +254,27 @@ export const PageContent: React.FC<{
               shareUrl={shareUrl}
               copyLinkUrl={groupLink}
             />
+
+            {/* CTA per visitare la pagina del menu */}
+            <div className="mt-8 p-6 bg-primary/5 rounded-lg">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  Monitora le preferenze del gruppo
+                </h3>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  Dalla pagina del gruppo potrai vedere in tempo reale le
+                  preferenze che gli altri utenti aggiungeranno e generare il
+                  menu in qualsiasi momento.
+                </p>
+                <div className="flex justify-center">
+                  <Link href={`${groupId}/menu`}>
+                    <Button className="px-6 py-3 text-base">
+                      Vai alla pagina del gruppo
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </>
