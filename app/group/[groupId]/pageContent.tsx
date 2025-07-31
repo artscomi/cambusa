@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
 import { Button } from "@/components/Button";
 import Link from "next/link";
-import { Heart, Wine, Droplets, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, Wine, Droplets, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { ShareSection } from "@/components/ShareSection";
 
 interface StepOption {
@@ -234,12 +234,12 @@ export const PageContent: React.FC<{
 
   if (!user) return null;
 
-  // If user has already submitted preferences, show a message instead of the form
-  if (hasExistingPreferences) {
+  // If user has already submitted preferences OR just saved preferences, show a message instead of the form
+  if (hasExistingPreferences || arePreferencesSaved) {
     return (
       <>
         {/* Group Owner Section - Only show if user is the group owner */}
-        {isTheGroupOwner && groupLink && (
+        {group.isTheGroupOwner && groupLink && (
           <div className="border rounded-lg p-8 mb-8 bg-white">
             <div className="text-center mb-6">
               <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
@@ -264,7 +264,43 @@ export const PageContent: React.FC<{
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Dalla pagina del gruppo potrai vedere in tempo reale le
                   preferenze che gli altri utenti aggiungeranno e generare il
-                  menu in qualsiasi momento.
+                  menu quando vuoi.
+                </p>
+                <div className="flex justify-center">
+                  <Link href={`${groupId}/menu`}>
+                    <Button className="px-6 py-3 text-base">
+                      Vai alla pagina del gruppo
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Non-Group Owner Section - Show for users who are not the group owner */}
+        {!group.isTheGroupOwner && (
+          <div className="border rounded-lg p-8 mb-8 bg-white">
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold mb-4">
+                Preferenze salvate con successo!
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Le tue preferenze sono state salvate. Potrai vedere le preferenze di tutti i partecipanti e il menu quando sarà generato dal group owner.
+              </p>
+            </div>
+
+            {/* CTA per visitare la pagina del gruppo */}
+            <div className="mt-8 p-6 bg-primary/5 rounded-lg">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-primary mb-3">
+                  Vai alla pagina del gruppo
+                </h3>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  Dalla pagina del gruppo potrai vedere le preferenze di tutti i partecipanti e il menu quando sarà generato.
                 </p>
                 <div className="flex justify-center">
                   <Link href={`${groupId}/menu`}>
@@ -421,6 +457,8 @@ export const PageContent: React.FC<{
           />
         )}
       </div>
+
+      
     </>
   );
 };
