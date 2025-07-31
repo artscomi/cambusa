@@ -421,26 +421,6 @@ export const PageContent: React.FC<{
           />
         )}
       </div>
-
-      {/* Navigation Section */}
-      {(arePreferencesSaved || isTheGroupOwner) && (
-        <div className="bg-white border border-gray-200 rounded-lg p-8">
-          <div className="text-center">
-            <p className="text-lg text-gray-800 mb-6 font-medium">
-              {!isTheGroupOwner
-                ? "Perfetto! Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di viaggio"
-                : "Ora puoi monitorare le preferenze aggiunte dai tuoi compagni di viaggio e quando tutti saranno pronti potrai generare il menu per il gruppo"}
-            </p>
-            <div className="flex justify-center">
-              <Link href={`${groupId}/menu`}>
-                <Button className="px-8 py-3 text-lg">
-                  Vai alla pagina del gruppo
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
