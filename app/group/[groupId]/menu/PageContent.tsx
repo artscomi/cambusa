@@ -211,7 +211,14 @@ export const PageContent = ({
             key={userId}
             className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
           >
-            <h3 className="font-bold text-lg mb-4 text-primary">{name}</h3>
+            <h3 className="font-bold text-lg mb-4 text-primary flex items-center gap-2">
+              {name}
+              {userId === group.ownerId && (
+                <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
+                  Group Owner
+                </span>
+              )}
+            </h3>
             <ul className="list-disc pl-5 space-y-2">
               {preferences.map((preference, index) => (
                 <li key={index} className="text-gray-700">
@@ -245,7 +252,14 @@ export const PageContent = ({
             key={userId}
             className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
           >
-            <h3 className="font-bold text-lg mb-4 text-blue-500">{name}</h3>
+            <h3 className="font-bold text-lg mb-4 text-blue-500 flex items-center gap-2">
+              {name}
+              {userId === group.ownerId && (
+                <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
+                  Group Owner
+                </span>
+              )}
+            </h3>
             <ul className="list-disc pl-5 space-y-2">
               {preferences.map((preference, index) => (
                 <li key={index} className="text-gray-700">
@@ -279,7 +293,14 @@ export const PageContent = ({
             key={userId}
             className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
           >
-            <h3 className="font-bold text-lg mb-4 text-green-500">{name}</h3>
+            <h3 className="font-bold text-lg mb-4 text-green-500 flex items-center gap-2">
+              {name}
+              {userId === group.ownerId && (
+                <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
+                  Group Owner
+                </span>
+              )}
+            </h3>
             <ul className="list-disc pl-5 space-y-2">
               {preferences.map((preference, index) => (
                 <li key={index} className="text-gray-700">
