@@ -139,7 +139,7 @@ export const Loading = () => {
           initial={{ opacity: 0 }}
           className="md:text-lg mt-8 mb-8 text-center font-medium text-primary"
         >
-          ⏱️ La generazione impiegherà al massimo 30 secondi
+          ⏱️ La generazione impiegherà circa 30 secondi
         </motion.p>
         <Countdown />
         
