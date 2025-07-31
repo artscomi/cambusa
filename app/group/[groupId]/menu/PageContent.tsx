@@ -191,8 +191,8 @@ export const PageContent = ({
       <h2 className="text-2xl font-bold mb-6 text-primary">
         Preferenze alimentari del gruppo
       </h2>
-      <div className="flex flex-wrap gap-6 mb-10">
-        <div className="border-2 border-accent p-6 rounded-lg shadow-md w-72 bg-white hover:shadow-lg transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="border-2 border-accent p-6 rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow">
           <h3 className="font-bold text-lg mb-4 text-accent flex items-center">
             <Heart className="w-5 h-5 mr-2" strokeWidth={3} />
             Le tue preferenze
@@ -209,7 +209,7 @@ export const PageContent = ({
         {otherPreferences.map(([userId, { name, preferences }]) => (
           <div
             key={userId}
-            className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
           >
             <h3 className="font-bold text-lg mb-4 text-primary flex items-center gap-2">
               {name}
@@ -234,8 +234,8 @@ export const PageContent = ({
       <h2 className="text-2xl font-bold mb-6 text-primary">
         Preferenze sugli alcolici del gruppo
       </h2>
-      <div className="flex flex-wrap gap-6 mb-10">
-        <div className="border-2 border-blue-400 p-6 rounded-lg shadow-md w-72 bg-white hover:shadow-lg transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="border-2 border-blue-400 p-6 rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow">
           <h3 className="font-bold text-lg mb-4 text-blue-500 flex items-center">
             🍷 Le tue preferenze sugli alcolici
           </h3>
@@ -250,7 +250,7 @@ export const PageContent = ({
         {otherAlcoholPreferences.map(([userId, { name, preferences }]) => (
           <div
             key={userId}
-            className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
           >
             <h3 className="font-bold text-lg mb-4 text-blue-500 flex items-center gap-2">
               {name}
@@ -275,8 +275,8 @@ export const PageContent = ({
       <h2 className="text-2xl font-bold mb-6 text-primary">
         Preferenze sugli acqua del gruppo
       </h2>
-      <div className="flex flex-wrap gap-6 mb-10">
-        <div className="border-2 border-green-400 p-6 rounded-lg shadow-md w-72 bg-white hover:shadow-lg transition-shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="border-2 border-green-400 p-6 rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow">
           <h3 className="font-bold text-lg mb-4 text-green-500 flex items-center">
             💧 Le tue preferenze sugli acqua
           </h3>
@@ -291,7 +291,7 @@ export const PageContent = ({
         {otherWaterPreferences.map(([userId, { name, preferences }]) => (
           <div
             key={userId}
-            className="bg-white p-6 rounded-lg shadow-md w-72 hover:shadow-lg transition-shadow"
+            className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
           >
             <h3 className="font-bold text-lg mb-4 text-green-500 flex items-center gap-2">
               {name}
