@@ -6,6 +6,7 @@ import { Ingredient } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 import Toast from "../Toast";
+import VoteButtons from "../VoteButtons";
 import {
   Clipboard,
   Share2,
@@ -14,10 +15,45 @@ import {
   Droplets,
   Plus,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { useShoppingContext } from "@/context/useShoppingListContext";
 
-const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
+const Checklist: React.FC<{ 
+  items: Ingredient[]; 
+  isSharedList?: boolean;
+  onAddItem?: (item: Omit<Ingredient, "id">) => void;
+  onRemoveItem?: (itemId: string) => void;
+  onUpdateQuantity?: (itemId: string, quantity: number, unit?: string) => void;
+  onToggleCompletion?: (itemId: string, completedBy?: string) => void;
+  onVote?: (itemId: string, vote: boolean) => void;
+  getUserVote?: (item: Ingredient) => boolean | null;
+  getItemVoteCount?: (item: Ingredient) => number;
+  canEdit?: boolean;
+  canRemove?: boolean;
+  canAdd?: boolean;
+  canVote?: boolean;
+  completedBy?: string;
+  currentUserId?: string;
+  listName?: string;
+}> = ({ 
+  items, 
+  isSharedList = false,
+  onAddItem,
+  onRemoveItem,
+  onUpdateQuantity,
+  onToggleCompletion,
+  onVote,
+  getUserVote,
+  getItemVoteCount,
+  canEdit = true,
+  canRemove = true,
+  canAdd = true,
+  canVote = true,
+  completedBy,
+  currentUserId,
+  listName
+}) => {
   const { shoppingList, setShoppingList } = useShoppingContext();
   const [showToast, setShowToast] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -99,16 +135,36 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   );
 
   const handleCheckboxChange = (item: Ingredient) => {
-    setItemToRemove(item);
-    setShowConfirmModal(true);
+    if (isSharedList && onToggleCompletion) {
+      // Per shared list, usa la callback
+      onToggleCompletion(item.id, completedBy);
+    } else {
+      // Per shopping list, flagga l'elemento
+      const updatedList = shoppingList.map((listItem) => {
+        if (listItem.id === item.id) {
+          return {
+            ...listItem,
+            isCompleted: !listItem.isCompleted,
+          };
+        }
+        return listItem;
+      });
+      setShoppingList(updatedList);
+    }
   };
 
   const confirmRemoveItem = () => {
     if (itemToRemove) {
-      const updatedList = shoppingList.filter(
-        (item) => item.id !== itemToRemove.id
-      );
-      setShoppingList(updatedList);
+      if (isSharedList && onRemoveItem) {
+        // Per shared list, usa la callback
+        onRemoveItem(itemToRemove.id);
+      } else {
+        // Per shopping list, rimuovi dalla lista locale
+        const updatedList = shoppingList.filter(
+          (item) => item.id !== itemToRemove.id
+        );
+        setShoppingList(updatedList);
+      }
     }
     setShowConfirmModal(false);
     setItemToRemove(null);
@@ -125,22 +181,26 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
     newUnit?: string
   ) => {
     if (newQuantity > 0) {
-      const updatedList = shoppingList.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            quantity: newQuantity,
-            unit: newUnit || item.unit,
-          };
-        }
-        return item;
-      });
-      setShoppingList(updatedList);
+      if (isSharedList && onUpdateQuantity) {
+        // Per shared list, usa la callback
+        onUpdateQuantity(id, newQuantity, newUnit);
+      } else {
+        // Per shopping list, aggiorna la lista locale
+        const updatedList = shoppingList.map((item) => {
+          if (item.id === id) {
+            return {
+              ...item,
+              quantity: newQuantity,
+              unit: newUnit || item.unit,
+            };
+          }
+          return item;
+        });
+        setShoppingList(updatedList);
+      }
       setShowQuantityModal(false);
       setEditingQuantity(null);
     } else {
-      // If quantity is 0 or negative, don't save and keep modal open
-      // You could also show an error message here
       console.warn("Quantity must be greater than 0");
     }
   };
@@ -159,7 +219,14 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         unit: newItem.unit,
       };
 
-      setShoppingList([...shoppingList, newIngredient]);
+      if (isSharedList && onAddItem) {
+        // Per shared list, usa la callback
+        onAddItem(newIngredient);
+      } else {
+        // Per shopping list, aggiungi alla lista locale
+        setShoppingList([...shoppingList, newIngredient]);
+      }
+      
       setNewItem({ item: "", quantity: 1, unit: "pezzi" });
       setShowAddModal(false);
     }
@@ -191,11 +258,10 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "La mia lista della spesa",
+          title: listName ? `Lista: ${listName}` : "La mia lista della spesa",
           text: listText,
         });
       } else {
-        // Fallback to clipboard if Web Share API is not supported
         handleCopyToClipboard();
       }
     } catch (error) {
@@ -255,12 +321,13 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                       height: "1.5rem",
                       marginRight: "0.75rem",
                       cursor: "pointer",
-                      pointerEvents: "none",
+                      pointerEvents: canEdit ? "auto" : "none",
                     }}
                     className="rounded"
-                    checked={false}
+                    checked={item.isCompleted}
+                    disabled={!canEdit}
                   />
-                  <span className="max-w-[130px] truncate" title={item.item}>
+                  <span className={`max-w-[130px] truncate ${item.isCompleted ? 'line-through text-gray-500' : ''}`} title={item.item}>
                     {item.item}
                   </span>
                 </label>
@@ -274,17 +341,45 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                   {getCorrectUnit(item.unit, item.quantity)}
                 </span>
 
+                {/* Vote buttons */}
+                {canVote && onVote && currentUserId && (
+                  <VoteButtons
+                    itemId={item.id}
+                    currentVote={getUserVote ? getUserVote(item) : null}
+                    voteCount={getItemVoteCount ? getItemVoteCount(item) : 0}
+                    onVote={(vote) => onVote(item.id, vote)}
+                    disabled={!canVote}
+                  />
+                )}
+
                 {/* Quantity edit button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openQuantityModal(item);
-                  }}
-                  className="p-1 hover:bg-gray-100 rounded transition-colors text-primary"
-                  title="Modifica quantità e unità"
-                >
-                  <Pencil size={14} />
-                </button>
+                {canEdit && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openQuantityModal(item);
+                    }}
+                    className="p-1 hover:bg-gray-100 rounded transition-colors text-primary"
+                    title="Modifica quantità e unità"
+                  >
+                    <Pencil size={14} />
+                  </button>
+                )}
+
+                {/* Remove button */}
+                {canRemove && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setItemToRemove(item);
+                      setShowConfirmModal(true);
+                    }}
+                    className="p-1 hover:bg-red-100 rounded transition-colors text-red-500"
+                    title="Rimuovi elemento"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
               </div>
             </motion.li>
           ))}
@@ -305,19 +400,21 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           </p>
         </div>
         <div className="flex gap-2 fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={openAddModal}
-            className="p-4 rounded bg-primary text-white shadow-md"
-            title="Aggiungi ingrediente"
-          >
-            <Plus
-              role="img"
-              aria-label="aggiungi ingrediente"
-              height={25}
-              width={25}
-            />
-          </motion.button>
+          {canAdd && (
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={openAddModal}
+              className="p-4 rounded bg-primary text-white shadow-md"
+              title="Aggiungi ingrediente"
+            >
+              <Plus
+                role="img"
+                aria-label="aggiungi ingrediente"
+                height={25}
+                width={25}
+              />
+            </motion.button>
+          )}
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleShare}

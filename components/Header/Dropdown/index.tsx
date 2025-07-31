@@ -1,4 +1,4 @@
-import { LogOut, User, Users, UsersIcon } from "lucide-react";
+import { LogOut, User, Users, UsersIcon, List } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -53,6 +53,12 @@ export const DropdownMenuComponent = async ({ name }: { name: string }) => {
               </DropdownMenuItem>
             </Link>
           )}
+          <Link href="/shared-lists">
+            <DropdownMenuItem>
+              <List className="mr-2 h-4 w-4" />
+              <span>Liste condivise</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
 
         <SignOutButton>

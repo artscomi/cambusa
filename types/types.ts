@@ -19,6 +19,11 @@ export interface Ingredient {
   item: string;
   quantity: number;
   unit: string;
+  isCompleted?: boolean;
+  votes?: {
+    [userId: string]: boolean; // true = voto positivo, false = voto negativo
+  };
+  totalVotes?: number; // Somma dei voti positivi - negativi
 }
 
 export type GroupInfo = {
@@ -47,4 +52,33 @@ export type AlcoholPreference = {
   userId: string;
   groupId: string;
   preference: string;
+};
+
+export type SharedIngredientList = {
+  id: string;
+  name: string;
+  description?: string;
+  groupId: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  items: SharedIngredientItem[];
+};
+
+export type SharedIngredientItem = {
+  id: string;
+  item: string;
+  quantity: number;
+  unit: string;
+  isCompleted: boolean;
+  completedBy?: string;
+  completedAt?: Date;
+  listId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  votes?: {
+    [userId: string]: boolean; // true = voto positivo, false = voto negativo
+  };
+  totalVotes?: number; // Somma dei voti positivi - negativi
 };

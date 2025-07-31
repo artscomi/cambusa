@@ -27,6 +27,7 @@ model User {
   hasPaidForIncrease Boolean           @default(false)
   lastApiCall        DateTime?
   mealList           String            @default("[]")
+  sharedLists        SharedIngredientList[] // Lists created by this user
 }
 
 model Group {
@@ -43,6 +44,7 @@ model Group {
   dinner             String
   people             String
   sameBreakfast      Boolean @default(false)
+  sharedLists        SharedIngredientList[] // Lists shared in this group
 }
 
 model FoodPreference {
@@ -80,4 +82,50 @@ model GroupMembership {
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([userId, groupId]) // Ensures a user can only join a group once
+}
+
+model SharedIngredientList {
+  id          String                @id @default(cuid())
+  name        String
+  description String?
+  groupId     String
+  group       Group                 @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdBy   String
+  creator     User                  @relation(fields: [createdBy], references: [clerkUserId])
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  items       SharedIngredientItem[]
+  isActive    Boolean               @default(true)
+}
+
+model SharedIngredientItem {
+  id          String   @id @default(cuid())
+  item        String
+  quantity    Int
+  unit        String
+  isCompleted Boolean  @default(false)
+  completedBy String?
+  completedAt DateTime?
+  listId      String
+  list        SharedIngredientList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  totalVotes  Int      @default(0)
+  
+  // Relazione con i voti
+  votes       SharedIngredientItemVote[]
+}
+
+model SharedIngredientItemVote {
+  id        String   @id @default(cuid())
+  userId    String
+  itemId    String
+  vote      Boolean  // true = positivo, false = negativo
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relazione con l'item
+  item      SharedIngredientItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { CreateGroupBox } from "@/components/CreateGroupBox";
+import { CreateSharedListBox } from "@/components/CreateSharedListBox";
 import { Loading } from "@/components/Loading";
 import { ToastError } from "@/components/ToastError";
 import { FeaturesCarousel } from "@/components/FeaturesCarousel";
@@ -118,7 +119,7 @@ export default function Home() {
           aria-label="Strumenti di pianificazione menu"
         >
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-16 items-stretch">
               {/* Menu Form Box */}
               <motion.div
                 variants={itemVariants}
@@ -137,6 +138,16 @@ export default function Home() {
                 aria-label="Creazione gruppo"
               >
                 <CreateGroupBox />
+              </motion.div>
+
+              {/* Create Shared List Box */}
+              <motion.div
+                variants={itemVariants}
+                className="order-3 w-full h-full"
+                role="complementary"
+                aria-label="Creazione lista condivisa"
+              >
+                <CreateSharedListBox />
               </motion.div>
             </div>
           </div>
