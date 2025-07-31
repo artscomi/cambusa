@@ -5,14 +5,15 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useSharedListContext } from "@/context/useSharedListContext";
 import { ArrowLeft, Save, Users } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 const CreateSharedListPage = () => {
   const router = useRouter();
   const { createList } = useSharedListContext();
+  const { user } = useUser();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    groupId: "default-group", // Per ora usiamo un gruppo di default
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,7 +25,7 @@ const CreateSharedListPage = () => {
       const newList = await createList(
         formData.name,
         formData.description,
-        formData.groupId
+        null // Nessun gruppo
       );
       
       // Reindirizza alla nuova lista
@@ -96,30 +97,6 @@ const CreateSharedListPage = () => {
               />
             </div>
 
-            {/* Gruppo */}
-            <div>
-              <label htmlFor="groupId" className="block text-sm font-medium text-gray-700 mb-2">
-                Gruppo *
-              </label>
-              <div className="relative">
-                <select
-                  id="groupId"
-                  value={formData.groupId}
-                  onChange={(e) => handleInputChange("groupId", e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent appearance-none"
-                  required
-                >
-                  <option value="">Seleziona un gruppo</option>
-                  <option value="group1">Gruppo 1</option>
-                  <option value="group2">Gruppo 2</option>
-                  {/* Qui dovrebbero essere caricati i gruppi dell'utente */}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <Users className="w-5 h-5 text-gray-400" />
-                </div>
-              </div>
-            </div>
-
             {/* Info */}
             <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
               <div className="flex items-start gap-3">
@@ -131,7 +108,7 @@ const CreateSharedListPage = () => {
                     Lista condivisa
                   </h3>
                   <p className="text-sm text-blue-700 mt-1">
-                    Tutti i membri del gruppo potranno vedere e modificare questa lista. 
+                    Chiunque abbia il link potrà vedere e modificare questa lista. 
                     Solo tu potrai aggiungere o rimuovere elementi.
                   </p>
                 </div>
@@ -149,7 +126,7 @@ const CreateSharedListPage = () => {
               </button>
               <button
                 type="submit"
-                disabled={!formData.name || !formData.groupId || isSubmitting}
+                disabled={!formData.name || isSubmitting}
                 className="flex-1 px-4 py-3 bg-primary text-white rounded-md hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (

@@ -88,8 +88,8 @@ model SharedIngredientList {
   id          String                @id @default(cuid())
   name        String
   description String?
-  groupId     String
-  group       Group                 @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String?               // Opzionale
+  group       Group?                @relation(fields: [groupId], references: [id], onDelete: Cascade)
   createdBy   String
   creator     User                  @relation(fields: [createdBy], references: [clerkUserId])
   createdAt   DateTime              @default(now())

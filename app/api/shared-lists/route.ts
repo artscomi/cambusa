@@ -55,9 +55,9 @@ export async function POST(request: NextRequest) {
 
     const { name, description, groupId } = await request.json();
 
-    if (!name || !groupId) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Nome e gruppo sono obbligatori" },
+        { error: "Nome è obbligatorio" },
         { status: 400 }
       );
     }
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         description,
-        groupId,
+        groupId: groupId || null, // Può essere null
         createdBy: userId,
         isActive: true,
       },

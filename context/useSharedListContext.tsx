@@ -24,7 +24,7 @@ interface SharedListContextProps {
   getItemVoteCount: (item: SharedIngredientItem) => number;
   fetchLists: () => Promise<void>;
   fetchList: (listId: string) => Promise<void>;
-  createList: (name: string, description: string, groupId: string) => Promise<SharedIngredientList>;
+  createList: (name: string, description: string, groupId?: string | null) => Promise<SharedIngredientList>;
 }
 
 const SharedListContext = createContext<SharedListContextProps | undefined>(
@@ -64,7 +64,7 @@ export const SharedListProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const createList = async (name: string, description: string, groupId: string): Promise<SharedIngredientList> => {
+  const createList = async (name: string, description: string, groupId?: string | null): Promise<SharedIngredientList> => {
     try {
       const response = await fetch('/api/shared-lists', {
         method: 'POST',
