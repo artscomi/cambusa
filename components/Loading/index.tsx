@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 const Countdown = () => {
-  const [countdown, setCountdown] = useState(30);
+  const [countdown, setCountdown] = useState(60);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -139,7 +139,7 @@ export const Loading = () => {
           initial={{ opacity: 0 }}
           className="md:text-lg mt-8 mb-8 text-center font-medium text-primary"
         >
-          ⏱️ La generazione impiegherà circa 30 secondi
+          ⏱️ La generazione impiegherà circa 60 secondi
         </motion.p>
         <Countdown />
         

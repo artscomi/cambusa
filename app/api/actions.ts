@@ -190,7 +190,7 @@ export const getMealListFromAi = async ({
       process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
-            model: openai("gpt-3.5-turbo"),
+            model: openai("gpt-4o-mini"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
