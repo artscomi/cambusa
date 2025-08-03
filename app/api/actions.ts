@@ -183,11 +183,10 @@ export const getMealListFromAi = async ({
   // log the prompt
   console.log("start");
 
-  console.log("prompt", getMainPrompt(formValues));
 
   try {
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4-turbo"),
@@ -219,9 +218,7 @@ export const getMealListFromAi = async ({
       },
     });
 
-    // Log result
-    console.log("result", JSON.stringify(result.object, null, 2));
-
+    
     // Log the final menu generated
     console.log("🍽️ MENU GENERATO (getMealListFromAi):", JSON.stringify(result.object.menu, null, 2));
 
