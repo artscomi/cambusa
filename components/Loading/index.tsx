@@ -153,7 +153,7 @@ export const Loading = () => {
             className="bg-primary h-2 rounded-full"
             initial={{ width: "0%" }}
             animate={{ width: "100%" }}
-            transition={{ duration: 30, ease: "easeInOut" }}
+            transition={{ duration: 60, ease: "easeInOut" }}
           />
         </motion.div>
 
