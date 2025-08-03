@@ -7,9 +7,19 @@ export const useSaveUser = () => {
 
   useEffect(() => {
     const fetchSaveUser = async () => {
-      if (!user) return;
+      console.log("🔄 useSaveUser hook triggered, user:", user ? "exists" : "null");
+      if (!user) {
+        console.log("❌ No user found, skipping saveUser");
+        return;
+      }
 
-      await saveUser();
+      console.log("✅ User found, calling saveUser");
+      try {
+        await saveUser();
+        console.log("✅ saveUser completed successfully");
+      } catch (error) {
+        console.error("❌ Error in saveUser:", error);
+      }
     };
 
     fetchSaveUser();

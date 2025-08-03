@@ -23,7 +23,10 @@ import {
 } from "@/utils/constants";
 
 export const getUserInfo = async (userId: string) => {
+  console.log("👤 getUserInfo called with userId:", userId);
+  
   if (!userId) {
+    console.log("❌ No userId provided");
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -31,6 +34,7 @@ export const getUserInfo = async (userId: string) => {
     };
   }
 
+  console.log("🔍 Looking up user in database with clerkUserId:", userId);
   const user = await db.user.findUnique({
     where: { clerkUserId: userId },
     select: {
@@ -42,6 +46,7 @@ export const getUserInfo = async (userId: string) => {
   });
 
   if (!user) {
+    console.log("❌ User not found in database");
     console.error("user not found in getUserInfo");
     return {
       apiCallCount: 0,
@@ -50,6 +55,7 @@ export const getUserInfo = async (userId: string) => {
     };
   }
 
+  console.log("✅ User found:", { apiCallCount: user.apiCallCount, hasPaidForIncrease: user.hasPaidForIncrease, name: user.name });
   return {
     apiCallCount: user.apiCallCount,
     hasPaidForIncrease: user.hasPaidForIncrease,
@@ -175,21 +181,26 @@ export const getMealListFromAi = async ({
   | { type: "user-not-found"; error: string }
 > => {
   "use server";
+  console.log("🍽️ getMealListFromAi started with userId:", userId);
+  console.log("📝 Form values:", formValues);
+  
   // log the prompt
   console.log("start");
 
-
   try {
+    console.log("🤖 Starting AI generation...");
     const result =
-      process.env.NODE_ENV === "development"
+      process.env.NODE_ENV !== "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4-turbo"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
+    console.log("✅ AI generation completed");
     revalidatePath("/meal-menu", "layout");
 
+    console.log("👤 Looking up user with clerkUserId:", userId);
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
       select: {
@@ -199,12 +210,14 @@ export const getMealListFromAi = async ({
     });
 
     if (!user) {
+      console.log("❌ User not found in database");
       return {
         type: "user-not-found",
         error: "User not found",
       };
     }
 
+    console.log("✅ User found, updating API call count");
     await db.user.update({
       where: { id: user.id },
       data: {
@@ -220,6 +233,7 @@ export const getMealListFromAi = async ({
     // Return success response
     return { type: "success", menu: result.object.menu };
   } catch (e) {
+    console.error("❌ Error in getMealListFromAi:", e);
     if (TypeValidationError.isInstance(e)) {
       console.error(JSON.stringify(e.value, null, 2));
       return { type: "validation-error", value: e.value };
@@ -234,15 +248,18 @@ export const getMealListFromAi = async ({
 };
 
 export const saveUser = async () => {
+  console.log("💾 saveUser function called");
   const user = await currentUser();
   if (!user) {
-    console.error("user not found in SaveUser");
+    console.error("❌ user not found in SaveUser");
     return;
   }
   const { firstName, primaryEmailAddress, id } = user;
+  console.log("👤 User data:", { firstName, email: primaryEmailAddress?.emailAddress, id });
 
   try {
-    await db.user.upsert({
+    console.log("💾 Attempting to upsert user with clerkUserId:", id);
+    const result = await db.user.upsert({
       where: { clerkUserId: id },
       update: {
         name: firstName ?? "",
@@ -255,8 +272,9 @@ export const saveUser = async () => {
         mealList: "",
       },
     });
+    console.log("✅ User saved/updated successfully:", result);
   } catch (error) {
-    console.error("Error saving/updating user in database:", error);
+    console.error("❌ Error saving/updating user in database:", error);
   }
 };
 

@@ -40,56 +40,74 @@ export const handleMealListGeneration = async (
     user: { name: string };
   }>
 ) => {
+  console.log("🚀 handleMealListGeneration started with userId:", userId);
   scrollTo(0, 0);
   setError(null);
 
-  const { apiCallCount, hasPaidForIncrease } = await getUserInfo(userId);
-  const maxAiCall = await getMaxAiCall(hasPaidForIncrease, userId);
+  try {
+    console.log("📞 Calling getUserInfo with userId:", userId);
+    const { apiCallCount, hasPaidForIncrease } = await getUserInfo(userId);
+    console.log("📊 User info received:", { apiCallCount, hasPaidForIncrease });
+    
+    console.log("📞 Calling getMaxAiCall");
+    const maxAiCall = await getMaxAiCall(hasPaidForIncrease, userId);
+    console.log("📊 Max AI call:", maxAiCall);
 
-  if (apiCallCount && apiCallCount >= maxAiCall) {
-    openDialogStripe();
-    return;
-  }
-  startTransition(async () => {
-    try {
-      const result = await getMealListFromAi({
-        formValues: {
-          breakfast: groupMeals.breakfast,
-          lunch: groupMeals.lunch,
-          dinner: groupMeals.dinner,
-          dietaryPreferences,
-          alcoholPreferences,
-          waterPreference,
-          people: groupMeals.people,
-          sameBreakfast: groupMeals.sameBreakfast,
-        },
-        userId,
-      });
-
-      handleResult(
-        result,
-        userId,
-        setMealList,
-        setAlcoholPreferences,
-        alcoholPreferences,
-        setWaterPreference,
-        waterPreference,
-        setPeople,
-        parseInt(groupMeals.people),
-        setDays,
-        parseInt(groupMeals.dinner),
-        setGroupAlcoholPreferences,
-        groupAlcoholPreferences,
-        router,
-        setError
-      );
-    } catch (error) {
-      setError(
-        "Ops.. qualcosa è andato storto durante la generazione del menu"
-      );
-      console.error(error);
+    if (apiCallCount && apiCallCount >= maxAiCall) {
+      console.log("⚠️ User has reached API call limit");
+      openDialogStripe();
+      return;
     }
-  });
+    
+    console.log("✅ Starting meal generation...");
+    startTransition(async () => {
+      try {
+        console.log("📞 Calling getMealListFromAi");
+        const result = await getMealListFromAi({
+          formValues: {
+            breakfast: groupMeals.breakfast,
+            lunch: groupMeals.lunch,
+            dinner: groupMeals.dinner,
+            dietaryPreferences,
+            alcoholPreferences,
+            waterPreference,
+            people: groupMeals.people,
+            sameBreakfast: groupMeals.sameBreakfast,
+          },
+          userId,
+        });
+
+        console.log("📊 getMealListFromAi result:", result);
+
+        handleResult(
+          result,
+          userId,
+          setMealList,
+          setAlcoholPreferences,
+          alcoholPreferences,
+          setWaterPreference,
+          waterPreference,
+          setPeople,
+          parseInt(groupMeals.people),
+          setDays,
+          parseInt(groupMeals.dinner),
+          setGroupAlcoholPreferences,
+          groupAlcoholPreferences,
+          router,
+          setError
+        );
+      } catch (error) {
+        console.error("❌ Error in meal generation:", error);
+        setError(
+          "Ops.. qualcosa è andato storto durante la generazione del menu"
+        );
+        console.error(error);
+      }
+    });
+  } catch (error) {
+    console.error("❌ Error in handleMealListGeneration:", error);
+    setError("Errore durante la verifica dell'utente");
+  }
 };
 
 const handleResult = async (
