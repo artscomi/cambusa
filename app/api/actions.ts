@@ -190,7 +190,7 @@ export const getMealListFromAi = async ({
   try {
     console.log("🤖 Starting AI generation...");
     const result =
-      process.env.NODE_ENV !== "development"
+      process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
             model: openai("gpt-4-turbo"),
