@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from "react";
 import { getMealListFromDB } from "@/app/api/actions";
+import { useUser } from "@clerk/nextjs";
 
 interface MyContextType {
   mealList: MealList | undefined;
@@ -48,18 +49,19 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     | undefined
   >();
   const [isMounted, setIsMounted] = useState(false);
+  const { user } = useUser();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return;
+    if (!isMounted || !user?.id) return;
 
     const loadInitialData = async () => {
       try {
         // First try to load from database
-        const dbMealList = await getMealListFromDB();
+        const dbMealList = await getMealListFromDB(user.id);
         if (dbMealList) {
           setMealList(JSON.parse(dbMealList));
           return;
@@ -85,7 +87,7 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     };
 
     loadInitialData();
-  }, [isMounted]);
+  }, [isMounted, user?.id]);
 
   useEffect(() => {
     if (mealList && isMounted && typeof window !== "undefined") {

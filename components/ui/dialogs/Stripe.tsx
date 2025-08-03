@@ -13,6 +13,8 @@ import {
   EmbeddedCheckout,
 } from "@stripe/react-stripe-js";
 import { resetApiCallCount } from "@/app/api/actions";
+import { useUser } from "@clerk/nextjs";
+
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
@@ -23,6 +25,8 @@ type Props = {
 };
 
 export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
+  const { user } = useUser();
+
   const fetchClientSecret = useCallback(() => {
     return fetch("/api/checkout-sessions", {
       method: "POST",
@@ -33,12 +37,14 @@ export const DialogStripe: React.FC<Props> = ({ isOpen, setIsOpen }) => {
 
   const onComplete = useCallback(async () => {
     try {
-      await resetApiCallCount();
+      if (user?.id) {
+        await resetApiCallCount(user.id);
+      }
       setTimeout(() => setIsOpen(false), 4000);
     } catch (error) {
       console.error("Error resetting API call count:");
     }
-  }, []);
+  }, [user?.id]);
 
   const options = { fetchClientSecret, onComplete };
 

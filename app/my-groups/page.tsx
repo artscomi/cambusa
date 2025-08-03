@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { getUserGroups } from "../api/actions";
 import { CookingPot, Sandwich, Users } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 
 const Gruppi = async () => {
-  const userGroups = await getUserGroups();
+  const { userId } = await auth();
+  const userGroups = await getUserGroups(userId || "");
   if (!userGroups.group) return null;
 
   return (

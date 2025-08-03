@@ -22,9 +22,7 @@ import {
   UNLIMITED_USERS,
 } from "@/utils/constants";
 
-export const getUserInfo = async () => {
-  const { userId } = await auth();
-
+export const getUserInfo = async (userId: string) => {
   if (!userId) {
     return {
       apiCallCount: 0,
@@ -59,9 +57,7 @@ export const getUserInfo = async () => {
   };
 };
 
-export const getUserGroups = async () => {
-  const { userId } = await auth();
-
+export const getUserGroups = async (userId: string) => {
   if (!userId) {
     return {};
   }
@@ -147,16 +143,15 @@ export const regenerateSingleMeal = async ({
   }
 };
 
-export const resetApiCallCount = async () => {
+export const resetApiCallCount = async (userId: string) => {
   "use server";
-  const { userId: clerkUserId } = await auth();
-  if (!clerkUserId) {
-    throw new Error("Missing clerkUserId");
+  if (!userId) {
+    throw new Error("Missing userId");
   }
 
   try {
     await db.user.update({
-      where: { clerkUserId },
+      where: { clerkUserId: userId },
       data: { apiCallCount: 0, hasPaidForIncrease: true },
     });
   } catch (error) {
@@ -438,30 +433,28 @@ export const addFoodPreferenceAction = async (
   }
 };
 
-export const saveMealList = async (mealList: string) => {
+export const saveMealList = async (mealList: string, userId: string) => {
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId) {
-      throw new Error("Missing clerkUserId");
+    if (!userId) {
+      throw new Error("Missing userId");
     }
 
     await db.user.update({
-      where: { clerkUserId },
+      where: { clerkUserId: userId },
       data: { mealList },
     });
   } catch (error) {
     console.error("Error saving meal list:", error);
   }
 };
-export const getMealListFromDB = async () => {
+export const getMealListFromDB = async (userId: string) => {
   try {
-    const { userId: clerkUserId } = await auth();
-    if (!clerkUserId) {
-      throw new Error("Missing clerkUserId");
+    if (!userId) {
+      throw new Error("Missing userId");
     }
 
     const user = await db.user.findUnique({
-      where: { clerkUserId },
+      where: { clerkUserId: userId },
       select: { mealList: true },
     });
     return user?.mealList;
@@ -470,13 +463,12 @@ export const getMealListFromDB = async () => {
   }
 };
 
-export const checkSpecialAccount = async () => {
-  const { userId } = await auth();
+export const checkSpecialAccount = async (userId: string) => {
   return userId && UNLIMITED_USERS.includes(userId);
 };
 
-export const getMaxAiCall = async (hasPaidForIncrease: boolean) => {
-  const isSpecialAccount = await checkSpecialAccount();
+export const getMaxAiCall = async (hasPaidForIncrease: boolean, userId: string) => {
+  const isSpecialAccount = await checkSpecialAccount(userId);
 
   if (isSpecialAccount) {
     return UNLIMITED_API_CALLS;

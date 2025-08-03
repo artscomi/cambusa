@@ -1,3 +1,5 @@
+"use client";
+
 import { LogOut, User, Users, UsersIcon } from "lucide-react";
 
 import {
@@ -8,14 +10,32 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SignOutButton } from "@clerk/nextjs";
+import { SignOutButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { getMealListFromDB, getUserGroups } from "@/app/api/actions";
+import { useState, useEffect } from "react";
 
-export const DropdownMenuComponent = async ({ name }: { name: string }) => {
-  const mealList = await getMealListFromDB();
-  const userGroup = await getUserGroups();
-  if (!userGroup.group) return null;
+export const DropdownMenuComponent = ({ name }: { name: string }) => {
+  const { user } = useUser();
+  const [mealList, setMealList] = useState<string | null>(null);
+  const [userGroup, setUserGroup] = useState<any>(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (user?.id) {
+        const [mealListData, userGroupData] = await Promise.all([
+          getMealListFromDB(user.id),
+          getUserGroups(user.id)
+        ]);
+        setMealList(mealListData || null);
+        setUserGroup(userGroupData);
+      }
+    };
+
+    loadData();
+  }, [user?.id]);
+
+  if (!userGroup?.group) return null;
 
   return (
     <DropdownMenu>

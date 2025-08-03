@@ -10,8 +10,8 @@ import Link from "next/link";
 export const Header = async () => {
   const { userId } = await auth();
 
-  const { apiCallCount, hasPaidForIncrease, name } = await getUserInfo();
-  const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
+  const { apiCallCount, hasPaidForIncrease, name } = await getUserInfo(userId || "");
+  const maxAiCall = await getMaxAiCall(hasPaidForIncrease, userId || "");
 
   const aiCallLeft =
     maxAiCall === UNLIMITED_API_CALLS ? maxAiCall : maxAiCall - apiCallCount;

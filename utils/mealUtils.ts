@@ -43,9 +43,8 @@ export const handleMealListGeneration = async (
   scrollTo(0, 0);
   setError(null);
 
-
-  const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
-  const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
+  const { apiCallCount, hasPaidForIncrease } = await getUserInfo(userId);
+  const maxAiCall = await getMaxAiCall(hasPaidForIncrease, userId);
 
   if (apiCallCount && apiCallCount >= maxAiCall) {
     openDialogStripe();
@@ -69,6 +68,7 @@ export const handleMealListGeneration = async (
 
       handleResult(
         result,
+        userId,
         setMealList,
         setAlcoholPreferences,
         alcoholPreferences,
@@ -94,6 +94,7 @@ export const handleMealListGeneration = async (
 
 const handleResult = async (
   result: Result,
+  userId: string,
   setMealList: (mealList: MealList) => void,
   setAlcoholPreferences: (preferences: string) => void,
   alcoholPreferences: string,
@@ -121,7 +122,7 @@ const handleResult = async (
     setPeople(people);
     setDays(days);
     setGroupAlcoholPreferences(groupAlcoholPreferences);
-    await saveMealList(JSON.stringify(result.menu));
+    await saveMealList(JSON.stringify(result.menu), userId);
     router.push("/meal-menu");
   } else {
     handleError(result, setError);

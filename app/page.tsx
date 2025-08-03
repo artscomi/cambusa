@@ -20,12 +20,14 @@ import {
   itemVariants,
   blogHeaderVariants,
 } from "@/animations/framer-variants";
+import { useUser } from "@clerk/nextjs";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [successPayment, setSuccessPayment] = useState(false);
   const searchParams = useSearchParams();
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchStripeState = async () => {
@@ -39,7 +41,9 @@ export default function Home() {
         .then(async (data) => {
           if (data.status === "complete") {
             try {
-              await resetApiCallCount();
+              if (user?.id) {
+                await resetApiCallCount(user.id);
+              }
               setSuccessPayment(true);
             } catch (e) {
               console.error("Error resetting API call count:");
@@ -57,7 +61,7 @@ export default function Home() {
     if (searchParams.get("session_id")) {
       fetchStripeState();
     }
-  }, [searchParams]);
+  }, [searchParams, user?.id]);
 
   return isPending ? (
     <Loading />

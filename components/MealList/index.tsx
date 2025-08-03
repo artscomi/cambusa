@@ -48,8 +48,10 @@ export const MealListComponent = () => {
   };
 
   const handleRegenerateMeal = async (mealTypeId: string, mealId: string) => {
-    const { apiCallCount, hasPaidForIncrease } = await getUserInfo();
-    const maxAiCall = await getMaxAiCall(hasPaidForIncrease);
+    if (!user) return;
+    
+    const { apiCallCount, hasPaidForIncrease } = await getUserInfo(user.id);
+    const maxAiCall = await getMaxAiCall(hasPaidForIncrease, user.id);
 
     if (apiCallCount && apiCallCount >= maxAiCall) {
       openDialogStripe();
@@ -83,7 +85,9 @@ export const MealListComponent = () => {
             return mealType;
           });
 
-          saveMealList(JSON.stringify(updatedMealList));
+          if (user) {
+            saveMealList(JSON.stringify(updatedMealList), user.id);
+          }
           setMealList(updatedMealList);
         }
       } catch (error) {
@@ -109,7 +113,9 @@ export const MealListComponent = () => {
       (mealType) => mealType.meals.length > 0
     );
 
-    saveMealList(JSON.stringify(cleanedMealList));
+    if (user) {
+      saveMealList(JSON.stringify(cleanedMealList), user.id);
+    }
     setMealList(cleanedMealList);
   };
 

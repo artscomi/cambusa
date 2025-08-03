@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Toast from "@/components/Toast";
 import { resetApiCallCount } from "@/app/api/actions"; // Assicurati che questa sia la path corretta
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 export default function PaymentReturnPage() {
   const [loading, setLoading] = useState(true);
@@ -12,6 +13,7 @@ export default function PaymentReturnPage() {
   const [successPayment, setSuccessPayment] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useUser();
 
   useEffect(() => {
     const fetchStripeState = async () => {
@@ -25,7 +27,9 @@ export default function PaymentReturnPage() {
         .then(async (data) => {
           if (data.status === "complete") {
             try {
-              await resetApiCallCount();
+              if (user?.id) {
+                await resetApiCallCount(user.id);
+              }
               setSuccessPayment(true);
               router.refresh();
               setTimeout(() => router.push("/"), 2000);
@@ -48,7 +52,7 @@ export default function PaymentReturnPage() {
     if (searchParams.get("session_id")) {
       fetchStripeState();
     }
-  }, [searchParams, router]);
+  }, [searchParams, router, user?.id]);
 
   return (
     <div className="return-page-container">
