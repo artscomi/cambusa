@@ -113,7 +113,7 @@ export const regenerateSingleMeal = async ({
     }
 
     const result = await generateObject({
-      model: openai("gpt-3.5-turbo"),
+      model: openai("gpt-4-turbo"),
       prompt: getRegenerateMealPrompt({ dietaryPreferences, meal }),
       schema: mealSchema,
     });
@@ -190,7 +190,7 @@ export const getMealListFromAi = async ({
       process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: openai("gpt-4-turbo"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
