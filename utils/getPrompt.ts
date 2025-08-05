@@ -12,7 +12,7 @@ export const getMainPrompt = ({
   breakfast || 0
 } colazioni, ${lunch} pranzi, ${dinner} cene per ${people} persone.
   Preferenze alimentari includono: pasta circa 100 grammi a testa, riso 70 grammi a testa, ${dietaryPreferences}. 
-  Cerca di accontentare tutti, senza proporre piatti diversi per ognuno. Soloer per le colazioni, ${
+  Cerca di accontentare tutti, senza proporre piatti diversi per ognuno. Solo per le colazioni, ${
     sameBreakfast
       ? "usa lo stesso menu per tutti i giorni ma crea un pasto per ogni giorno anche se è lo stesso"
       : "usa un menu diverso per ogni giorno"
