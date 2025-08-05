@@ -41,6 +41,9 @@ export const handleMealListGeneration = async (
   }>
 ) => {
   console.log("🚀 handleMealListGeneration started with userId:", userId);
+  console.log("🌍 Environment:", process.env.NODE_ENV);
+  console.log("📝 Group meals:", groupMeals);
+  console.log("🍽️ Dietary preferences:", dietaryPreferences);
   scrollTo(0, 0);
   setError(null);
 
@@ -60,22 +63,78 @@ export const handleMealListGeneration = async (
     }
     
     console.log("✅ Starting meal generation...");
+    console.log("🔄 About to call startTransition...");
     startTransition(async () => {
+      console.log("🔄 Inside startTransition callback");
       try {
         console.log("📞 Calling getMealListFromAi");
-        const result = await getMealListFromAi({
-          formValues: {
-            breakfast: groupMeals.breakfast,
-            lunch: groupMeals.lunch,
-            dinner: groupMeals.dinner,
-            dietaryPreferences,
-            alcoholPreferences,
-            waterPreference,
-            people: groupMeals.people,
-            sameBreakfast: groupMeals.sameBreakfast,
-          },
-          userId,
+        console.log("📝 Form values being passed:", {
+          breakfast: groupMeals.breakfast,
+          lunch: groupMeals.lunch,
+          dinner: groupMeals.dinner,
+          dietaryPreferences,
+          alcoholPreferences,
+          waterPreference,
+          people: groupMeals.people,
+          sameBreakfast: groupMeals.sameBreakfast,
         });
+        
+        console.log("🔍 About to call getMealListFromAi with userId:", userId);
+        console.log("🔍 getMealListFromAi function exists:", typeof getMealListFromAi);
+        console.log("🔍 About to await getMealListFromAi...");
+        
+        // Create a plain object to avoid serialization issues
+        const formValuesPlain = {
+          breakfast: groupMeals.breakfast,
+          lunch: groupMeals.lunch,
+          dinner: groupMeals.dinner,
+          dietaryPreferences,
+          alcoholPreferences,
+          waterPreference,
+          people: groupMeals.people,
+          sameBreakfast: groupMeals.sameBreakfast,
+        };
+        
+        console.log("🔍 Form values being passed (plain object):", formValuesPlain);
+        console.log("🔍 Form values type:", typeof formValuesPlain);
+        console.log("🔍 Form values constructor:", formValuesPlain.constructor.name);
+        
+        // Check each value individually
+        console.log("🔍 Individual value checks:");
+        console.log("  - breakfast:", typeof groupMeals.breakfast, groupMeals.breakfast);
+        console.log("  - lunch:", typeof groupMeals.lunch, groupMeals.lunch);
+        console.log("  - dinner:", typeof groupMeals.dinner, groupMeals.dinner);
+        console.log("  - dietaryPreferences:", typeof dietaryPreferences, dietaryPreferences);
+        console.log("  - alcoholPreferences:", typeof alcoholPreferences, alcoholPreferences);
+        console.log("  - waterPreference:", typeof waterPreference, waterPreference);
+        console.log("  - people:", typeof groupMeals.people, groupMeals.people);
+        console.log("  - sameBreakfast:", typeof groupMeals.sameBreakfast, groupMeals.sameBreakfast);
+        console.log("  - userId:", typeof userId, userId);
+        
+        // Try to JSON.stringify to test serialization
+        try {
+          const testSerialization = JSON.stringify(formValuesPlain);
+          console.log("✅ Form values can be serialized:", testSerialization.length, "characters");
+        } catch (serializationError) {
+          console.error("❌ Form values cannot be serialized:", serializationError);
+        }
+
+        let result;
+        try {
+          result = await getMealListFromAi({
+            formValues: formValuesPlain,
+            userId,
+          });
+          console.log("✅ getMealListFromAi call completed successfully");
+        } catch (serverActionError) {
+          console.error("❌ Server action error:", serverActionError);
+          console.error("❌ Server action error details:", {
+            message: serverActionError instanceof Error ? serverActionError.message : String(serverActionError),
+            stack: serverActionError instanceof Error ? serverActionError.stack : undefined,
+            name: serverActionError instanceof Error ? serverActionError.name : 'Unknown'
+          });
+          throw serverActionError;
+        }
 
         console.log("📊 getMealListFromAi result:", result);
 
@@ -98,12 +157,18 @@ export const handleMealListGeneration = async (
         );
       } catch (error) {
         console.error("❌ Error in meal generation:", error);
+        console.error("❌ Error details:", {
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          name: error instanceof Error ? error.name : 'Unknown'
+        });
         setError(
           "Ops.. qualcosa è andato storto durante la generazione del menu"
         );
         console.error(error);
       }
     });
+    console.log("✅ startTransition called successfully");
   } catch (error) {
     console.error("❌ Error in handleMealListGeneration:", error);
     setError("Errore durante la verifica dell'utente");

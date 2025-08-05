@@ -182,7 +182,10 @@ export const getMealListFromAi = async ({
 > => {
   "use server";
   console.log("🍽️ getMealListFromAi started with userId:", userId);
+  console.log("🌍 Environment:", process.env.NODE_ENV);
   console.log("📝 Form values:", formValues);
+  console.log("🔍 User ID type:", typeof userId);
+  console.log("🔍 User ID value:", userId);
   
   // log the prompt
   console.log("start");
