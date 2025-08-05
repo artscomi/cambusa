@@ -23,10 +23,8 @@ import {
 } from "@/utils/constants";
 
 export const getUserInfo = async (userId: string) => {
-  console.log("👤 getUserInfo called with userId:", userId);
-  
+
   if (!userId) {
-    console.log("❌ No userId provided");
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -46,8 +44,7 @@ export const getUserInfo = async (userId: string) => {
   });
 
   if (!user) {
-    console.log("❌ User not found in database");
-    console.error("user not found in getUserInfo");
+   
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -55,7 +52,11 @@ export const getUserInfo = async (userId: string) => {
     };
   }
 
-  console.log("✅ User found:", { apiCallCount: user.apiCallCount, hasPaidForIncrease: user.hasPaidForIncrease, name: user.name });
+  console.log("✅ User found:", {
+    apiCallCount: user.apiCallCount,
+    hasPaidForIncrease: user.hasPaidForIncrease,
+    name: user.name,
+  });
   return {
     apiCallCount: user.apiCallCount,
     hasPaidForIncrease: user.hasPaidForIncrease,
@@ -177,17 +178,7 @@ export const getMealListFromAi = async ({
   | { type: "unknown-error"; error: unknown }
   | { type: "user-not-found"; error: string }
 > => {
-  console.log("🍽️ getMealListFromAi started with userId:", userId);
-  console.log("🌍 Environment:", process.env.NODE_ENV);
-  console.log("📝 Form values:", formValues);
-  console.log("🔍 User ID type:", typeof userId);
-  console.log("🔍 User ID value:", userId);
-  
-  // log the prompt
-  console.log("start");
-
   try {
-    console.log("🤖 Starting AI generation...");
     const result =
       process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
@@ -196,7 +187,6 @@ export const getMealListFromAi = async ({
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
-    console.log("✅ AI generation completed");
     revalidatePath("/meal-menu", "layout");
 
     console.log("👤 Looking up user with clerkUserId:", userId);
@@ -209,14 +199,12 @@ export const getMealListFromAi = async ({
     });
 
     if (!user) {
-      console.log("❌ User not found in database");
       return {
         type: "user-not-found",
         error: "User not found",
       };
     }
 
-    console.log("✅ User found, updating API call count");
     await db.user.update({
       where: { id: user.id },
       data: {
@@ -225,14 +213,9 @@ export const getMealListFromAi = async ({
       },
     });
 
-    
-    // Log the final menu generated
-    console.log("🍽️ MENU GENERATO (getMealListFromAi):", JSON.stringify(result.object.menu, null, 2));
-
     // Return success response
     return { type: "success", menu: result.object.menu };
   } catch (e) {
-    console.error("❌ Error in getMealListFromAi:", e);
     if (TypeValidationError.isInstance(e)) {
       console.error(JSON.stringify(e.value, null, 2));
       return { type: "validation-error", value: e.value };
@@ -254,7 +237,11 @@ export const saveUser = async () => {
     return;
   }
   const { firstName, primaryEmailAddress, id } = user;
-  console.log("👤 User data:", { firstName, email: primaryEmailAddress?.emailAddress, id });
+  console.log("👤 User data:", {
+    firstName,
+    email: primaryEmailAddress?.emailAddress,
+    id,
+  });
 
   try {
     console.log("💾 Attempting to upsert user with clerkUserId:", id);
@@ -484,7 +471,10 @@ export const checkSpecialAccount = async (userId: string) => {
   return userId && UNLIMITED_USERS.includes(userId);
 };
 
-export const getMaxAiCall = async (hasPaidForIncrease: boolean, userId: string) => {
+export const getMaxAiCall = async (
+  hasPaidForIncrease: boolean,
+  userId: string
+) => {
   const isSpecialAccount = await checkSpecialAccount(userId);
 
   if (isSpecialAccount) {
@@ -493,7 +483,6 @@ export const getMaxAiCall = async (hasPaidForIncrease: boolean, userId: string) 
 
   return hasPaidForIncrease ? PAID_TIER_API_CALLS : FREE_TIER_API_CALLS;
 };
-
 
 export const regenerateSingleMealStream = async ({
   dietaryPreferences,
@@ -595,7 +584,7 @@ export const getMealListFromAiStreamObject = async ({
       async start(controller) {
         try {
           for await (const partial of result.partialObjectStream) {
-            const chunk = JSON.stringify(partial) + '\n';
+            const chunk = JSON.stringify(partial) + "\n";
             controller.enqueue(new TextEncoder().encode(chunk));
           }
           controller.close();
@@ -607,13 +596,13 @@ export const getMealListFromAiStreamObject = async ({
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {
-    console.error('Error in streamObject meal generation:', error);
+    console.error("Error in streamObject meal generation:", error);
     throw error;
   }
 };
