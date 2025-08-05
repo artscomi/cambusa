@@ -96,8 +96,6 @@ export const regenerateSingleMeal = async ({
   | { type: "unknown-error"; error: unknown }
   | { type: "user-not-found"; error: string }
 > => {
-  "use server";
-
   try {
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
@@ -150,7 +148,6 @@ export const regenerateSingleMeal = async ({
 };
 
 export const resetApiCallCount = async (userId: string) => {
-  "use server";
   if (!userId) {
     throw new Error("Missing userId");
   }
@@ -180,7 +177,6 @@ export const getMealListFromAi = async ({
   | { type: "unknown-error"; error: unknown }
   | { type: "user-not-found"; error: string }
 > => {
-  "use server";
   console.log("🍽️ getMealListFromAi started with userId:", userId);
   console.log("🌍 Environment:", process.env.NODE_ENV);
   console.log("📝 Form values:", formValues);
@@ -508,8 +504,6 @@ export const regenerateSingleMealStream = async ({
   userId: string;
   meal: Meal;
 }) => {
-  "use server";
-
   try {
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
@@ -560,8 +554,6 @@ export const getMealListFromAiStreamObject = async ({
   formValues: FormState;
   userId: string;
 }) => {
-  "use server";
-
   console.log("🚀 STREAMOBJECT FUNCTION CALLED");
 
   try {
