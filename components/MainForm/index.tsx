@@ -29,7 +29,8 @@ export type ResultErrors =
   | { type: "parse-error"; text: string }
   | { type: "validation-error"; value: unknown }
   | { type: "unknown-error"; error: unknown }
-  | { type: "user-not-found"; error: unknown };
+  | { type: "user-not-found"; error: unknown }
+  | { type: "timeout-error"; error: string };
 
 type Step = {
   title: string;

@@ -147,13 +147,14 @@ const handleError = (
     "validation-error": "Il formato della ricetta non è valido.",
     "parse-error": "Impossibile analizzare i dati della ricetta.",
     "unknown-error": "Ops... qualcosa è andato storto.",
+    "timeout-error": "La richiesta ha impiegato troppo tempo. Riprova.",
   };
 
   const message = errorMessages[result.type] || "An unknown error occurred.";
   setError(message);
 
   // Type guard per accedere a result.error in modo sicuro
-  if (result.type === "unknown-error" || result.type === "user-not-found") {
+  if (result.type === "unknown-error" || result.type === "user-not-found" || result.type === "timeout-error") {
     console.error(result.error);
   } else if (result.type === "parse-error") {
     console.error(result.text);
