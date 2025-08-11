@@ -90,7 +90,6 @@ export const handleMealListGeneration = async (
         setError(
           "Ops.. qualcosa è andato storto durante la generazione del menu"
         );
-        console.error(error);
       }
     });
   } catch (error) {

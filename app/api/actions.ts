@@ -183,10 +183,11 @@ export const getMealListFromAi = async ({
       process.env.NODE_ENV === "development"
         ? await fakeOpenAiCall()
         : await generateObject({
-            model: openai("gpt-4o-mini"),
+            model: openai("gpt-4o"),
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
+    
     revalidatePath("/meal-menu", "layout");
 
     console.log("👤 Looking up user with clerkUserId:", userId);
@@ -214,7 +215,7 @@ export const getMealListFromAi = async ({
     });
 
     // Return success response
-    return { type: "success", menu: result.object.menu };
+    return { type: "success", menu: JSON.parse(JSON.stringify(result.object.menu)) };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
       console.error(JSON.stringify(e.value, null, 2));
@@ -522,6 +523,8 @@ export const regenerateSingleMealStream = async ({
       schema: mealSchema,
     });
 
+    console.log("🔄 regenerateSingleMealStream result:", result);
+
     revalidatePath("/meal-menu", "layout");
 
     // Wait for the final object and return only serializable data
@@ -574,6 +577,8 @@ export const getMealListFromAiStreamObject = async ({
       prompt: getMainPrompt(formValues),
       maxTokens: 2000,
     });
+
+    console.log("🍽️ getMealListFromAiStreamObject result:", result);
 
     // Log the final menu generated
     const finalObject = await result.object;

@@ -8,10 +8,11 @@ export const getMainPrompt = ({
   dietaryPreferences,
   people,
   sameBreakfast,
-}: FormState): string => `Crea una proposta di menu in italiano con ${
+}: FormState): string => `Sei un assistente per un'app web che genera menu per pasti in barca in base ai dati inseriti dagli utenti tramite un form. Le variabili come numero di colazioni, pranzi, cene, persone e preferenze alimentari sono input dell'utente e devono essere considerate attentamente. La variabile "preferenze alimentari" ha priorità assoluta nella creazione dei menu.
+Se nelle preferenze alimentari l'utente chiede di aggiungere al menu gli aperitivi aggiungi una sezione Aperitivi per ogni cena. Crea una proposta di menu in italiano con ${
   breakfast || 0
 } colazioni, ${lunch} pranzi, ${dinner} cene per ${people} persone.
-  Preferenze alimentari includono: pasta circa 100 grammi a testa, riso 70 grammi a testa, ${dietaryPreferences}. 
+  Le preferenze alimentari sono: pasta circa 100 grammi a testa, riso 70 grammi a testa, ${dietaryPreferences}. 
   Cerca di accontentare tutti, senza proporre piatti diversi per ognuno. Solo per le colazioni, ${
     sameBreakfast
       ? "usa lo stesso menu per tutti i giorni ma crea un pasto per ogni giorno anche se è lo stesso"
@@ -62,7 +63,8 @@ REGOLE STRETTE:
 - L'oggetto deve avere ESATTAMENTE 3 categorie: colazioni, pranzi, cene
 - Ogni categoria deve avere il numero di pasti richiesto
 - Ogni pasto deve avere almeno un piatto
-- Ogni pasto deve aver al massimo 1 piatto
+- Ogni colazione deve aver al massimo 1 piatto
+- Se richiesto aggiungi l'antipasto a pranzo e cena
 - Ogni piatto deve contenere 4-6 ingredienti
 - Ogni piatto deve essere unico e non ripetitivo
 - Ogni ingrediente deve avere ID, nome (emoji + nome), quantità e unità
