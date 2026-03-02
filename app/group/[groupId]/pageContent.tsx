@@ -8,6 +8,8 @@ import { Button } from "@/components/Button";
 import Link from "next/link";
 import { Heart, Wine, Droplets, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { ShareSection } from "@/components/ShareSection";
+import { useRouter } from "next/navigation";
+import { useMealContext } from "@/context/useMealContext";
 
 interface StepOption {
   value: string;
@@ -43,6 +45,7 @@ export const PageContent: React.FC<{
     ownerName: string;
   };
   hasExistingPreferences: boolean;
+  hasGeneratedMenu: boolean;
   existingPreferences: {
     food: Array<{
       id: string;
@@ -63,7 +66,7 @@ export const PageContent: React.FC<{
       preference: string;
     }>;
   };
-}> = ({ groupId, group, hasExistingPreferences, existingPreferences }) => {
+}> = ({ groupId, group, hasExistingPreferences, hasGeneratedMenu, existingPreferences }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [foodPreferences, setFoodPreferences] = useState("");
   const [alcoholPreferences, setAlcoholPreferences] = useState("");
@@ -74,6 +77,8 @@ export const PageContent: React.FC<{
   const [error, setError] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const { user } = useUser();
+  const router = useRouter();
+  const { setCurrentGroupId } = useMealContext();
   const isTheGroupOwner = group?.isTheGroupOwner;
   const groupLink = isTheGroupOwner && buildUrl(baseUrl, `group/${groupId}/`);
 
@@ -292,6 +297,30 @@ export const PageContent: React.FC<{
                 Le tue preferenze sono state salvate. Potrai vedere le preferenze di tutti i partecipanti e il menu quando sarà generato dal group owner.
               </p>
             </div>
+
+            {hasGeneratedMenu && (
+              <div className="mt-6 p-6 bg-amber-50 rounded-lg border border-amber-100">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-amber-800 mb-3">
+                    Il menu è pronto: puoi votare
+                  </h3>
+                  <p className="text-amber-900/80 mb-4 leading-relaxed">
+                    Il group owner ha già generato il menu. Vai su “Il mio menu” e vota i pasti da 1 a 5 stelle.
+                  </p>
+                  <div className="flex justify-center">
+                    <Button
+                      className="px-6 py-3 text-base"
+                      onClick={() => {
+                        setCurrentGroupId(groupId);
+                        router.push("/meal-menu");
+                      }}
+                    >
+                      Vai a votare il menu
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* CTA per visitare la pagina del gruppo */}
             <div className="mt-8 p-6 bg-primary/5 rounded-lg">

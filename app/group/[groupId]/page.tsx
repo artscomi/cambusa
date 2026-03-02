@@ -16,31 +16,51 @@ const GroupPage: NextPage<{
   if (!user || !group) return null;
 
   // Fetch existing user preferences for this group
-  const existingFoodPreferences = await prisma.foodPreference.findMany({
-    where: {
-      groupId: groupId,
-      userId: user.id,
-    },
-  });
-
-  const existingAlcoholPreferences = await prisma.alcoholPreference.findMany({
-    where: {
-      groupId: groupId,
-      userId: user.id,
-    },
-  });
-
-  const existingWaterPreferences = await prisma.waterPreference.findMany({
-    where: {
-      groupId: groupId,
-      userId: user.id,
-    },
-  });
+  const [
+    existingFoodPreferences,
+    existingAlcoholPreferences,
+    existingWaterPreferences,
+    groupMenu,
+  ] = await Promise.all([
+    prisma.foodPreference.findMany({
+      where: {
+        groupId: groupId,
+        userId: user.id,
+      },
+    }),
+    prisma.alcoholPreference.findMany({
+      where: {
+        groupId: groupId,
+        userId: user.id,
+      },
+    }),
+    prisma.waterPreference.findMany({
+      where: {
+        groupId: groupId,
+        userId: user.id,
+      },
+    }),
+    prisma.group.findUnique({
+      where: { id: groupId },
+      select: { mealList: true },
+    }),
+  ]);
 
   const hasExistingPreferences =
     existingFoodPreferences.length > 0 ||
     existingAlcoholPreferences.length > 0 ||
     existingWaterPreferences.length > 0;
+
+  let hasGeneratedMenu = false;
+  try {
+    const raw = groupMenu?.mealList;
+    if (raw && raw !== "[]" && raw !== "null") {
+      const parsed = JSON.parse(raw);
+      hasGeneratedMenu = Array.isArray(parsed) ? parsed.length > 0 : !!parsed;
+    }
+  } catch {
+    // ignore parse errors; treat as not generated
+  }
 
   return (
     <div className="min-h-screen py-8">
@@ -88,6 +108,7 @@ const GroupPage: NextPage<{
           groupId={groupId}
           group={group}
           hasExistingPreferences={hasExistingPreferences}
+          hasGeneratedMenu={hasGeneratedMenu}
           existingPreferences={{
             food: existingFoodPreferences,
             alcohol: existingAlcoholPreferences,
