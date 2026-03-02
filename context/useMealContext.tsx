@@ -28,6 +28,8 @@ interface MyContextType {
       | Array<{ userId: string; preference: string; user: { name: string } }>
       | undefined
   ) => void;
+  currentGroupId: string | undefined;
+  setCurrentGroupId: (groupId: string | undefined) => void;
 }
 
 const MealContext = createContext<MyContextType | undefined>(undefined);
@@ -48,8 +50,19 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     | Array<{ userId: string; preference: string; user: { name: string } }>
     | undefined
   >();
+  const [currentGroupId, setCurrentGroupIdState] = useState<
+    string | undefined
+  >();
   const [isMounted, setIsMounted] = useState(false);
   const { user } = useUser();
+
+  const setCurrentGroupId = (groupId: string | undefined) => {
+    setCurrentGroupIdState(groupId);
+    if (typeof window !== "undefined") {
+      if (groupId) localStorage.setItem("currentGroupId", groupId);
+      else localStorage.removeItem("currentGroupId");
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -163,6 +176,12 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     }
   }, [days, isMounted]);
 
+  useEffect(() => {
+    if (!isMounted || typeof window === "undefined") return;
+    const stored = localStorage.getItem("currentGroupId");
+    if (stored) setCurrentGroupIdState(stored);
+  }, [isMounted]);
+
   return (
     <MealContext.Provider
       value={{
@@ -178,6 +197,8 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
         setDays,
         groupAlcoholPreferences,
         setGroupAlcoholPreferences,
+        currentGroupId,
+        setCurrentGroupId,
       }}
     >
       {children}

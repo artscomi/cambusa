@@ -27,6 +27,7 @@ export const ButtonGenerateMealList: React.FC<{
     preference: string;
     user: { name: string };
   }>;
+  groupId?: string;
 }> = ({
   userId,
   dietaryPreferences,
@@ -36,6 +37,7 @@ export const ButtonGenerateMealList: React.FC<{
   groupAlcoholPreferences,
   startTransition,
   setError,
+  groupId,
 }) => {
   const {
     setMealList,
@@ -44,6 +46,7 @@ export const ButtonGenerateMealList: React.FC<{
     setPeople,
     setDays,
     setGroupAlcoholPreferences,
+    setCurrentGroupId,
   } = useMealContext();
   const router = useRouter();
   const { openSignIn } = useClerk();
@@ -70,7 +73,10 @@ export const ButtonGenerateMealList: React.FC<{
       setDays,
       setGroupAlcoholPreferences,
       router,
-      openDialogStripe
+      openDialogStripe,
+      groupAlcoholPreferences,
+      groupId,
+      setCurrentGroupId
     );
   };
 

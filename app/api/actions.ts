@@ -23,7 +23,6 @@ import {
 } from "@/utils/constants";
 
 export const getUserInfo = async (userId: string) => {
-
   if (!userId) {
     return {
       apiCallCount: 0,
@@ -44,7 +43,6 @@ export const getUserInfo = async (userId: string) => {
   });
 
   if (!user) {
-   
     return {
       apiCallCount: 0,
       hasPaidForIncrease: false,
@@ -130,7 +128,7 @@ export const regenerateSingleMeal = async ({
     // Log prompts and result
     console.log(
       "prompt",
-      getRegenerateMealPrompt({ dietaryPreferences, meal })
+      getRegenerateMealPrompt({ dietaryPreferences, meal }),
     );
     console.log("result", result.object);
     console.log("api call", user.apiCallCount);
@@ -187,7 +185,7 @@ export const getMealListFromAi = async ({
             prompt: getMainPrompt(formValues),
             schema: mealMenuSchema,
           });
-    
+
     revalidatePath("/meal-menu", "layout");
 
     console.log("👤 Looking up user with clerkUserId:", userId);
@@ -215,7 +213,10 @@ export const getMealListFromAi = async ({
     });
 
     // Return success response
-    return { type: "success", menu: JSON.parse(JSON.stringify(result.object.menu)) };
+    return {
+      type: "success",
+      menu: JSON.parse(JSON.stringify(result.object.menu)),
+    };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
       console.error(JSON.stringify(e.value, null, 2));
@@ -285,6 +286,21 @@ export const createGroupAction = async (formData: FormData) => {
   };
 
   try {
+    // Assicurati che l'utente esista nel DB (Group.ownerId referenzia User.clerkUserId)
+    await db.user.upsert({
+      where: { clerkUserId: user.id },
+      update: {
+        name: user.firstName ?? "",
+        email: user.primaryEmailAddress?.emailAddress ?? "",
+      },
+      create: {
+        clerkUserId: user.id,
+        name: user.firstName ?? "",
+        email: user.primaryEmailAddress?.emailAddress ?? "",
+        mealList: "[]",
+      },
+    });
+
     const group = await db.group.create({
       data: {
         name: rawFormdata.groupName,
@@ -342,7 +358,7 @@ export const createGroupAction = async (formData: FormData) => {
 };
 
 export const getGroupInfo = async (
-  groupId: string
+  groupId: string,
 ): Promise<GroupInfo | null> => {
   const { userId } = await auth();
 
@@ -398,7 +414,7 @@ export const getGroupInfo = async (
 
 export const addFoodPreferenceAction = async (
   preference: string,
-  groupId: string
+  groupId: string,
 ) => {
   try {
     const { userId } = await auth();
@@ -438,6 +454,169 @@ export const addFoodPreferenceAction = async (
   }
 };
 
+/** Salva il menu generato sul gruppo. Solo il group owner può salvare. */
+export const saveGroupMealList = async (
+  groupId: string,
+  mealList: MealList,
+): Promise<{ error?: string }> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { error: "Non autenticato" };
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true },
+    });
+    if (!group) return { error: "Gruppo non trovato" };
+    if (group.ownerId !== userId) {
+      return { error: "Solo il proprietario del gruppo può salvare il menu" };
+    }
+
+    await db.group.update({
+      where: { id: groupId },
+      data: { mealList: JSON.stringify(mealList) },
+    });
+    revalidatePath(`/group/${groupId}/menu`);
+    return {};
+  } catch (error) {
+    console.error("Error saving group meal list:", error);
+    return { error: "Errore nel salvataggio del menu" };
+  }
+};
+
+/** Restituisce il menu salvato del gruppo, o null se non presente. */
+export const getGroupMealList = async (
+  groupId: string,
+): Promise<MealList | null> => {
+  try {
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { mealList: true },
+    });
+    if (!group?.mealList) return null;
+    return JSON.parse(group.mealList) as MealList;
+  } catch (error) {
+    console.error("Error getting group meal list:", error);
+    return null;
+  }
+};
+
+/** Vota un pasto del menu (1-5). Un utente può dare un solo voto per pasto. */
+export const voteMenuItem = async (
+  groupId: string,
+  mealTypeId: string,
+  mealId: string,
+  value: number,
+): Promise<{ error?: string }> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { error: "Non autenticato" };
+    if (value < 1 || value > 5)
+      return { error: "Il voto deve essere tra 1 e 5" };
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { id: true },
+    });
+    if (!group) return { error: "Gruppo non trovato" };
+
+    let membership = await db.groupMembership.findUnique({
+      where: {
+        userId_groupId: { userId, groupId },
+      },
+    });
+
+    // Se l'utente invitato non è ancora membro (es. è arrivato solo al link del menu),
+    // aggiungilo al gruppo così può votare
+    if (!membership) {
+      const clerkUser = await currentUser();
+      if (!clerkUser) return { error: "Non autenticato" };
+      await db.user.upsert({
+        where: { clerkUserId: userId },
+        update: {},
+        create: {
+          clerkUserId: userId,
+          name: clerkUser.firstName ?? "",
+          email: clerkUser.primaryEmailAddress?.emailAddress ?? "",
+          mealList: "[]",
+        },
+      });
+      await db.groupMembership.upsert({
+        where: {
+          userId_groupId: { userId, groupId },
+        },
+        update: {},
+        create: { userId, groupId },
+      });
+    }
+
+    await db.menuItemVote.upsert({
+      where: {
+        groupId_userId_mealTypeId_mealId: {
+          groupId,
+          userId,
+          mealTypeId,
+          mealId,
+        },
+      },
+      update: { value },
+      create: {
+        groupId,
+        userId,
+        mealTypeId,
+        mealId,
+        value,
+      },
+    });
+    revalidatePath(`/group/${groupId}/menu`);
+    return {};
+  } catch (error) {
+    console.error("Error voting menu item:", error);
+    return { error: "Errore durante il voto" };
+  }
+};
+
+/** Restituisce per ogni pasto: media voti, numero voti, e il voto dell'utente corrente (se presente). */
+export const getGroupMenuVotes = async (
+  groupId: string,
+): Promise<{
+  byKey: Record<string, { average: number; count: number; userVote?: number }>;
+} | null> => {
+  try {
+    const { userId } = await auth();
+    const votes = await db.menuItemVote.findMany({
+      where: { groupId },
+    });
+    const byKey: Record<
+      string,
+      { sum: number; count: number; userVote?: number }
+    > = {};
+    for (const v of votes) {
+      const key = `${v.mealTypeId}-${v.mealId}`;
+      if (!byKey[key]) byKey[key] = { sum: 0, count: 0 };
+      byKey[key].sum += v.value;
+      byKey[key].count += 1;
+      if (userId && v.userId === userId) byKey[key].userVote = v.value;
+    }
+    const result: Record<
+      string,
+      { average: number; count: number; userVote?: number }
+    > = {};
+    for (const [key, data] of Object.entries(byKey)) {
+      result[key] = {
+        average:
+          data.count > 0 ? Math.round((data.sum / data.count) * 10) / 10 : 0,
+        count: data.count,
+        userVote: data.userVote,
+      };
+    }
+    return { byKey: result };
+  } catch (error) {
+    console.error("Error getting group menu votes:", error);
+    return null;
+  }
+};
+
 export const saveMealList = async (mealList: string, userId: string) => {
   try {
     if (!userId) {
@@ -474,7 +653,7 @@ export const checkSpecialAccount = async (userId: string) => {
 
 export const getMaxAiCall = async (
   hasPaidForIncrease: boolean,
-  userId: string
+  userId: string,
 ) => {
   const isSpecialAccount = await checkSpecialAccount(userId);
 

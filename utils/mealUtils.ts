@@ -4,6 +4,7 @@ import {
   getMealListFromAi,
   getUserInfo,
   saveMealList,
+  saveGroupMealList,
 } from "@/app/api/actions";
 import { Result, ResultErrors } from "@/components/MainForm";
 import { MealList } from "@/types/types";
@@ -38,7 +39,9 @@ export const handleMealListGeneration = async (
     userId: string;
     preference: string;
     user: { name: string };
-  }>
+  }>,
+  groupId?: string,
+  setCurrentGroupId?: (groupId: string | undefined) => void
 ) => {
   scrollTo(0, 0);
   setError(null);
@@ -83,7 +86,9 @@ export const handleMealListGeneration = async (
           setGroupAlcoholPreferences,
           groupAlcoholPreferences,
           router,
-          setError
+          setError,
+          groupId,
+          setCurrentGroupId
         );
       } catch (error) {
         console.error("❌ Error in meal generation:", error);
@@ -119,7 +124,9 @@ const handleResult = async (
     | Array<{ userId: string; preference: string; user: { name: string } }>
     | undefined,
   router: any,
-  setError: Dispatch<SetStateAction<string | null>>
+  setError: Dispatch<SetStateAction<string | null>>,
+  groupId?: string,
+  setCurrentGroupId?: (groupId: string | undefined) => void
 ) => {
   if (result.type === "success") {
     setMealList(result.menu);
@@ -128,8 +135,20 @@ const handleResult = async (
     setPeople(people);
     setDays(days);
     setGroupAlcoholPreferences(groupAlcoholPreferences);
-    await saveMealList(JSON.stringify(result.menu), userId);
-    router.push("/meal-menu");
+    if (groupId) {
+      const err = await saveGroupMealList(groupId, result.menu);
+      if (err.error) {
+        setError(err.error);
+        return;
+      }
+      setCurrentGroupId?.(groupId);
+      router.push("/meal-menu");
+      router.refresh();
+    } else {
+      setCurrentGroupId?.(undefined);
+      await saveMealList(JSON.stringify(result.menu), userId);
+      router.push("/meal-menu");
+    }
   } else {
     handleError(result, setError);
   }

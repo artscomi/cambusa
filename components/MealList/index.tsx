@@ -12,22 +12,45 @@ import {
   getUserInfo,
   regenerateSingleMeal,
   saveMealList,
+  getGroupMenuVotes,
 } from "@/app/api/actions";
 import { RefreshCcw, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useMealContext } from "@/context/useMealContext";
 import { MealList } from "@/types/types";
+import { MealVoteStars } from "@/app/group/[groupId]/menu/MealVoteStars";
 
 const LottieAnimation = dynamic(() => import("@/components/LottieAnimation"), {
   ssr: false,
 });
 
 export const MealListComponent = () => {
-  const { mealList, setMealList } = useMealContext();
+  const { mealList, setMealList, currentGroupId } = useMealContext();
   const { user } = useUser();
   const { formState } = useFormConfig();
   const [isDialogStripeOpen, setIsDialogStripeOpen] = useState(false);
   const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
+  const [votesByKey, setVotesByKey] = useState<
+    Record<string, { average: number; count: number; userVote?: number }>
+  >({});
+
+  useEffect(() => {
+    if (!currentGroupId) {
+      setVotesByKey({});
+      return;
+    }
+    getGroupMenuVotes(currentGroupId).then((data) => {
+      if (data?.byKey) setVotesByKey(data.byKey);
+    });
+  }, [currentGroupId]);
+
+  const refreshVotes = () => {
+    if (currentGroupId) {
+      getGroupMenuVotes(currentGroupId).then((data) => {
+        if (data?.byKey) setVotesByKey(data.byKey);
+      });
+    }
+  };
 
   const openDialogStripe = () => {
     setIsDialogStripeOpen(true);
@@ -182,6 +205,15 @@ export const MealListComponent = () => {
                                 )}
                               </ul>
                             ))}
+                            {currentGroupId && (
+                              <MealVoteStars
+                                groupId={currentGroupId}
+                                mealTypeId={mealType.id}
+                                mealId={meal.id}
+                                voteData={votesByKey[`${mealType.id}-${meal.id}`]}
+                                onVoteSuccess={refreshVotes}
+                              />
+                            )}
                             <div className="flex justify-end opacity-80 hover:opacity-100 mt-3">
                               <motion.button
                                 whileTap={{ scale: 0.97 }}

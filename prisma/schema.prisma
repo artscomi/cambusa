@@ -38,11 +38,13 @@ model Group {
   foodPreferences    FoodPreference[]
   alcoholPreferences AlcoholPreference[]
   waterPreferences   WaterPreference[]
+  menuItemVotes      MenuItemVote[]
   breakfast          String @default("0")
   lunch              String
   dinner             String
   people             String
   sameBreakfast      Boolean @default(false)
+  mealList           String?            // JSON del menu generato per il gruppo
 }
 
 model FoodPreference {
@@ -80,4 +82,17 @@ model GroupMembership {
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
 
   @@unique([userId, groupId]) // Ensures a user can only join a group once
+}
+
+// Un voto per (gruppo, utente, pasto). Un utente può dare un solo voto per pasto.
+model MenuItemVote {
+  id          String @id @default(cuid())
+  groupId     String
+  group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId      String // Clerk user id
+  mealTypeId  String // es. "colazioni", "pranzi", "cene"
+  mealId      String // id del pasto nel menu, es. "colazione1"
+  value       Int    // 1-5 stelle
+
+  @@unique([groupId, userId, mealTypeId, mealId])
 }

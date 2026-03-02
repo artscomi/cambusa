@@ -8,6 +8,8 @@ import { ToastError } from "@/components/ToastError";
 import { ShareSection } from "@/components/ShareSection";
 import { CookingPot, Heart, Sandwich, Users } from "lucide-react";
 import React from "react";
+import { MealList } from "@/types/types";
+import { MealVoteStars } from "./MealVoteStars";
 
 interface UserPreference {
   name: string;
@@ -37,11 +39,15 @@ export const PageContent = ({
   preferences,
   alcoholPreferences,
   waterPreferences,
+  groupMealList,
+  votes,
 }: {
   group: GroupInfo;
   preferences: GroupedPreference[];
   alcoholPreferences: GroupedPreference[];
   waterPreferences: GroupedPreference[];
+  groupMealList?: MealList;
+  votes?: { byKey: Record<string, { average: number; count: number; userVote?: number }> };
 }) => {
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
@@ -312,6 +318,56 @@ export const PageContent = ({
         ))}
       </div>
 
+      {/* Menu del gruppo con votazione */}
+      {groupMealList && groupMealList.length > 0 && (
+        <>
+          <h2 className="text-2xl font-bold mb-6 text-primary">
+            Menu del gruppo
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Vota i pasti da 1 a 5 stelle. Ogni membro può dare un voto per pasto.
+          </p>
+          <div className="space-y-8 mb-10">
+            {groupMealList.map((mealType) => (
+              <div key={mealType.id}>
+                <h3 className="text-xl font-semibold mb-4 text-primary">
+                  {mealType.mealTypeName}
+                </h3>
+                <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  {mealType.meals?.map((meal) => {
+                    const voteKey = `${mealType.id}-${meal.id}`;
+                    const voteData = votes?.byKey[voteKey];
+                    return (
+                      <div
+                        key={meal.id}
+                        className="bg-white p-6 rounded-lg shadow-md border border-gray-100"
+                      >
+                        <p className="font-medium text-lg text-primary mb-2">
+                          {meal.mealName}
+                        </p>
+                        <ul className="space-y-2 mb-3">
+                          {meal.dishes?.map((dish) => (
+                            <li key={dish.id} className="text-gray-700 text-sm">
+                              {dish.dishName}
+                            </li>
+                          ))}
+                        </ul>
+                        <MealVoteStars
+                          groupId={group.groupId}
+                          mealTypeId={mealType.id}
+                          mealId={meal.id}
+                          voteData={voteData}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Group Owner / Non Group Owner Section */}
       {group.isTheGroupOwner ? (
         <>
@@ -337,6 +393,7 @@ export const PageContent = ({
                   sameBreakfast,
                 }}
                 groupAlcoholPreferences={alcoholPreferences}
+                groupId={group.groupId}
               />
             </div>
           </div>
