@@ -17,7 +17,7 @@ const steps = [
     icon: <Anchor className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Pianifica il Viaggio",
     description:
-      "Inserisci durata, numero di pasti e preferenze alimentari del tuo equipaggio",
+      "Inserisci durata, numero di pasti e preferenze",
     href: null, // Informational step
   },
   {
@@ -31,20 +31,20 @@ const steps = [
     icon: <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Genera il Menu",
     description:
-      "L'AI crea un menu personalizzato e bilanciato per tutto il viaggio",
+      "L'AI crea un menu personalizzato e bilanciato",
     href: "/menu/create",
   },
   {
     icon: <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Lista della Spesa",
     description:
-      "Ricevi automaticamente la lista completa degli ingredienti necessari",
+      "Ricevi la lista completa degli ingredienti",
     href: "/shopping-list",
   },
   {
     icon: <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Salpa Sereno",
-    description: "Tutto pronto per una crociera senza pensieri alimentari!",
+    description: "Tutto pronto per una crociera senza pensieri!",
     href: null, // Informational step
   },
 ];
@@ -67,10 +67,11 @@ export const HowItWorksSection: React.FC = () => {
 
   return (
     <motion.section
+      id="how-it-works"
       variants={itemVariants}
-      className="py-12 sm:py-10 mt-16 md:py-20 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
+      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-blue-50 to-cyan-50 w-full"
     >
-      <div className="w-full px-10 sm:px-6 md:px-10">
+      <div className="max-w-7xl mx-auto w-full px-6 md:px-10">
         <motion.div
           variants={itemVariants}
           className="text-center mb-8 sm:mb-12 md:mb-16"
@@ -83,7 +84,6 @@ export const HowItWorksSection: React.FC = () => {
             per salpare
           </p>
         </motion.div>
-
         {/* Mobile: Single column layout */}
         <div className="block sm:hidden space-y-4">
           {steps.map((step, index) => (

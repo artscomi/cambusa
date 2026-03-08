@@ -14,19 +14,19 @@ const features = [
   {
     icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Equipaggio",
-    description: "Gestisci le preferenze di tutta la ciurma",
+    description: "Gestisci le preferenze alimentari di tutta la ciurma in un unico posto",
     href: "/group/create-group",
   },
   {
     icon: <ChefHat className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Menu Intelligente",
-    description: "AI che crea pasti equilibrati e gustosi",
+    description: "L'AI crea pasti equilibrati, gustosi e personalizzati per ogni membro",
     href: "/menu/create",
   },
   {
     icon: <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />,
     title: "Lista Spesa",
-    description: "Genera automaticamente la lista della spesa",
+    description: "Genera automaticamente la lista completa degli ingredienti necessari",
     href: "/shopping-list",
   },
 ];
@@ -92,7 +92,7 @@ export const FeaturesCarousel: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="text-center p-4 sm:p-6 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors duration-200"
+            className="text-center p-4 sm:p-6 cursor-pointer bg-white/90 hover:bg-white backdrop-blur-sm rounded-xl transition-colors duration-200 shadow-md border border-white/50"
             role="button"
             tabIndex={0}
             aria-label={`Vai a ${feature.title}`}
@@ -137,7 +137,7 @@ export const FeaturesCarousel: React.FC = () => {
             className="absolute w-full h-full flex items-center justify-center"
           >
             <div 
-              className="text-center p-4 w-full pb-16 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors duration-200"
+              className="text-center p-4 w-full pb-16 cursor-pointer bg-white/90 hover:bg-white backdrop-blur-sm rounded-xl transition-colors duration-200 shadow-md border border-white/50"
               role="button"
               tabIndex={0}
               aria-label={`Vai a ${features[page].title}`}

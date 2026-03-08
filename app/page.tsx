@@ -73,32 +73,67 @@ export default function Home() {
           variants={blogHeaderVariants}
           initial="hidden"
           animate="visible"
-          className="relative pt-4 sm:pt-8 pb-4 sm:pb-8 px-6 md:px-10"
+          className="relative min-h-[50vh] flex flex-col justify-center -mt-[75px] md:-mt-20 pt-24 md:pt-28 pb-4 sm:pb-8 px-6 md:px-10 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url(/hero-bg.png)",
+          }}
         >
-          <div className="max-w-7xl mx-auto">
+          {/* Overlay blu sopra l'immagine per leggibilità del copy */}
+          <div
+            className="absolute inset-0 z-10 pointer-events-none"
+            aria-hidden
+            style={{
+              background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65))",
+            }}
+          />
+          <div className="relative z-20 max-w-7xl mx-auto w-full pb-14 sm:pb-20 md:pb-28">
             {/* Header */}
             <motion.header
               variants={itemVariants}
-              className="text-center mb-8 sm:mb-12"
+              className="text-center mb-6 sm:mb-8"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-4 sm:mb-6">
-                <Link
-                  href="/"
-                  aria-label="Torna alla home di cambusaai"
-                  className="hover:opacity-80 transition-opacity"
-                >
-                  Cambusa<span className="text-primary">ai</span>
-                </Link>
+              <Link
+                href="/"
+                aria-label="Torna alla home di cambusaai"
+                className="inline-block hover:opacity-90 transition-opacity mb-4 sm:mb-6"
+              >
+                <span className="text-2xl sm:text-3xl font-display font-bold text-white drop-shadow-md">
+                  Cambusa<span className="text-primary-light">ai</span>
+                </span>
+              </Link>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 drop-shadow-lg text-white leading-tight">
+                La cambusa perfetta
+                <br />
+                per ogni viaggio
               </h1>
 
               <motion.p
                 variants={itemVariants}
-                className="text-lg sm:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-2"
+                className="text-lg sm:text-xl lg:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed px-2 drop-shadow-md mb-6 sm:mb-8"
                 role="doc-subtitle"
               >
-                Crea il menu perfetto per tutto l&apos;equipaggio.
-                <br className="hidden sm:block" /> Siete pronti a salpare? ⛵
+                Crea il menu perfetto per tutto l&apos;equipaggio con l&apos;aiuto
+                dell&apos;intelligenza artificiale. Siete pronti a salpare? ⛵
               </motion.p>
+
+              <motion.div
+                variants={itemVariants}
+                className="flex flex-wrap justify-center gap-3 sm:gap-4"
+              >
+                <a
+                  href="#main-content"
+                  className="inline-flex items-center justify-center bg-primary hover:bg-primary-light text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  Inizia ora →
+                </a>
+                <a
+                  href="#how-it-works"
+                  className="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full border-2 border-white/60 backdrop-blur-sm transition-all duration-300"
+                >
+                  Scopri di più
+                </a>
+              </motion.div>
             </motion.header>
 
             {/* Features Grid */}
@@ -106,23 +141,39 @@ export default function Home() {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="mb-8 sm:mb-12"
+              className="mb-12 sm:mb-16 md:mb-20"
             >
               <FeaturesCarousel />
             </motion.div>
+          </div>
+
+          {/* Onda di separazione: forma più realistica e spazio sotto la hero */}
+          <div className="absolute bottom-0 left-0 w-full leading-none z-10" aria-hidden>
+            <svg
+              viewBox="0 0 1440 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+              className="w-full h-20 sm:h-28 md:h-36 block"
+            >
+              <path
+                d="M0 50L48 45C96 40 192 30 288 35C384 40 480 60 576 65C672 70 768 60 864 50C960 40 1056 30 1152 35C1248 40 1344 60 1392 70L1440 80V100H0V50Z"
+                fill="white"
+              />
+            </svg>
           </div>
         </motion.section>
 
         {/* Main Content Section */}
         <motion.section
+          id="main-content"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="relative px-6 md:px-32 max-w-7xl mx-auto"
+          className="relative py-12 sm:py-16 md:py-20 px-6 md:px-10 max-w-7xl mx-auto bg-white"
           aria-label="Strumenti di pianificazione menu"
         >
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-stretch">
               {/* Menu Form Box */}
               <motion.div
                 variants={itemVariants}
@@ -143,7 +194,6 @@ export default function Home() {
                 <CreateGroupBox />
               </motion.div>
             </div>
-          </div>
         </motion.section>
 
         {/* How It Works Section */}

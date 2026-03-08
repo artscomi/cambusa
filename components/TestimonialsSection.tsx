@@ -41,8 +41,19 @@ const testimonials = [
 
 export const TestimonialsSection: React.FC = () => {
   return (
-    <motion.section variants={itemVariants} className="py-16 sm:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <motion.section variants={itemVariants} className="py-12 sm:py-16 md:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <motion.div
+          variants={itemVariants}
+          className="text-center mb-10 sm:mb-12"
+        >
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-3 sm:mb-4">
+            I numeri di Cambusaai
+          </h2>
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Migliaia di navigatori hanno già semplificato la loro cambusa
+          </p>
+        </motion.div>
         {/* Stats */}
         <motion.div
           variants={itemVariants}

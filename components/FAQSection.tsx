@@ -43,7 +43,7 @@ const faqs = [
         garantito nell'anonimato e puoi leggere i dettagli completi nella{" "}
         <Link
           href="/privacy-policy"
-          className="text-primary hover:text-primary-dark underline"
+          className="text-primary hover:text-primary-light underline"
         >
           privacy policy
         </Link>
@@ -117,17 +117,17 @@ export const FAQSection: React.FC = () => {
   return (
     <motion.section
       variants={itemVariants}
-      className="py-16 sm:py-20 bg-gradient-to-br from-gray-50 to-blue-50"
+      className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 to-blue-50"
     >
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-6 md:px-10">
         <motion.div
           variants={itemVariants}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-10 sm:mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-primary mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-3 sm:mb-4">
             Domande Frequenti
           </h2>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl sm:max-w-3xl mx-auto">
             Tutto quello che devi sapere su Cambusaai
           </p>
         </motion.div>
@@ -151,7 +151,7 @@ export const FAQSection: React.FC = () => {
           ))}
         </div>
 
-        <motion.div variants={itemVariants} className="text-center mt-12">
+        <motion.div variants={itemVariants} className="text-center mt-10 sm:mt-12">
           <p className="text-gray-600 text-sm sm:text-base mb-4">
             Non hai trovato la risposta che cercavi?
           </p>
