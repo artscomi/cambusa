@@ -3,6 +3,7 @@
 import { MainForm } from "@/components/MainForm";
 import { ToastError } from "@/components/ToastError";
 import { Loading } from "@/components/Loading";
+import { PageContainer } from "@/components/PageContainer";
 import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import {
@@ -25,10 +26,11 @@ export default function CreateMenuPage() {
       animate="visible"
       className="overflow-x-hidden w-full max-w-full"
     >
+      <PageContainer className="overflow-x-hidden">
       {/* Header */}
       <motion.section
         variants={pageItemVariants}
-        className="relative pt-4 sm:pt-8 pb-4 sm:pb-8 px-4 overflow-x-hidden"
+        className="relative overflow-x-hidden"
       >
         <div className="max-w-2xl mx-auto overflow-x-hidden">
           {/* Page Header */}
@@ -36,10 +38,10 @@ export default function CreateMenuPage() {
             variants={pageItemVariants}
             className="text-center mb-8 sm:mb-12 overflow-x-hidden"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-4 sm:mb-6 text-primary">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-4 sm:mb-6 text-primary">
               Crea il tuo menu
             </h1>
-            <p className="text-md sm:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
               Pianifica i pasti per la tua vacanza in barca.
               <br className="hidden sm:block" /> Inizia subito a creare il menu
               perfetto per il tuo equipaggio.
@@ -61,7 +63,7 @@ export default function CreateMenuPage() {
           >
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-colors"
+              className="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
             >
               <ArrowLeft size={20} />
               <span className="font-medium">Torna alla home</span>
@@ -69,6 +71,7 @@ export default function CreateMenuPage() {
           </motion.div>
         </div>
       </motion.section>
+      </PageContainer>
 
       {/* Toast Notifications */}
       <div role="alert" aria-live="polite">

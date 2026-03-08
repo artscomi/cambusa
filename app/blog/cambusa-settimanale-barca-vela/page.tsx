@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { BlogCta } from "@/app/components/BlogCta";
+import { PageContainer } from "@/components/PageContainer";
 
 export const metadata: Metadata = {
   title:
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 
 export default function BlogPost() {
   return (
-    <main className="max-w-3xl mx-auto p-6">
+    <main>
+      <PageContainer narrow>
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6">
         <ol className="flex space-x-2">
@@ -188,6 +190,7 @@ export default function BlogPost() {
           <BlogCta />
         </section>
       </article>
+      </PageContainer>
     </main>
   );
 }

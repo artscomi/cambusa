@@ -5,6 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { getGroupInfo } from "@/app/api/actions";
 import { Users, Heart, Wine, Droplets } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { PageContainer } from "@/components/PageContainer";
 
 const GroupPage: NextPage<{
   params: { groupId: string };
@@ -63,10 +64,9 @@ const GroupPage: NextPage<{
   }
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="container mx-auto max-w-4xl">
-        {/* Header Section */}
-        <div className="text-center mb-12">
+    <PageContainer narrow>
+      {/* Header Section */}
+      <div className="text-center mb-10 sm:mb-12">
           {!isTheGroupOwner && (
             <div className="mb-6">
               <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
@@ -78,7 +78,7 @@ const GroupPage: NextPage<{
             </div>
           )}
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-4">
             {isTheGroupOwner ? (
               <>
                 Hai creato il gruppo{" "}
@@ -115,8 +115,7 @@ const GroupPage: NextPage<{
             water: existingWaterPreferences,
           }}
         />
-      </div>
-    </div>
+      </PageContainer>
   );
 };
 

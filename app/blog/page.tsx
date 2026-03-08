@@ -5,6 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { BlogCta } from "@/app/components/BlogCta";
+import { PageContainer } from "@/components/PageContainer";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   blogContainerVariants,
@@ -59,15 +60,16 @@ const articles = [
 export default function BlogPage() {
   return (
     <AnimatePresence>
-      <main className="max-w-[1200px] mx-auto px-4 py-8">
+      <main>
+        <PageContainer>
         {/* Header Section */}
         <motion.div
           variants={blogHeaderVariants}
           initial="hidden"
           animate="visible"
-          className="mb-16 text-center"
+          className="mb-12 sm:mb-16 text-center"
         >
-          <h1 className="text-5xl md:text-6xl font-display font-bold mb-6 text-primary">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-6 text-primary">
             Blog
           </h1>
 
@@ -168,6 +170,7 @@ export default function BlogPage() {
         >
           <BlogCta />
         </motion.div>
+        </PageContainer>
       </main>
     </AnimatePresence>
   );

@@ -1,7 +1,12 @@
 import { MealListComponent } from "@/components/MealList";
+import { PageContainer } from "@/components/PageContainer";
 
 const MyMenuPage = () => {
-  return <MealListComponent />;
+  return (
+    <PageContainer>
+      <MealListComponent />
+    </PageContainer>
+  );
 };
 
 export default MyMenuPage;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import Image from "next/image";
 import { BlogCta } from "@/app/components/BlogCta";
+import { PageContainer } from "@/components/PageContainer";
 
 export const metadata: Metadata = {
   title: "Pasti veloci in barca: 5 idee pratiche | Cambusa Online",
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
 
 export default function BlogPost() {
   return (
-    <main className="max-w-3xl mx-auto p-6">
+    <main>
+      <PageContainer narrow>
       {/* Breadcrumb */}
       <nav className="text-sm text-gray-500 mb-6">
         <ol className="flex space-x-2">
@@ -270,6 +272,7 @@ export default function BlogPost() {
           <BlogCta />
         </section>
       </article>
+      </PageContainer>
     </main>
   );
 }

@@ -2,22 +2,24 @@
 
 import { motion } from "framer-motion";
 import { itemVariants } from "@/animations/framer-variants";
+import { PageContainer } from "@/components/PageContainer";
 import { Shield, Lock, Eye, Database } from "lucide-react";
 
 export default function PrivacyPolicyPage() {
   return (
+    <PageContainer narrow>
     <motion.div
       variants={itemVariants}
       initial="hidden"
       animate="visible"
-      className="max-w-4xl mx-auto px-6 md:px-10 py-8"
+      className="w-full"
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className="text-center mb-12">
+      <motion.div variants={itemVariants} className="text-center mb-10 sm:mb-12">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
           <Shield className="w-8 h-8 text-primary" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-primary mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-4">
           Privacy Policy
         </h1>
         <p className="text-gray-600 text-lg">
@@ -205,6 +207,7 @@ export default function PrivacyPolicyPage() {
           </div>
         </section>
       </motion.div>
-    </motion.div>
+      </motion.div>
+    </PageContainer>
   );
 }

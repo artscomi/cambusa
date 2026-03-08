@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useHeaderScroll } from "./HeaderBar";
 import { ApiCallCountComponent } from "./ApiCallCountComponent";
 import { DropdownMenuComponent } from "./Dropdown";
@@ -18,12 +19,15 @@ export function HeaderNavContent({
   name,
 }: HeaderNavContentProps) {
   const { isTransparent } = useHeaderScroll();
+  const pathname = usePathname();
+  /** Testo bianco solo in home con header trasparente; nelle pagine interne sempre primary */
+  const useLightText = pathname === "/" && isTransparent;
 
-  const linkClass = isTransparent
+  const linkClass = useLightText
     ? "font-medium text-white hover:text-white/80 transition-colors"
     : "font-medium text-primary hover:text-primary-light transition-colors";
 
-  const wrapperClass = isTransparent ? "text-white" : "text-primary";
+  const wrapperClass = useLightText ? "text-white" : "text-primary";
 
   return (
     <nav
