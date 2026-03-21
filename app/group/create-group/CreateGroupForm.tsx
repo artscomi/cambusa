@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/Button";
+import { CTA } from "@/components/CTA";
 import { TextInput, TextInputConfig } from "@/components/TextInput";
 import { TextArea, TextAreaConfig } from "@/components/TextArea";
 import { Checkbox, CheckboxProps } from "@/components/Checkbox";
@@ -351,24 +351,24 @@ export const CreateGroupForm = () => {
 
         <div className="flex justify-between mt-8">
           {currentStep > 0 && (
-            <Button
+            <CTA
               type="button"
               onClick={handlePrev}
-              variant="outline"
+              variant="formOutline"
               className="px-6"
             >
               Indietro
-            </Button>
+            </CTA>
           )}
 
           {!isLastStep ? (
-            <Button type="button" onClick={handleNext} className="ml-auto px-6">
+            <CTA type="button" onClick={handleNext} className="ml-auto px-6" variant="form">
               Avanti
-            </Button>
+            </CTA>
           ) : (
-            <Button type="submit" className="ml-auto px-6" disabled={loading}>
+            <CTA type="submit" className="ml-auto px-6" variant="form" disabled={loading}>
               {loading ? "Creazione in corso..." : "Crea Gruppo"}
-            </Button>
+            </CTA>
           )}
         </div>
       </form>

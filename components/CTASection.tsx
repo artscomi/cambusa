@@ -2,13 +2,10 @@
 
 import { motion } from "framer-motion";
 import { itemVariants } from "@/animations/framer-variants";
-import { Button } from "@/components/Button";
-import { useRouter } from "next/navigation";
+import { CTA } from "@/components/CTA";
 import { Anchor, Sparkles, ArrowRight } from "lucide-react";
 
 export const CTASection: React.FC = () => {
-  const router = useRouter();
-
   return (
     <motion.section
       variants={itemVariants}
@@ -80,21 +77,14 @@ export const CTASection: React.FC = () => {
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <a
-              href="#main-content"
-              className="inline-flex items-center justify-center bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 gap-2"
-            >
+            <CTA href="#main-content" variant="inverse" className="gap-2">
               <span>Inizia ora</span>
               <ArrowRight size={20} />
-            </a>
+            </CTA>
 
-            <Button
-              variant="outline"
-              onClick={() => router.push("/blog")}
-              className="border-2 border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold rounded-full transition-all duration-300"
-            >
+            <CTA href="/blog" variant="outlineLight">
               Scopri il nostro Blog
-            </Button>
+            </CTA>
           </motion.div>
         </motion.div>
       </div>

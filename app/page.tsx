@@ -11,6 +11,7 @@ import { FAQSection } from "@/components/FAQSection";
 import { CTASection } from "@/components/CTASection";
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
+import { CTA } from "@/components/CTA";
 import { useSearchParams } from "next/navigation";
 import Toast from "@/components/Toast";
 import { resetApiCallCount } from "./api/actions";
@@ -121,18 +122,12 @@ export default function Home() {
                 variants={itemVariants}
                 className="flex flex-wrap justify-center gap-3 sm:gap-4"
               >
-                <a
-                  href="#main-content"
-                  className="inline-flex items-center justify-center bg-primary hover:bg-primary-light text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-                >
+                <CTA href="#main-content" variant="solid">
                   Inizia ora →
-                </a>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full border-2 border-white/60 backdrop-blur-sm transition-all duration-300"
-                >
+                </CTA>
+                <CTA href="#how-it-works" variant="ghost">
                   Scopri di più
-                </a>
+                </CTA>
               </motion.div>
             </motion.header>
 

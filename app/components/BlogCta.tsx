@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/Button";
+import { CTA } from "@/components/CTA";
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight } from "lucide-react";
@@ -85,14 +85,15 @@ export const BlogCta: React.FC<BlogCtaProps> = ({
           transition={{ delay: 0.5, duration: 0.5 }}
           className="flex justify-center"
         >
-          <Button
+          <CTA
+            variant="form"
             center
             onClick={() => router.push("/")}
             className="flex items-center gap-2"
           >
             <span>Genera il menu!</span>
             <ArrowRight size={20} />
-          </Button>
+          </CTA>
         </motion.div>
       </div>
     </motion.div>

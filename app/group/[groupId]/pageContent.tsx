@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { TextArea } from "@/components/TextArea";
 import { useUser } from "@clerk/nextjs";
 import Toast from "@/components/Toast";
-import { Button } from "@/components/Button";
-import Link from "next/link";
+import { CTA } from "@/components/CTA";
 import { Heart, Wine, Droplets, ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { ShareSection } from "@/components/ShareSection";
 import { useRouter } from "next/navigation";
@@ -272,11 +271,13 @@ export const PageContent: React.FC<{
                   menu quando vuoi.
                 </p>
                 <div className="flex justify-center">
-                  <Link href={`${groupId}/menu`}>
-                    <Button className="px-6 py-3 text-base">
-                      Vai alla pagina del gruppo
-                    </Button>
-                  </Link>
+                  <CTA
+                    href={`${groupId}/menu`}
+                    variant="form"
+                    className="px-6 py-3 text-base"
+                  >
+                    Vai alla pagina del gruppo
+                  </CTA>
                 </div>
               </div>
             </div>
@@ -308,7 +309,8 @@ export const PageContent: React.FC<{
                     Il group owner ha già generato il menu. Vai su “Il mio menu” e vota i pasti da 1 a 5 stelle.
                   </p>
                   <div className="flex justify-center">
-                    <Button
+                    <CTA
+                      variant="form"
                       className="px-6 py-3 text-base"
                       onClick={() => {
                         setCurrentGroupId(groupId);
@@ -316,7 +318,7 @@ export const PageContent: React.FC<{
                       }}
                     >
                       Vai a votare il menu
-                    </Button>
+                    </CTA>
                   </div>
                 </div>
               </div>
@@ -332,11 +334,13 @@ export const PageContent: React.FC<{
                   Dalla pagina del gruppo potrai vedere le preferenze di tutti i partecipanti e il menu quando sarà generato.
                 </p>
                 <div className="flex justify-center">
-                  <Link href={`${groupId}/menu`}>
-                    <Button className="px-6 py-3 text-base">
-                      Vai alla pagina del gruppo
-                    </Button>
-                  </Link>
+                  <CTA
+                    href={`${groupId}/menu`}
+                    variant="form"
+                    className="px-6 py-3 text-base"
+                  >
+                    Vai alla pagina del gruppo
+                  </CTA>
                 </div>
               </div>
             </div>
@@ -429,38 +433,40 @@ export const PageContent: React.FC<{
 
           {/* Navigation Buttons */}
           <div className="flex justify-between items-center">
-            <Button
+            <CTA
               type="button"
               onClick={handlePrevious}
               disabled={currentStep === 1}
-              variant="outline"
+              variant="formOutline"
               className="flex items-center gap-2"
             >
               <ChevronLeft className="w-4 h-4" />
               Precedente
-            </Button>
+            </CTA>
 
             {currentStep < steps.length ? (
-              <Button
+              <CTA
                 type="button"
                 onClick={handleNext}
+                variant="form"
                 className="flex items-center gap-2"
               >
                 Successivo
                 <ChevronRight className="w-4 h-4" />
-              </Button>
+              </CTA>
             ) : (
-              <Button
+              <CTA
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   handleSubmit(e as any);
                 }}
                 disabled={isLoading}
+                variant="form"
                 className="flex items-center gap-2"
               >
                 {isLoading ? "Salvataggio..." : "Salva tutte le preferenze"}
-              </Button>
+              </CTA>
             )}
           </div>
         </form>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/Button";
+import { CTA } from "@/components/CTA";
 import { useMealContext } from "@/context/useMealContext";
 import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -81,8 +81,8 @@ export const ButtonGenerateMealList: React.FC<{
   };
 
   return (
-    <Button variant="outline" onClick={handleCtaClick}>
+    <CTA variant="formOutline" onClick={handleCtaClick}>
       Genera il menu
-    </Button>
+    </CTA>
   );
 };

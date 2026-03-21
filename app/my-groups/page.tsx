@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { getUserGroups } from "../api/actions";
-import { CookingPot, Sandwich, Users } from "lucide-react";
+import { ChevronRight, CookingPot, Sandwich, Users } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { PageContainer } from "@/components/PageContainer";
+import { CTA } from "@/components/CTA";
 
 const Gruppi = async () => {
   const { userId } = await auth();
   const userGroups = await getUserGroups(userId || "");
-  if (!userGroups.group) return null;
+  const groups = userGroups.group?.filter((g) => g.group.name) ?? [];
 
   return (
     <PageContainer narrow>
-      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-8 sm:mb-12 text-primary">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-8 sm:mb-12">
         I miei gruppi
       </h1>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-5">
-        {userGroups.group?.filter(group => group.group.name).map((group) => {
+        {groups.map((group) => {
           const { group: groupItem } = group;
           return (
             <Link
@@ -40,6 +41,12 @@ const Gruppi = async () => {
             </Link>
           );
         })}
+      </div>
+      <div className="mt-8 sm:mt-10">
+        <CTA href="/group/create-group" variant="textChevron">
+          Crea nuovo gruppo
+          <ChevronRight aria-hidden />
+        </CTA>
       </div>
     </PageContainer>
   );

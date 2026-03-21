@@ -3,8 +3,8 @@ import Checklist from "@/components/CheckList";
 import { useShoppingContext } from "@/context/useShoppingListContext";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { PageContainer } from "@/components/PageContainer";
+import { CTA } from "@/components/CTA";
 
 const ShoppingListPage = () => {
   const { shoppingList } = useShoppingContext();
@@ -27,14 +27,11 @@ const ShoppingListPage = () => {
             Per generare la tua lista della spesa, devi prima creare un menu.
             Cambusaai ti aiuterà a creare pasti equilibrati e gustosi.
           </p>
-          <Link
-            href="/menu/create"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full font-medium hover:bg-primary-light transition-colors"
-          >
+          <CTA href="/menu/create" variant="solid" className="gap-2 font-medium">
             <ChefHat className="w-5 h-5" />
             Crea il tuo menu
             <ArrowRight className="w-5 h-5" />
-          </Link>
+          </CTA>
         </motion.div>
       </PageContainer>
     );

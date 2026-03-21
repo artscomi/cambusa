@@ -1,7 +1,13 @@
 import { motion, MotionProps } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { ctaVariants } from "@/components/CTA";
 
 type ButtonVariant = "primary" | "outline";
 
+/**
+ * @deprecated Usa {@link CTA} da `@/components/CTA` con `variant="form"` o `variant="formOutline"`.
+ * Il componente resta per compatibilità e condivide gli stili con `CTA`.
+ */
 export const Button: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     full?: boolean;
@@ -11,22 +17,17 @@ export const Button: React.FC<
 > = ({ children, className, full, center, variant = "primary", ...props }) => {
   const { whileTap, ...buttonProps } = props;
 
-  const getVariantClasses = () => {
-    switch (variant) {
-      case "outline":
-        return "bg-transparent hover:bg-secondary text-primary border-2 border-primary";
-      case "primary":
-      default:
-        return "bg-white hover:bg-secondary-light text-primary border-b-primary border-b-4";
-    }
-  };
+  const ctaVariant = variant === "outline" ? "formOutline" : "form";
 
   return (
     <motion.button
       whileTap={whileTap || { scale: 0.97 }}
-      className={`${getVariantClasses()} rounded p-4 block transition-colors font-cta text-xl tracking-wide ${
-        full ? "w-full" : ""
-      } ${center ? "mx-auto" : ""} ${className}`}
+      className={cn(
+        ctaVariants({ variant: ctaVariant }),
+        full && "w-full",
+        center && "mx-auto",
+        className
+      )}
       {...buttonProps}
     >
       {children}

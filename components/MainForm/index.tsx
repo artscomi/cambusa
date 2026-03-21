@@ -2,7 +2,7 @@
 
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { Dispatch, SetStateAction, useState, useRef, useEffect } from "react";
-import { Button } from "@/components/Button";
+import { CTA } from "@/components/CTA";
 import { useMealContext } from "@/context/useMealContext";
 import { useRouter } from "next/navigation";
 import { useClerk, useUser } from "@clerk/nextjs";
@@ -412,28 +412,29 @@ export const MainForm = ({
 
         <div className="flex justify-between mt-8">
           {currentStep > 0 && (
-            <Button
+            <CTA
               type="button"
               onClick={prevStep}
-              variant="primary"
+              variant="form"
               className="px-2 text-sm"
             >
               Indietro
-            </Button>
+            </CTA>
           )}
 
           {currentStep < steps.length - 1 ? (
-            <Button
+            <CTA
               type="button"
               onClick={nextStep}
+              variant="form"
               className="ml-auto px-6 group"
             >
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-            </Button>
+            </CTA>
           ) : (
-            <Button type="submit" className="ml-auto px-6">
+            <CTA type="submit" variant="form" className="ml-auto px-6">
               Crea il menu
-            </Button>
+            </CTA>
           )}
         </div>
       </form>
