@@ -7,7 +7,7 @@ import {
 } from "@/animations/framer-variants";
 import { PageContainer } from "@/components/PageContainer";
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { CTA } from "@/components/CTA";
 
 interface CreateGroupLayoutProps {
   children: React.ReactNode;
@@ -54,13 +54,10 @@ export const CreateGroupLayout: React.FC<CreateGroupLayoutProps> = ({
             variants={pageItemVariants}
             className="mt-8 sm:mt-12 text-center overflow-x-hidden"
           >
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
-            >
-              <ArrowLeft size={20} />
-              <span className="font-medium">Torna alla home</span>
-            </Link>
+            <CTA href="/" variant="textIconStart">
+              <ArrowLeft aria-hidden />
+              Torna alla home
+            </CTA>
           </motion.div>
         </div>
       </motion.section>

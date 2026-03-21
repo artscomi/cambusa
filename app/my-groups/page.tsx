@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getUserGroups } from "../api/actions";
-import { ChevronRight, CookingPot, Sandwich, Users } from "lucide-react";
+import { ArrowRight, CookingPot, Sandwich, Users } from "lucide-react";
 import { auth } from "@clerk/nextjs/server";
 import { PageContainer } from "@/components/PageContainer";
 import { CTA } from "@/components/CTA";
@@ -43,9 +43,9 @@ const Gruppi = async () => {
         })}
       </div>
       <div className="mt-8 sm:mt-10">
-        <CTA href="/group/create-group" variant="textChevron">
+        <CTA href="/group/create-group" variant="textIconEnd">
           Crea nuovo gruppo
-          <ChevronRight aria-hidden />
+          <ArrowRight aria-hidden />
         </CTA>
       </div>
     </PageContainer>
