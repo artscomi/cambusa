@@ -1,7 +1,9 @@
 "use client";
 
 import type { GroupPreferenceProgressStats } from "@/lib/getGroupPreferenceProgress";
+import { cn } from "@/lib/utils";
 import { Info, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
 function CounterInfoTooltip({
@@ -91,6 +93,12 @@ export type GroupPreferenceCounterProps = GroupPreferenceProgressStats & {
   infoTooltip?: string;
   /** Layout impilato per colonne strette (es. sidebar). */
   narrowColumn?: boolean;
+  /** Chi sta guardando: se true, copy al 100% per chi può generare il menu. */
+  viewerIsOwner?: boolean;
+  /** Contenuto sotto il messaggio di avanzamento, dentro lo stesso box. */
+  footer?: ReactNode;
+  /** Stile accent (come box inviti) quando equipaggio al completo. */
+  accentHighlight?: boolean;
 };
 
 export function GroupPreferenceCounter({
@@ -101,26 +109,38 @@ export function GroupPreferenceCounter({
   prominent = false,
   infoTooltip,
   narrowColumn = false,
+  viewerIsOwner,
+  footer,
+  accentHighlight = false,
 }: GroupPreferenceCounterProps) {
   const pct =
     expectedCrew > 0
       ? Math.min(100, Math.round((completedCount / expectedCrew) * 100))
       : 0;
 
+  const showAccentShell =
+    accentHighlight && pct >= 100 && expectedCrew > 0;
+
   const shellClass =
     embedded && prominent
       ? "rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary/[0.2] via-primary/[0.09] to-white p-6 sm:p-8"
       : embedded
         ? narrowColumn
-          ? "rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.12] via-primary/[0.04] to-gray-50/90 p-4"
+          ? showAccentShell
+            ? "rounded-2xl border-2 border-accent-40 bg-gradient-to-br from-accent/18 via-white to-accent-light/25 p-4 shadow-[0_12px_40px_rgb(var(--accent-rgb),0.14)] sm:p-5"
+            : "rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.12] via-primary/[0.04] to-gray-50/90 p-4"
           : "rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.12] via-primary/[0.04] to-gray-50/90 p-5 sm:p-6"
-        : "rounded-2xl border border-gray-200 bg-white px-4 py-4 sm:px-5 sm:py-4";
+        : showAccentShell
+          ? "rounded-2xl border-2 border-accent-40 bg-gradient-to-br from-accent/18 via-white to-accent-light/25 px-4 py-4 shadow-[0_12px_40px_rgb(var(--accent-rgb),0.14)] sm:px-5 sm:py-5"
+          : "rounded-2xl border border-gray-200 bg-white px-4 py-4 sm:px-5 sm:py-4";
 
   const iconWrap =
     embedded && prominent
       ? "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-primary/25 bg-white text-primary"
       : embedded
-        ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-white/90 text-primary"
+        ? showAccentShell
+          ? "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-accent/35 bg-white/95 text-accent"
+          : "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-white/90 text-primary"
         : "";
 
   const fractionClass = prominent
@@ -131,11 +151,17 @@ export function GroupPreferenceCounter({
 
   const barHeight = prominent ? "h-4 sm:h-5" : "h-2.5";
   const barTrack =
-    embedded || prominent
-      ? "border border-primary/15 bg-white/80"
-      : "bg-gray-100";
+    showAccentShell
+      ? "border border-accent/25 bg-white/90"
+      : embedded || prominent
+        ? "border border-primary/15 bg-white/80"
+        : "bg-gray-100";
+  const barFillClass = showAccentShell
+    ? "bg-accent"
+    : "bg-primary";
 
   const isOrganizerContext = Boolean(infoTooltip);
+  const showOwnerCompletionCopy = viewerIsOwner ?? isOrganizerContext;
   const suWord = numeroInLettere(expectedCrew);
   const showOrganizerNudge =
     isOrganizerContext &&
@@ -159,9 +185,9 @@ export function GroupPreferenceCounter({
       ? "Imposta quante siete nel gruppo per vedere l’avanzamento."
       : "Imposta il numero di persone nel gruppo per vedere l’avanzamento.";
   } else if (pct >= 100) {
-    progressMessage = narrowColumn
-      ? "Tutti hanno inviato cibo, alcolici e acqua."
-      : "Equipaggio al completo: tutti hanno inviato le proprie preferenze alimentari.";
+    progressMessage = showOwnerCompletionCopy
+      ? "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento puoi generare il menu."
+      : "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento è possibile generare il menu! Chiedi al group owner.";
   } else if (completedCount === 0) {
     if (isOrganizerContext) {
       progressMessage = narrowColumn
@@ -199,22 +225,46 @@ export function GroupPreferenceCounter({
 
   return (
     <div
-      className={`relative ${shellClass} ${infoTooltip ? "pr-11 sm:pr-12" : ""}`}
+      className={cn(
+        "relative",
+        showAccentShell && "overflow-hidden",
+        shellClass,
+        infoTooltip && "pr-11 sm:pr-12",
+      )}
       role="region"
       aria-label={`Preferenze completate da ${completedCount} persone su ${expectedCrew} previste`}
     >
+      {showAccentShell ? (
+        <>
+          <div
+            className="absolute inset-x-0 top-0 z-0 h-1.5 bg-gradient-to-r from-accent-light via-accent to-accent"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -right-6 -top-6 z-0 h-24 w-24 rounded-full bg-accent/20 blur-2xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute bottom-0 left-0 z-0 h-16 w-16 rounded-full bg-accent-light/30 blur-xl"
+            aria-hidden
+          />
+        </>
+      ) : null}
       {infoTooltip ? (
         <CounterInfoTooltip text={infoTooltip} narrow={narrowColumn} />
       ) : null}
       <div
-        className={
-          narrowColumn
-            ? "flex flex-col gap-3"
-            : prominent
-              ? "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
-              : "flex items-start justify-between gap-3"
-        }
+        className={cn(showAccentShell && "relative z-10 min-w-0")}
       >
+        <div
+          className={
+            narrowColumn
+              ? "flex flex-col gap-3"
+              : prominent
+                ? "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+                : "flex items-start justify-between gap-3"
+          }
+        >
         <div
           className={
             narrowColumn
@@ -262,33 +312,42 @@ export function GroupPreferenceCounter({
         <p
           className={`tabular-nums ${fractionClass} ${prominent ? "w-full text-center sm:w-auto sm:text-right" : ""} ${narrowColumn ? "shrink-0 text-left" : "shrink-0"}`}
         >
-          <span className="text-primary">{completedCount}</span>
+          <span
+            className={showAccentShell ? "text-accent" : "text-primary"}
+          >
+            {completedCount}
+          </span>
           <span className={slashClass}>/</span>
           <span className="text-gray-800">{expectedCrew}</span>
         </p>
-      </div>
-      <div
-        className={`mt-5 overflow-hidden rounded-full ${barHeight} ${barTrack}`}
-        aria-hidden
-      >
+        </div>
         <div
-          className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <p
-        className={`mt-4 font-medium text-gray-600 ${prominent ? "text-center text-sm sm:text-left sm:text-base" : narrowColumn ? "text-[11px] leading-relaxed" : "text-xs leading-relaxed sm:text-[0.8125rem]"}`}
-      >
-        {progressMessage}
-      </p>
-      {infoTooltip && !narrowColumn && pct >= 100 ? (
-        <p
-          className={`mt-4 border-t border-primary/20 pt-4 text-sm font-semibold leading-relaxed text-primary sm:text-base ${prominent ? "text-center sm:text-left" : ""}`}
+          className={`mt-5 overflow-hidden rounded-full ${barHeight} ${barTrack}`}
+          aria-hidden
         >
-          Puoi generare il menu dalla sezione dedicata e far votare l&apos;equipaggio
-          pasto per pasto.
+          <div
+            className={cn(
+              "h-full rounded-full transition-[width] duration-500 ease-out",
+              barFillClass,
+            )}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <p
+          className={`mt-4 font-medium text-gray-600 ${prominent ? "text-center text-sm sm:text-left sm:text-base" : narrowColumn ? "text-[11px] leading-relaxed" : "text-xs leading-relaxed sm:text-[0.8125rem]"}`}
+        >
+          {progressMessage}
         </p>
-      ) : null}
+        {footer ? <div className="mt-4 min-w-0">{footer}</div> : null}
+        {infoTooltip && !narrowColumn && pct >= 100 ? (
+          <p
+            className={`mt-4 border-t border-primary/20 pt-4 text-sm font-semibold leading-relaxed text-primary sm:text-base ${prominent ? "text-center sm:text-left" : ""}`}
+          >
+            Puoi generare il menu dalla sezione dedicata e far votare
+            l&apos;equipaggio pasto per pasto.
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

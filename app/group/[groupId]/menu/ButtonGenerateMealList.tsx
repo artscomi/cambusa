@@ -81,7 +81,7 @@ export const ButtonGenerateMealList: React.FC<{
   };
 
   return (
-    <CTA variant="formOutline" onClick={handleCtaClick}>
+    <CTA variant="accent" full onClick={handleCtaClick}>
       Genera il menu
     </CTA>
   );

@@ -484,6 +484,48 @@ export const saveGroupMealList = async (
   }
 };
 
+const GROUP_NAME_MAX_LENGTH = 120;
+
+/** Aggiorna il nome del gruppo. Solo il proprietario può modificarlo. */
+export const updateGroupName = async (
+  groupId: string,
+  name: string,
+): Promise<{ error?: string }> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return { error: "Non autenticato" };
+
+    const trimmed = name.trim();
+    if (!trimmed) return { error: "Inserisci un nome per il gruppo" };
+    if (trimmed.length > GROUP_NAME_MAX_LENGTH) {
+      return {
+        error: `Il nome non può superare i ${GROUP_NAME_MAX_LENGTH} caratteri`,
+      };
+    }
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true },
+    });
+    if (!group) return { error: "Gruppo non trovato" };
+    if (group.ownerId !== userId) {
+      return { error: "Solo chi ha creato il gruppo può modificarne il nome" };
+    }
+
+    await db.group.update({
+      where: { id: groupId },
+      data: { name: trimmed },
+    });
+    revalidatePath(`/group/${groupId}/menu`);
+    revalidatePath(`/group/${groupId}`);
+    revalidatePath(`/my-groups`);
+    return {};
+  } catch (error) {
+    console.error("Error updating group name:", error);
+    return { error: "Errore durante l'aggiornamento del nome" };
+  }
+};
+
 /** Restituisce il menu salvato del gruppo, o null se non presente. */
 export const getGroupMealList = async (
   groupId: string,

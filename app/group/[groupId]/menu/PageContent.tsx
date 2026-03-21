@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { MealList } from "@/types/types";
 import { MealVoteStars } from "./MealVoteStars";
+import { GroupNameHeading } from "../GroupNameHeading";
+import { cn } from "@/lib/utils";
 
 interface UserPreference {
   name: string;
@@ -260,11 +262,16 @@ export const PageContent = ({
               Pagina gruppo
             </p>
           ) : null}
-          <h1
-            className={`font-display text-2xl font-bold leading-tight text-primary sm:text-3xl md:text-4xl ${group.isTheGroupOwner ? "" : "mt-2"}`}
-          >
-            {group.groupName}
-          </h1>
+          <GroupNameHeading
+            groupId={group.groupId}
+            initialName={group.groupName}
+            ownerClerkId={group.ownerId}
+            layout="menu"
+            titleClassName={cn(
+              "font-display text-2xl font-bold leading-tight text-primary sm:text-3xl md:text-4xl",
+              !group.isTheGroupOwner && "mt-2",
+            )}
+          />
         </div>
 
         <div className="mt-8 flex min-w-0 flex-col gap-8 lg:mt-10 lg:flex-row lg:items-start lg:gap-10 xl:gap-12">
@@ -327,49 +334,6 @@ export const PageContent = ({
               </div>
             </section>
 
-            {group.isTheGroupOwner && allPreferencesComplete ? (
-              <section
-                id="group-actions"
-                aria-labelledby="group-actions-heading"
-                className={`${sectionAnchor}`}
-              >
-                <h2 id="group-actions-heading" className="sr-only">
-                  Genera il menu per il gruppo
-                </h2>
-                <div className="overflow-hidden rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/[0.1] via-white to-white">
-                  <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-8">
-                    <div className="min-w-0 text-center sm:text-left">
-                      <p className="text-base font-semibold text-gray-900 sm:text-lg">
-                        Lista pasti con l’AI
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                        Usiamo le preferenze raccolte per proporti un menu
-                        bilanciato; poi l’equipaggio vota piatto per piatto.
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 justify-center sm:justify-end">
-                      <ButtonGenerateMealList
-                        setError={setError}
-                        startTransition={startTransition}
-                        userId={user.id}
-                        dietaryPreferences={preferenceString()}
-                        alcoholPreferences={alcoholPreferenceString()}
-                        waterPreference={waterPreferenceString()}
-                        groupMeals={{
-                          breakfast,
-                          lunch,
-                          dinner,
-                          people,
-                          sameBreakfast,
-                        }}
-                        groupAlcoholPreferences={alcoholPreferences}
-                        groupId={group.groupId}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </section>
-            ) : null}
           </div>
 
           <div
@@ -412,10 +376,35 @@ export const PageContent = ({
               {...preferenceProgress}
               embedded
               narrowColumn
+              accentHighlight={allPreferencesComplete}
+              viewerIsOwner={group.isTheGroupOwner}
               infoTooltip={
                 group.isTheGroupOwner
-                  ? "Quando il contatore segna che tutti hanno inviato le preferenze, nella colonna a sinistra sotto la Panoramica compare il pulsante per generare il menu. Dopo la pubblicazione, ogni membro vota i pasti in questa pagina."
+                  ? "Quando il contatore indica che tutti hanno inviato le preferenze, usa il pulsante Genera il menu qui sotto. Dopo la pubblicazione, ogni membro vota i pasti in questa pagina."
                   : undefined
+              }
+              footer={
+                group.isTheGroupOwner && allPreferencesComplete ? (
+                  <div className="flex justify-center lg:justify-start">
+                    <ButtonGenerateMealList
+                      setError={setError}
+                      startTransition={startTransition}
+                      userId={user.id}
+                      dietaryPreferences={preferenceString()}
+                      alcoholPreferences={alcoholPreferenceString()}
+                      waterPreference={waterPreferenceString()}
+                      groupMeals={{
+                        breakfast,
+                        lunch,
+                        dinner,
+                        people,
+                        sameBreakfast,
+                      }}
+                      groupAlcoholPreferences={alcoholPreferences}
+                      groupId={group.groupId}
+                    />
+                  </div>
+                ) : undefined
               }
             />
           </div>
@@ -511,10 +500,12 @@ export const PageContent = ({
               className={`space-y-12 border-t border-gray-200/90 pt-12 sm:space-y-14 sm:pt-14 lg:space-y-16 lg:pt-16 ${sectionAnchor}`}
             >
               <div className="max-w-2xl">
-                <p className={sectionOverline}>
-                  {hasMenu ? "Dalle preferenze al menu" : "Dopo le schede"}
-                </p>
-                <h2 className={`${sectionTitleClass} mt-2`}>
+                {hasMenu ? (
+                  <p className={sectionOverline}>Dalle preferenze al menu</p>
+                ) : null}
+                <h2
+                  className={`${sectionTitleClass} ${hasMenu ? "mt-2" : ""}`}
+                >
                   {hasMenu ? "Vota i pasti" : "Menu in arrivo"}
                 </h2>
                 <p className={sectionLead}>
