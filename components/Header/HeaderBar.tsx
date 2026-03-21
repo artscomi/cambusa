@@ -1,8 +1,18 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 
 const SCROLL_THRESHOLD = 20;
+const MAIN_SCROLL_ID = "app-main-scroll";
+
+function scrollTopCombined() {
+  const main = document.getElementById(MAIN_SCROLL_ID);
+  return Math.max(
+    main?.scrollTop ?? 0,
+    window.scrollY,
+    document.documentElement.scrollTop
+  );
+}
 
 type HeaderScrollContextType = { isTransparent: boolean };
 const HeaderScrollContext = createContext<HeaderScrollContextType>({ isTransparent: true });
@@ -14,11 +24,18 @@ export function useHeaderScroll() {
 export function HeaderBar({ children }: { children: React.ReactNode }) {
   const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
-    onScroll(); // init
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+  useLayoutEffect(() => {
+    const sync = () => setScrolled(scrollTopCombined() > SCROLL_THRESHOLD);
+    sync();
+
+    const main = document.getElementById(MAIN_SCROLL_ID);
+    main?.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("scroll", sync, { passive: true });
+
+    return () => {
+      main?.removeEventListener("scroll", sync);
+      window.removeEventListener("scroll", sync);
+    };
   }, []);
 
   const isTransparent = !scrolled;
@@ -26,11 +43,12 @@ export function HeaderBar({ children }: { children: React.ReactNode }) {
   return (
     <HeaderScrollContext.Provider value={{ isTransparent }}>
       <header
-        className={`fixed w-full z-40 transition-[background-color,border-color] duration-300 ${
+        className={`fixed w-full z-40 transition-[background-color,box-shadow,border-color] duration-300 ${
           scrolled
-            ? "bg-secondary-light/90 backdrop-blur-sm border-b border-primary/10"
-            : "bg-transparent border-b border-transparent"
+            ? "shadow-sm border-b border-primary/10"
+            : "bg-transparent border-b border-transparent shadow-none"
         }`}
+        style={{ backgroundColor: scrolled ? "#ffffff" : "transparent" }}
       >
         {children}
       </header>

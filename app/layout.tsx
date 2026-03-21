@@ -93,7 +93,10 @@ export default function RootLayout({
           <CookieConsentProvider>
             <ContextLayout>
               <Header />
-              <main className="pt-[75px] md:pt-20 overflow-auto flex-1 w-full">
+              <main
+                id="app-main-scroll"
+                className="min-h-0 pt-[75px] md:pt-20 overflow-y-auto flex-1 w-full"
+              >
                 {children}
               </main>
             </ContextLayout>
