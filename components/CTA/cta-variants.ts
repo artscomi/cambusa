@@ -10,11 +10,13 @@ export const ctaVariants = cva(
     variants: {
       variant: {
         solid:
-          "inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-light text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full shadow-lg hover:shadow-xl",
+          "inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white hover:bg-primary-light sm:px-8 sm:py-4",
+        accent:
+          "inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 font-semibold text-white hover:bg-accent-light sm:px-8 sm:py-4",
         outline:
           "inline-flex items-center justify-center gap-2 bg-transparent hover:bg-secondary text-primary border-2 border-primary font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full",
         inverse:
-          "inline-flex items-center justify-center gap-2 bg-white text-primary hover:bg-gray-100 rounded-full shadow-lg hover:shadow-xl px-8 py-4 text-lg font-semibold",
+          "inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-white px-8 py-4 text-lg font-semibold text-primary hover:bg-gray-100",
         ghost:
           "inline-flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-full border-2 border-white/60 backdrop-blur-sm",
         outlineLight:

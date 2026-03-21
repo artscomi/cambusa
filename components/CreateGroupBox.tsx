@@ -28,7 +28,7 @@ export const CreateGroupBox: React.FC = () => {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
       }}
-      className="bg-gradient-to-br from-primary to-primary-light rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 text-white w-full h-full flex flex-col justify-center cursor-pointer"
+      className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl border border-primary/30 bg-gradient-to-br from-primary to-primary-light p-6 text-white sm:rounded-2xl sm:p-8"
       role="button"
       tabIndex={0}
       aria-label="Crea un gruppo"
@@ -53,7 +53,7 @@ export const CreateGroupBox: React.FC = () => {
         <motion.button
           animate={{ scale: isHovered ? 1.02 : 1 }}
           whileTap={{ scale: 0.98 }}
-          className="bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 mx-auto w-full sm:w-auto justify-center"
+          className="mx-auto flex w-full items-center justify-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-3 text-base font-semibold text-primary transition-all duration-300 sm:w-auto sm:px-8 sm:py-4 sm:text-lg"
         >
           <span>Crea un gruppo</span>
           <motion.div

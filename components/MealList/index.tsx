@@ -170,7 +170,7 @@ export const MealListComponent = () => {
                             layout
                             key={meal.id}
                             variants={itemVariants}
-                            className="bg-white p-6 rounded-lg h-full shadow-md flex flex-col justify-between relative overflow-hidden"
+                            className="relative flex h-full flex-col justify-between overflow-hidden rounded-lg border border-gray-200 bg-white p-6"
                           >
                             {loadingMealId === meal.id && (
                               <div className="absolute left-0 right-0 top-0 z-10 bg-white bg-opacity-80">

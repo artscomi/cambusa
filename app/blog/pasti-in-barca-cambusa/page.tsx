@@ -47,7 +47,7 @@ export default function BlogPost() {
             alt="cambusa in barca- pranzo in navigazione"
             width={1152}
             height={768}
-            className="rounded-2xl shadow-md object-cover w-full h-auto"
+            className="h-auto w-full rounded-2xl border border-gray-200 object-cover"
             priority
           />
         </div>
@@ -69,7 +69,7 @@ export default function BlogPost() {
               alt="Insalata di Riso Mediterranea"
               width={800}
               height={600}
-              className="rounded-xl shadow object-cover w-full h-auto"
+              className="h-auto w-full rounded-xl border border-gray-200 object-cover"
             />
           </div> */}
           <p>
@@ -114,7 +114,7 @@ export default function BlogPost() {
               alt="Piadine farcite in barca"
               width={800}
               height={600}
-              className="rounded-xl shadow object-cover w-full h-auto"
+              className="h-auto w-full rounded-xl border border-gray-200 object-cover"
             />
           </div> */}
           <p>
@@ -155,7 +155,7 @@ export default function BlogPost() {
               alt="Cous cous freddo per barca"
               width={800}
               height={600}
-              className="rounded-xl shadow object-cover w-full h-auto"
+              className="h-auto w-full rounded-xl border border-gray-200 object-cover"
             />
           </div> */}
           <p>
@@ -195,7 +195,7 @@ export default function BlogPost() {
               alt="Panini prosciutto e mozzarella"
               width={800}
               height={600}
-              className="rounded-xl shadow object-cover w-full h-auto"
+              className="h-auto w-full rounded-xl border border-gray-200 object-cover"
             />
           </div> */}
           <p>
@@ -235,7 +235,7 @@ export default function BlogPost() {
               alt="Colazione in barca: frutta e fette biscottate"
               width={800}
               height={600}
-              className="rounded-xl shadow object-cover w-full h-auto"
+              className="h-auto w-full rounded-xl border border-gray-200 object-cover"
             />
           </div> */}
           <p>

@@ -19,7 +19,7 @@ export const MenuFormBox: React.FC = () => {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
       }}
-      className="bg-white border border-gray-100 rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 text-primary w-full cursor-pointer h-full flex flex-col justify-center"
+      className="flex h-full w-full cursor-pointer flex-col justify-center rounded-xl border border-gray-200 bg-white p-6 text-primary sm:rounded-2xl sm:p-8"
       role="button"
       tabIndex={0}
       aria-label="Apri form di creazione menu"
@@ -50,7 +50,7 @@ export const MenuFormBox: React.FC = () => {
           animate={{ scale: isHovered ? 1.02 : 1 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleNavigateToForm}
-          className="inline-flex items-center gap-2 bg-primary text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-white transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg"
         >
           <span>Inizia ora</span>
           <motion.div

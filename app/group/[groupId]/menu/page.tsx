@@ -1,8 +1,10 @@
 import { getGroupInfo, getGroupMealList, getGroupMenuVotes } from "@/app/api/actions";
 import { PageContent } from "./PageContent";
 import db from "@/utils/db";
+import { getGroupPreferenceProgress } from "@/lib/getGroupPreferenceProgress";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { PageContainer } from "@/components/PageContainer";
 
 const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
   const { groupId } = params;
@@ -25,39 +27,49 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
     }
   }
 
-  const [preferences, alcoholPreferences, waterPreferences, groupMealList, votes] =
-    await Promise.all([
-      db.foodPreference.findMany({
-        where: { groupId },
-        include: {
-          user: { select: { name: true } },
-        },
-      }),
-      db.alcoholPreference.findMany({
-        where: { groupId },
-        include: {
-          user: { select: { name: true } },
-        },
-      }),
-      db.waterPreference.findMany({
-        where: { groupId },
-        include: {
-          user: { select: { name: true } },
-        },
-      }),
-      getGroupMealList(groupId),
-      getGroupMenuVotes(groupId),
-    ]);
+  const [
+    preferences,
+    alcoholPreferences,
+    waterPreferences,
+    groupMealList,
+    votes,
+    preferenceProgress,
+  ] = await Promise.all([
+    db.foodPreference.findMany({
+      where: { groupId },
+      include: {
+        user: { select: { name: true } },
+      },
+    }),
+    db.alcoholPreference.findMany({
+      where: { groupId },
+      include: {
+        user: { select: { name: true } },
+      },
+    }),
+    db.waterPreference.findMany({
+      where: { groupId },
+      include: {
+        user: { select: { name: true } },
+      },
+    }),
+    getGroupMealList(groupId),
+    getGroupMenuVotes(groupId),
+    getGroupPreferenceProgress(groupId, group.people),
+  ]);
 
   return (
-    <PageContent
-      group={group}
-      preferences={preferences}
-      alcoholPreferences={alcoholPreferences}
-      waterPreferences={waterPreferences}
-      groupMealList={groupMealList ?? undefined}
-      votes={votes ?? undefined}
-    />
+    <PageContainer>
+      <PageContent
+        group={group}
+        preferences={preferences}
+        alcoholPreferences={alcoholPreferences}
+        waterPreferences={waterPreferences}
+        groupMealList={groupMealList ?? undefined}
+        votes={votes ?? undefined}
+        preferenceProgress={preferenceProgress}
+      />
+    </PageContainer>
   );
 };
 

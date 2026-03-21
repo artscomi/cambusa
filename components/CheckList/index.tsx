@@ -241,7 +241,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
               tabIndex={0}
               variants={itemVariantsShoppingList}
               key={item.id}
-              className="cursor-pointer flex items-center justify-between bg-white rounded-lg px-5 py-4 shadow-md transition-all duration-300 group"
+              className="group flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 bg-white px-5 py-4 transition-all duration-300"
             >
               <div className="flex items-center">
                 <label className="flex items-center cursor-pointer">
@@ -308,7 +308,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={openAddModal}
-            className="p-4 rounded bg-primary text-white shadow-md"
+            className="rounded border border-primary/30 bg-primary p-4 text-white"
             title="Aggiungi ingrediente"
           >
             <Plus
@@ -321,7 +321,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleShare}
-            className="p-4 rounded bg-primary text-white shadow-md"
+            className="rounded border border-primary/30 bg-primary p-4 text-white"
             title="Condividi lista"
           >
             <Share2
@@ -334,7 +334,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleCopyToClipboard}
-            className="p-4 rounded bg-primary text-white shadow-md"
+            className="rounded border border-primary/30 bg-primary p-4 text-white"
             title="Copia negli appunti"
           >
             <Clipboard

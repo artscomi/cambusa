@@ -3,8 +3,9 @@ import React from "react";
 import { PageContent } from "./pageContent";
 import { currentUser } from "@clerk/nextjs/server";
 import { getGroupInfo } from "@/app/api/actions";
-import { Users, Heart, Wine, Droplets } from "lucide-react";
+import { Anchor, Users, UserRound } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { getGroupPreferenceProgress } from "@/lib/getGroupPreferenceProgress";
 import { PageContainer } from "@/components/PageContainer";
 
 const GroupPage: NextPage<{
@@ -16,12 +17,13 @@ const GroupPage: NextPage<{
   const isTheGroupOwner = group?.isTheGroupOwner;
   if (!user || !group) return null;
 
-  // Fetch existing user preferences for this group
+  // Fetch existing user preferences for this group + stats for whole equipaggio
   const [
     existingFoodPreferences,
     existingAlcoholPreferences,
     existingWaterPreferences,
     groupMenu,
+    preferenceProgress,
   ] = await Promise.all([
     prisma.foodPreference.findMany({
       where: {
@@ -45,6 +47,7 @@ const GroupPage: NextPage<{
       where: { id: groupId },
       select: { mealList: true },
     }),
+    getGroupPreferenceProgress(groupId, group.people),
   ]);
 
   const hasExistingPreferences =
@@ -64,53 +67,101 @@ const GroupPage: NextPage<{
   }
 
   return (
-    <PageContainer narrow>
-      {/* Header Section */}
-      <div className="text-center mb-10 sm:mb-12">
-          {!isTheGroupOwner && (
-            <div className="mb-6">
-              <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
-                <Users className="w-5 h-5 text-primary" />
-                <p className="text-lg font-medium text-gray-800">
-                  Ciao {user.fullName}!
+    <PageContainer narrow className="relative">
+      <div
+        className="pointer-events-none absolute inset-x-0 -top-8 h-72 max-w-3xl mx-auto rounded-[40%] bg-primary/[0.08] blur-3xl"
+        aria-hidden
+      />
+
+      <div className="relative space-y-8 sm:space-y-10">
+        <header className="mx-auto max-w-2xl text-center">
+          <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-b from-white via-white to-gray-50/60">
+            <div
+              className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/60"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-primary/[0.06] blur-2xl"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-primary/[0.05] blur-2xl"
+              aria-hidden
+            />
+
+            <div className="relative px-5 pb-8 pt-9 sm:px-10 sm:pb-10 sm:pt-11">
+              <h1 className="text-center font-display text-[1.65rem] font-bold leading-[1.12] tracking-tight text-primary sm:text-4xl md:text-[2.35rem]">
+                {group?.groupName}
+              </h1>
+
+              {isTheGroupOwner ? (
+                <p className="mt-3 text-center text-sm font-medium text-gray-600 sm:text-base">
+                  Hai creato questo gruppo
                 </p>
+              ) : (
+                <p className="mx-auto mt-3 max-w-md text-center text-sm font-medium leading-relaxed text-gray-600 sm:text-base">
+                  <span className="font-semibold text-primary">
+                    {group.ownerName}
+                  </span>{" "}
+                  ti ha invitato
+                </p>
+              )}
+
+              <div className="mb-6 mt-6 flex flex-col items-center gap-4 sm:mb-7 sm:mt-7">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/12 bg-primary/[0.07] px-3.5 py-1.5 font-subtitle text-[10px] font-bold uppercase tracking-[0.2em] text-primary sm:text-[11px]">
+                  <Anchor
+                    className="h-3.5 w-3.5 opacity-80"
+                    strokeWidth={2.5}
+                    aria-hidden
+                  />
+                  {isTheGroupOwner ? "Il tuo gruppo" : "Sei tra gli invitati"}
+                </span>
+
+                <div className="inline-flex items-center gap-2.5 rounded-full border border-gray-200 bg-white px-4 py-2.5">
+                  {isTheGroupOwner ? (
+                    <UserRound
+                      className="h-4 w-4 shrink-0 text-primary"
+                      aria-hidden
+                    />
+                  ) : (
+                    <Users
+                      className="h-4 w-4 shrink-0 text-primary"
+                      aria-hidden
+                    />
+                  )}
+                  <p className="text-sm font-semibold text-gray-800">
+                    Ciao, {user.fullName}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mx-auto mt-7 max-w-lg rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 text-left sm:mt-8 sm:px-5 sm:py-5">
+                {isTheGroupOwner && !hasExistingPreferences && (
+                  <p className="text-sm leading-relaxed text-gray-600 sm:text-[0.95rem]">
+                    Compila i tre passaggi qui sotto, poi condividi il link con
+                    l&apos;equipaggio: così ognuno aggiunge le sue preferenze.
+                  </p>
+                )}
+
+                {isTheGroupOwner && hasExistingPreferences && (
+                  <p className="text-sm leading-relaxed text-gray-600 sm:text-[0.95rem]">
+                    Le tue preferenze sono già salvate. Più sotto vedi quante
+                    persone hanno finito; dalla pagina gruppo puoi generare il
+                    menu quando sei pronto/a.
+                  </p>
+                )}
+
+                {!isTheGroupOwner && (
+                  <p className="text-sm leading-relaxed text-gray-600 sm:text-[0.95rem]">
+                    Tre domande veloci su cibo, alcolici e acqua: ci servono per
+                    proporre una cambusa che stia bene a tutti.
+                  </p>
+                )}
               </div>
             </div>
-          )}
+          </div>
+        </header>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-4">
-            {isTheGroupOwner ? (
-              <>
-                Hai creato il gruppo{" "}
-                <span className="text-primary">{group?.groupName}</span>
-              </>
-            ) : (
-              <>
-                <span className="text-primary">{group.ownerName}</span> ti ha
-                invitato al gruppo{" "}
-                <span className="text-primary">{group?.groupName}</span>
-              </>
-            )}
-          </h1>
-
-          {isTheGroupOwner && !hasExistingPreferences && (
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mt-3 sm:mt-4 mb-2">
-              Aggiungi le tue preferenze alimentari prima di condividere il link
-              del gruppo con il resto dell&apos;equipaggio:
-            </p>
-          )}
-
-          {!isTheGroupOwner && (
-            <div className="max-w-2xl mx-auto">
-              <p className="text-lg text-gray-600 leading-relaxed mb-6">
-                Aggiungi le tue preferenze per creare una cambusa perfetta per
-                il viaggio.
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
         <PageContent
           groupId={groupId}
           group={group}
@@ -121,8 +172,10 @@ const GroupPage: NextPage<{
             alcohol: existingAlcoholPreferences,
             water: existingWaterPreferences,
           }}
+          preferenceProgress={preferenceProgress}
         />
-      </PageContainer>
+      </div>
+    </PageContainer>
   );
 };
 

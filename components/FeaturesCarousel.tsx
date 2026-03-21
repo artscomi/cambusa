@@ -92,7 +92,7 @@ export const FeaturesCarousel: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="text-center p-4 sm:p-6 cursor-pointer bg-white/90 hover:bg-white backdrop-blur-sm rounded-xl transition-colors duration-200 shadow-md border border-white/50"
+            className="cursor-pointer rounded-xl border border-white/60 bg-white/90 p-4 text-center backdrop-blur-sm transition-colors duration-200 hover:bg-white sm:p-6"
             role="button"
             tabIndex={0}
             aria-label={`Vai a ${feature.title}`}
@@ -137,7 +137,7 @@ export const FeaturesCarousel: React.FC = () => {
             className="absolute w-full h-full flex items-center justify-center"
           >
             <div 
-              className="text-center p-4 w-full pb-16 cursor-pointer bg-white/90 hover:bg-white backdrop-blur-sm rounded-xl transition-colors duration-200 shadow-md border border-white/50"
+              className="w-full cursor-pointer rounded-xl border border-white/60 bg-white/90 p-4 pb-16 text-center backdrop-blur-sm transition-colors duration-200 hover:bg-white"
               role="button"
               tabIndex={0}
               aria-label={`Vai a ${features[page].title}`}

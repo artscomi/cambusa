@@ -43,10 +43,10 @@ export function HeaderBar({ children }: { children: React.ReactNode }) {
   return (
     <HeaderScrollContext.Provider value={{ isTransparent }}>
       <header
-        className={`fixed w-full z-40 transition-[background-color,box-shadow,border-color] duration-300 ${
+        className={`fixed z-40 w-full transition-[background-color,border-color] duration-300 ${
           scrolled
-            ? "shadow-sm border-b border-primary/10"
-            : "bg-transparent border-b border-transparent shadow-none"
+            ? "border-b border-primary/20"
+            : "border-b border-transparent bg-transparent"
         }`}
         style={{ backgroundColor: scrolled ? "#ffffff" : "transparent" }}
       >

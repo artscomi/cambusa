@@ -45,7 +45,7 @@ export const CreateGroupLayout: React.FC<CreateGroupLayoutProps> = ({
 
             <motion.div
               variants={pageItemVariants}
-              className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100 overflow-x-hidden"
+              className="overflow-x-hidden rounded-xl border border-gray-200 bg-white p-6 sm:rounded-2xl sm:p-8"
             >
               {children}
             </motion.div>

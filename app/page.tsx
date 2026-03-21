@@ -98,12 +98,12 @@ export default function Home() {
                 aria-label="Torna alla home di cambusaai"
                 className="inline-block hover:opacity-90 transition-opacity mb-4 sm:mb-6"
               >
-                <span className="text-2xl sm:text-3xl font-display font-bold text-white drop-shadow-md">
+                <span className="font-display text-2xl font-bold text-white sm:text-3xl">
                   Cambusa<span className="text-primary-light">ai</span>
                 </span>
               </Link>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-4 sm:mb-6 drop-shadow-lg text-white leading-tight">
+              <h1 className="mb-4 font-display text-4xl font-bold leading-tight text-white sm:mb-6 sm:text-5xl md:text-6xl lg:text-7xl">
                 La cambusa perfetta
                 <br />
                 per ogni viaggio
@@ -111,7 +111,7 @@ export default function Home() {
 
               <motion.p
                 variants={itemVariants}
-                className="text-lg sm:text-xl lg:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed px-2 drop-shadow-md mb-6 sm:mb-8"
+                className="mx-auto mb-6 max-w-3xl px-2 text-lg leading-relaxed text-white/95 sm:mb-8 sm:text-xl lg:text-2xl"
                 role="doc-subtitle"
               >
                 Crea il menu perfetto per tutto l&apos;equipaggio con l&apos;aiuto

@@ -93,7 +93,7 @@ export const CookieConsent: React.FC<CookieConsentProps> = ({
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+          className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white"
         >
           <div className="max-w-7xl mx-auto px-4 py-4">
             {!showSettings ? (

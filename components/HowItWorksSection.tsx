@@ -99,8 +99,8 @@ export const HowItWorksSection: React.FC = () => {
 
               {/* Step Card */}
               <div 
-                className={`bg-white rounded-xl p-4 shadow-md border border-gray-100 ${
-                  step.href ? 'cursor-pointer hover:shadow-lg hover:bg-gray-50 transition-all duration-200' : ''
+                className={`rounded-xl border border-gray-200 bg-white p-4 ${
+                  step.href ? "cursor-pointer transition-colors duration-200 hover:bg-gray-50" : ""
                 }`}
                 role={step.href ? "button" : undefined}
                 tabIndex={step.href ? 0 : undefined}
@@ -152,8 +152,8 @@ export const HowItWorksSection: React.FC = () => {
 
                 {/* Step Card */}
                 <div 
-                  className={`bg-white rounded-2xl p-8 shadow-lg border border-gray-100 h-full relative ${
-                    step.href ? 'cursor-pointer hover:shadow-xl hover:bg-gray-50 transition-all duration-200' : ''
+                  className={`relative h-full rounded-2xl border border-gray-200 bg-white p-8 ${
+                    step.href ? "cursor-pointer transition-colors duration-200 hover:bg-gray-50" : ""
                   }`}
                   role={step.href ? "button" : undefined}
                   tabIndex={step.href ? 0 : undefined}
@@ -202,8 +202,8 @@ export const HowItWorksSection: React.FC = () => {
 
               {/* Step Card */}
               <div 
-                className={`bg-white rounded-2xl p-6 shadow-lg border border-gray-100 h-full relative ${
-                  step.href ? 'cursor-pointer hover:shadow-xl hover:bg-gray-50 transition-all duration-200' : ''
+                className={`relative h-full rounded-2xl border border-gray-200 bg-white p-6 ${
+                  step.href ? "cursor-pointer transition-colors duration-200 hover:bg-gray-50" : ""
                 }`}
                 role={step.href ? "button" : undefined}
                 tabIndex={step.href ? 0 : undefined}
