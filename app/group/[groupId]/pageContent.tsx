@@ -271,11 +271,7 @@ export const PageContent: React.FC<{
                   menu quando vuoi.
                 </p>
                 <div className="flex justify-center">
-                  <CTA
-                    href={`${groupId}/menu`}
-                    variant="form"
-                    className="px-6 py-3 text-base"
-                  >
+                  <CTA href={`${groupId}/menu`} variant="outline">
                     Vai alla pagina del gruppo
                   </CTA>
                 </div>
@@ -310,8 +306,7 @@ export const PageContent: React.FC<{
                   </p>
                   <div className="flex justify-center">
                     <CTA
-                      variant="form"
-                      className="px-6 py-3 text-base"
+                      variant="solid"
                       onClick={() => {
                         setCurrentGroupId(groupId);
                         router.push("/meal-menu");
@@ -334,11 +329,7 @@ export const PageContent: React.FC<{
                   Dalla pagina del gruppo potrai vedere le preferenze di tutti i partecipanti e il menu quando sarà generato.
                 </p>
                 <div className="flex justify-center">
-                  <CTA
-                    href={`${groupId}/menu`}
-                    variant="form"
-                    className="px-6 py-3 text-base"
-                  >
+                  <CTA href={`${groupId}/menu`} variant="outline">
                     Vai alla pagina del gruppo
                   </CTA>
                 </div>

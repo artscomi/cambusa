@@ -93,6 +93,13 @@ const GroupPage: NextPage<{
             )}
           </h1>
 
+          {isTheGroupOwner && !hasExistingPreferences && (
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mt-3 sm:mt-4 mb-2">
+              Aggiungi le tue preferenze alimentari prima di condividere il link
+              del gruppo con il resto dell&apos;equipaggio:
+            </p>
+          )}
+
           {!isTheGroupOwner && (
             <div className="max-w-2xl mx-auto">
               <p className="text-lg text-gray-600 leading-relaxed mb-6">

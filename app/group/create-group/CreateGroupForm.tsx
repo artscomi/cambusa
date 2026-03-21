@@ -2,7 +2,6 @@
 
 import { CTA } from "@/components/CTA";
 import { TextInput, TextInputConfig } from "@/components/TextInput";
-import { TextArea, TextAreaConfig } from "@/components/TextArea";
 import { Checkbox, CheckboxProps } from "@/components/Checkbox";
 import { Select } from "@/components/Select";
 import { SelectConfig } from "@/hooks/useFormConfig";
@@ -11,13 +10,21 @@ import { useFormConfig } from "@/hooks/useFormConfig";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Utensils, Heart, Wine, Droplets } from "lucide-react";
+import { Users, Utensils } from "lucide-react";
+
+const GROUP_CREATE_FIELD_KEYS = [
+  "groupName",
+  "people",
+  "breakfast",
+  "lunch",
+  "dinner",
+  "sameBreakfast",
+] as const;
 
 type Step = {
   title: string;
   description: string;
   fields: string[];
-  icon?: React.ComponentType<{ className?: string }>;
 };
 
 const steps: Step[] = [
@@ -30,23 +37,6 @@ const steps: Step[] = [
     title: "Pasti",
     description: "Quanti pasti prevede il tuo viaggio?",
     fields: ["breakfast", "sameBreakfast", "lunch", "dinner"],
-  },
-  {
-    title: "Preferenze alimentari",
-    description:
-      "Hai delle preferenze alimentari o allergie? Inseriscile qui per aiutare gli altri a pianificare i pasti.",
-    fields: ["dietaryPreferences"],
-  },
-  {
-    title: "Preferenze sugli alcolici",
-    description: "Hai delle preferenze sugli alcolici? Inseriscile qui!",
-    fields: ["alcoholPreferences"],
-    icon: Wine,
-  },
-  {
-    title: "Preferenza acqua",
-    description: "Che tipo di acqua preferisci?",
-    fields: ["waterPreference"],
   },
 ];
 
@@ -106,22 +96,6 @@ export const CreateGroupForm = () => {
           newErrors[fieldId] = "Inserisci un numero tra 1 e 20";
           isValid = false;
         }
-      } else if (
-        fieldId === "dietaryPreferences" ||
-        fieldId === "alcoholPreferences"
-      ) {
-        if (!value || (typeof value === "string" && value.trim() === "")) {
-          newErrors[fieldId] =
-            fieldId === "dietaryPreferences"
-              ? "Inserisci almeno una preferenza alimentare"
-              : "Inserisci le preferenze sugli alcolici o specifica se non ne hai";
-          isValid = false;
-        }
-      } else if (fieldId === "waterPreference") {
-        if (!value || value === "") {
-          newErrors[fieldId] = "Seleziona una preferenza per l'acqua";
-          isValid = false;
-        }
       }
     });
 
@@ -137,17 +111,17 @@ export const CreateGroupForm = () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      Object.entries(formState).forEach(([key, value]) => {
-        if (value !== undefined) {
-          if (key === "sameBreakfast") {
-            if (value === true) {
-              formData.append(key, "on");
-            }
-          } else {
-            formData.append(key, String(value));
+      for (const key of GROUP_CREATE_FIELD_KEYS) {
+        const value = formState[key];
+        if (value === undefined) continue;
+        if (key === "sameBreakfast") {
+          if (value === true) {
+            formData.append(key, "on");
           }
+        } else {
+          formData.append(key, String(value));
         }
-      });
+      }
 
       const groupId = await createGroupAction(formData);
       if (groupId) {
@@ -201,9 +175,6 @@ export const CreateGroupForm = () => {
               <div className="flex flex-col items-center gap-1 mb-2">
                 {index === 0 && <Users className="w-5 h-5 sm:w-6 sm:h-6" />}
                 {index === 1 && <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />}
-                {index === 2 && <Heart className="w-5 h-5 sm:w-6 sm:h-6" />}
-                {index === 3 && <Wine className="w-5 h-5 sm:w-6 sm:h-6" />}
-                {index === 4 && <Droplets className="w-5 h-5 sm:w-6 sm:h-6" />}
               </div>
             </p>
           ))}
@@ -246,71 +217,6 @@ export const CreateGroupForm = () => {
                       onChange={(e) => handleFieldChange(fieldId, e)}
                       error={showErrors ? errors[fieldId] : undefined}
                     />
-                  );
-                }
-
-                if (
-                  fieldId === "dietaryPreferences" ||
-                  fieldId === "alcoholPreferences"
-                ) {
-                  const textAreaConfig = config as TextAreaConfig;
-                  return (
-                    <TextArea
-                      key={fieldId}
-                      {...textAreaConfig}
-                      onChange={(e) => handleFieldChange(fieldId, e)}
-                      error={showErrors ? errors[fieldId] : undefined}
-                      rows={fieldId === "dietaryPreferences" ? 8 : 4}
-                      placeholder={
-                        fieldId === "dietaryPreferences"
-                          ? "Non mangiamo carne. A colazione mangiamo yogurt e frutta."
-                          : "Es. Non bevo alcolici, preferisco vino bianco, niente superalcolici..."
-                      }
-                    />
-                  );
-                }
-
-                if (fieldId === "waterPreference") {
-                  const waterOptions = [
-                    { value: "naturale", label: "Acqua naturale" },
-                    { value: "gassata", label: "Acqua gassata" },
-                    { value: "indifferente", label: "Indifferente" },
-                  ];
-
-                  return (
-                    <div key={fieldId}>
-                      <label className="block text-sm font-medium text-gray-700 mb-4">
-                        {config.label}
-                      </label>
-                      <div className="space-y-3">
-                        {waterOptions.map((option) => (
-                          <label
-                            key={option.value}
-                            className="flex items-center cursor-pointer"
-                          >
-                            <input
-                              type="radio"
-                              name={fieldId}
-                              value={option.value}
-                              checked={
-                                ("value" in config ? config.value : "") ===
-                                option.value
-                              }
-                              onChange={(e) => handleFieldChange(fieldId, e)}
-                              className="h-4 w-4 text-primary border-gray-300 focus:ring-primary"
-                            />
-                            <span className="ml-3 text-gray-700">
-                              {option.label}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                      {showErrors && errors[fieldId] && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors[fieldId]}
-                        </p>
-                      )}
-                    </div>
                   );
                 }
 
