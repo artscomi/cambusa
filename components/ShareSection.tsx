@@ -107,10 +107,11 @@ export const ShareSection: React.FC<ShareSectionProps> = ({
     url: string;
   }) => {
     try {
-      const shareData = {
+      // L’URL solo nel testo: se passiamo anche `url`, molti client uniscono i due campi e il link compare due volte.
+      // Così il link c’è sempre (anche dove si legge solo `text`) senza duplicati.
+      const shareData: ShareData = {
         title: `Gruppo ${groupName} - Cambusa`,
-        text: `Ciao! Sei stato invitato a prendere parte al gruppo: ${groupName} su Cambusa. Clicca qui per aggiungere le tue preferenze alimentari: ${url}`,
-        url: url,
+        text: `Ciao! Sei stato invitato a prendere parte al gruppo: ${groupName} su Cambusa. Aggiungi le tue preferenze alimentari qui: ${url}`,
       };
 
       await navigator.share(shareData);

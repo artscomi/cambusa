@@ -142,12 +142,12 @@ const handleResult = async (
         return;
       }
       setCurrentGroupId?.(groupId);
-      router.push("/meal-menu");
+      router.push("/my-menu");
       router.refresh();
     } else {
       setCurrentGroupId?.(undefined);
       await saveMealList(JSON.stringify(result.menu), userId);
-      router.push("/meal-menu");
+      router.push("/my-menu");
     }
   } else {
     handleError(result, setError);

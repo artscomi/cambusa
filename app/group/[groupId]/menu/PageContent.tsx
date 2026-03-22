@@ -1,6 +1,5 @@
 "use client";
 import { ButtonGenerateMealList } from "./ButtonGenerateMealList";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Loading } from "@/components/Loading";
 import { useUser } from "@clerk/nextjs";
@@ -21,8 +20,6 @@ import {
 import { MealList } from "@/types/types";
 import { GroupNameHeading } from "../GroupNameHeading";
 import { cn } from "@/lib/utils";
-import { CTA } from "@/components/CTA";
-import { useMealContext } from "@/context/useMealContext";
 
 interface UserPreference {
   name: string;
@@ -63,8 +60,6 @@ export const PageContent = ({
   preferenceProgress: GroupPreferenceProgressStats;
 }) => {
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
-  const { setCurrentGroupId } = useMealContext();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
 
@@ -497,94 +492,49 @@ export const PageContent = ({
             </div>
           </section>
 
-          {(hasMenu || !group.isTheGroupOwner) && (
+          {!hasMenu && !group.isTheGroupOwner && (
             <div
               className={`space-y-12 border-t border-gray-200/90 pt-12 sm:space-y-14 sm:pt-14 lg:space-y-16 lg:pt-16 ${sectionAnchor}`}
             >
               <div className="max-w-2xl">
-                {hasMenu ? (
-                  <p className={sectionOverline}>Dalle preferenze al menu</p>
-                ) : null}
-                <h2
-                  className={`${sectionTitleClass} ${hasMenu ? "mt-2" : ""}`}
-                >
-                  {hasMenu ? "Menu e voti su «Il mio menu»" : "Menu in arrivo"}
-                </h2>
+                <h2 className={sectionTitleClass}>Menu in arrivo</h2>
                 <p className={sectionLead}>
-                  {hasMenu
-                    ? "Qui restano preferenze e organizzazione del gruppo. Per vedere colazioni, pranzi e cene e dare da 1 a 5 stelle a ogni pasto, apri «Il mio menu» e seleziona questo gruppo se ti viene chiesto."
-                    : `Quando ${group.ownerName} pubblicherà la lista pasti, la troverai in «Il mio menu» (scegli il menu del gruppo) e potrai votare ogni proposta.`}
+                  Quando {group.ownerName} pubblicherà la lista pasti, la
+                  troverai in «Il mio menu» (scegli il menu del gruppo) e potrai
+                  votare ogni proposta.
                 </p>
               </div>
 
-              {hasMenu ? (
-                <section
-                  id="group-menu-my-menu"
-                  aria-labelledby="group-menu-my-menu-heading"
-                  className={sectionShell}
+              <section
+                id="member-menu-waiting"
+                aria-labelledby="member-menu-waiting-heading"
+                className={sectionShell}
+              >
+                <h3 id="member-menu-waiting-heading" className="sr-only">
+                  Stato menu e referente gruppo
+                </h3>
+                <div
+                  className={`${cardClass} flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8`}
                 >
-                  <h3 id="group-menu-my-menu-heading" className="sr-only">
-                    Apri Il mio menu per il menu del gruppo
-                  </h3>
-                  <div
-                    className={`${cardClass} flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8`}
-                  >
-                    <div className="min-w-0 sm:flex-1">
-                      <p className="text-base font-semibold text-gray-900 sm:text-lg">
-                        Il menu non è più elencato in questa pagina
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-600 sm:text-[0.95rem]">
-                        Su «Il mio menu» vedi le proposte, voti quando vuoi (un
-                        voto a persona per pasto) e, quando tutta la ciurma ha
-                        finito, puoi generare la lista della spesa da lì.
-                      </p>
-                    </div>
-                    <CTA
-                      variant="accent"
-                      type="button"
-                      className="w-full shrink-0 sm:w-auto"
-                      onClick={() => {
-                        setCurrentGroupId(group.groupId);
-                        router.push("/my-menu");
-                      }}
-                    >
-                      Vai a Il mio menu
-                    </CTA>
+                  <div className="text-center sm:min-w-0 sm:flex-1 sm:text-left">
+                    <p className="text-base font-semibold text-gray-900 sm:text-lg">
+                      Referente:{" "}
+                      <span className="text-primary">{group.ownerName}</span>
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                      Non serve fare altro qui finché il menu non è pubblicato.
+                      Quando sarà pronto, apri «Il mio menu» e scegli il menu di
+                      questo gruppo per vedere i pasti e votare.
+                    </p>
                   </div>
-                </section>
-              ) : (
-                <section
-                  id="member-menu-waiting"
-                  aria-labelledby="member-menu-waiting-heading"
-                  className={sectionShell}
-                >
-                  <h3 id="member-menu-waiting-heading" className="sr-only">
-                    Stato menu e referente gruppo
-                  </h3>
-                  <div
-                    className={`${cardClass} flex flex-col items-center gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8`}
-                  >
-                    <div className="text-center sm:min-w-0 sm:flex-1 sm:text-left">
-                      <p className="text-base font-semibold text-gray-900 sm:text-lg">
-                        Referente:{" "}
-                        <span className="text-primary">{group.ownerName}</span>
-                      </p>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                        Non serve fare altro qui finché il menu non è
-                        pubblicato. Quando sarà pronto, apri «Il mio menu» e
-                        scegli il menu di questo gruppo per vedere i pasti e
-                        votare.
-                      </p>
-                    </div>
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100">
-                      <CookingPot
-                        className="h-8 w-8 text-gray-400"
-                        aria-hidden
-                      />
-                    </div>
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100">
+                    <CookingPot
+                      className="h-8 w-8 text-gray-400"
+                      aria-hidden
+                    />
                   </div>
-                </section>
-              )}
+                </div>
+              </section>
             </div>
           )}
         </main>

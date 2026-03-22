@@ -135,7 +135,7 @@ export const regenerateSingleMeal = async ({
     console.log("result", result.object);
     console.log("api call", user.apiCallCount);
 
-    revalidatePath("/meal-menu", "layout");
+    revalidatePath("/my-menu", "layout");
     return { type: "success", meal: result.object };
   } catch (e) {
     if (TypeValidationError.isInstance(e)) {
@@ -162,7 +162,7 @@ export const resetApiCallCount = async (userId: string) => {
     console.error("Error resetting API call count:", error);
     throw new Error("Failed to reset API call count");
   }
-  revalidatePath("/meal-menu", "layout");
+  revalidatePath("/my-menu", "layout");
 };
 
 export const getMealListFromAi = async ({
@@ -188,7 +188,7 @@ export const getMealListFromAi = async ({
             schema: mealMenuSchema,
           });
 
-    revalidatePath("/meal-menu", "layout");
+    revalidatePath("/my-menu", "layout");
 
     console.log("👤 Looking up user with clerkUserId:", userId);
     const user = await db.user.findUnique({
@@ -1021,7 +1021,7 @@ export const regenerateSingleMealStream = async ({
 
     console.log("🔄 regenerateSingleMealStream result:", result);
 
-    revalidatePath("/meal-menu", "layout");
+    revalidatePath("/my-menu", "layout");
 
     // Wait for the final object and return only serializable data
     const finalObject = await result.object;
