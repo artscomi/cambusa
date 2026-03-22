@@ -2,9 +2,33 @@
 
 import { Star } from "lucide-react";
 import { voteMenuItem } from "@/app/api/actions";
-import { useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 type VoteData = { average: number; count: number; userVote?: number };
+
+function optimisticAvgCount(
+  voteData: VoteData | undefined,
+  newUserVote: number,
+): { average: number; count: number } {
+  const avg = voteData?.average ?? 0;
+  const count = voteData?.count ?? 0;
+  const prev = voteData?.userVote;
+  const sum = avg * count;
+  if (prev === undefined || prev < 1) {
+    const newCount = count + 1;
+    const newSum = sum + newUserVote;
+    return {
+      count: newCount,
+      average:
+        newCount > 0 ? Math.round((newSum / newCount) * 10) / 10 : 0,
+    };
+  }
+  const newSum = sum - prev + newUserVote;
+  return {
+    count,
+    average: count > 0 ? Math.round((newSum / count) * 10) / 10 : 0,
+  };
+}
 
 export function MealVoteStars({
   groupId,
@@ -19,15 +43,42 @@ export function MealVoteStars({
   voteData?: VoteData;
   onVoteSuccess?: () => void;
 }) {
-  const [isPending, startTransition] = useTransition();
-  const current = voteData?.userVote ?? 0;
-  const average = voteData?.average ?? 0;
-  const count = voteData?.count ?? 0;
+  const [, startTransition] = useTransition();
+  const [optimisticUserVote, setOptimisticUserVote] = useState<number | null>(
+    null,
+  );
+  const voteSeqRef = useRef(0);
+
+  const serverVote = voteData?.userVote ?? 0;
+  const current = optimisticUserVote ?? serverVote;
+
+  useEffect(() => {
+    if (
+      optimisticUserVote !== null &&
+      serverVote === optimisticUserVote
+    ) {
+      setOptimisticUserVote(null);
+    }
+  }, [serverVote, optimisticUserVote]);
+
+  const serverAverage = voteData?.average ?? 0;
+  const serverCount = voteData?.count ?? 0;
+  const { average, count } =
+    optimisticUserVote !== null
+      ? optimisticAvgCount(voteData, optimisticUserVote)
+      : { average: serverAverage, count: serverCount };
 
   const handleVote = (value: number) => {
+    const seq = ++voteSeqRef.current;
+    setOptimisticUserVote(value);
     startTransition(async () => {
       const result = await voteMenuItem(groupId, mealTypeId, mealId, value);
-      if (!result.error && onVoteSuccess) onVoteSuccess();
+      if (voteSeqRef.current !== seq) return;
+      if (result.error) {
+        setOptimisticUserVote(null);
+        return;
+      }
+      onVoteSuccess?.();
     });
   };
 
@@ -38,9 +89,8 @@ export function MealVoteStars({
           <button
             key={star}
             type="button"
-            disabled={isPending}
             onClick={() => handleVote(star)}
-            className="p-0.5 rounded hover:bg-gray-100 disabled:opacity-50 transition-opacity"
+            className="p-0.5 rounded hover:bg-gray-100 transition-opacity"
             aria-pressed={current === star}
             aria-label={`${star} stella`}
           >
