@@ -84,7 +84,11 @@ export const ButtonGenerateMealList: React.FC<{
   };
 
   return (
-    <CTA variant="accent" full onClick={handleCtaClick}>
+    <CTA
+      variant={regenerate ? "outline" : "accent"}
+      full
+      onClick={handleCtaClick}
+    >
       {regenerate ? "Rigenera menu" : "Genera il menu"}
     </CTA>
   );

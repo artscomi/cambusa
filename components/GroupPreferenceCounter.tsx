@@ -328,7 +328,7 @@ export function GroupPreferenceCounter({
           </div>
         </div>
         <p
-          className={`tabular-nums ${fractionClass} ${prominent ? "w-full text-center sm:w-auto sm:text-right" : ""} ${narrowColumn ? "shrink-0 text-left" : "shrink-0"}`}
+          className={`tabular-nums ${fractionClass} ${prominent ? "w-full text-center sm:w-auto sm:text-right" : ""} ${narrowColumn ? "w-full shrink-0 text-center" : "shrink-0"}`}
         >
           <span
             className={showAccentShell ? "text-accent" : "text-primary"}

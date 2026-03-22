@@ -43,10 +43,7 @@ export function GroupNameHeading({
     if (!isGroupOwner) setEditing(false);
   }, [isGroupOwner]);
 
-  const rowJustify =
-    layout === "menu"
-      ? "justify-center sm:justify-start"
-      : "justify-center";
+  const rowJustify = "justify-center";
 
   if (!isLoaded || !isGroupOwner) {
     return <h1 className={titleClassName}>{name}</h1>;
@@ -112,12 +109,7 @@ export function GroupNameHeading({
   }
 
   return (
-    <div
-      className={cn(
-        "flex w-full min-w-0 flex-col gap-3",
-        layout === "preferences" ? "items-center" : "sm:items-start",
-      )}
-    >
+    <div className="flex w-full min-w-0 flex-col items-center gap-3">
       <div
         className={cn(
           "flex w-full min-w-0 max-w-full flex-col gap-2",
@@ -143,22 +135,10 @@ export function GroupNameHeading({
                 save();
               }
             }}
-            className={cn(
-              "mt-1 block w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 font-inherit leading-tight tracking-inherit text-inherit shadow-sm outline-none transition-[box-shadow,border-color] focus:border-primary focus:ring-2 focus:ring-primary/20",
-              layout === "preferences"
-                ? "text-center"
-                : "text-center sm:text-left",
-            )}
+            className="mt-1 block w-full min-w-0 rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-center font-inherit leading-tight tracking-inherit text-inherit shadow-sm outline-none transition-[box-shadow,border-color] focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
         </h1>
-        <div
-          className={cn(
-            "flex flex-wrap items-center gap-2",
-            layout === "preferences"
-              ? "justify-center"
-              : "justify-center sm:justify-start",
-          )}
-        >
+        <div className="flex flex-wrap items-center justify-center gap-2">
           <button
             type="button"
             onClick={save}
@@ -177,15 +157,7 @@ export function GroupNameHeading({
           </button>
         </div>
         {error ? (
-          <p
-            className={cn(
-              "text-sm text-red-600",
-              layout === "preferences"
-                ? "text-center"
-                : "text-center sm:text-left",
-            )}
-            role="alert"
-          >
+          <p className="text-center text-sm text-red-600" role="alert">
             {error}
           </p>
         ) : null}

@@ -248,21 +248,27 @@ export const PageContent = ({
   ) : (
     <div className="w-full overflow-x-hidden">
       <header className="border-b border-gray-100 pb-3 mb-4 sm:pb-4 sm:mb-5">
-        <div className="text-center sm:text-left">
+        <div className="text-center">
           {!group.isTheGroupOwner ? (
             <p className="font-subtitle text-[10px] font-bold uppercase tracking-[0.22em] text-primary/70">
               Pagina gruppo
             </p>
           ) : null}
+          <p
+            className={cn(
+              sectionOverline,
+              !group.isTheGroupOwner ? "mt-2" : undefined,
+              "mb-1 sm:mb-1.5",
+            )}
+          >
+            Nome gruppo
+          </p>
           <GroupNameHeading
             groupId={group.groupId}
             initialName={group.groupName}
             ownerClerkId={group.ownerId}
             layout="menu"
-            titleClassName={cn(
-              "font-display text-2xl font-bold leading-tight text-primary sm:text-3xl md:text-4xl",
-              !group.isTheGroupOwner && "mt-2",
-            )}
+            titleClassName="font-display text-2xl font-bold leading-tight text-primary sm:text-3xl md:text-4xl"
           />
         </div>
 
