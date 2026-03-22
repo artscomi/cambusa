@@ -4,7 +4,7 @@ import {
 } from "@/animations/framer-variants";
 import { Ingredient } from "@/types/types";
 import { AnimatePresence, motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Toast from "../Toast";
 import {
   Clipboard,
@@ -16,9 +16,28 @@ import {
   Pencil,
 } from "lucide-react";
 import { useShoppingContext } from "@/context/useShoppingListContext";
+import { useUser } from "@clerk/nextjs";
+import { isViewerGroupOwner } from "@/app/api/actions";
 
 const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
-  const { shoppingList, setShoppingList } = useShoppingContext();
+  const { shoppingList, setShoppingList, shoppingListGroupId } =
+    useShoppingContext();
+  const { user } = useUser();
+  const [groupOwnerMayEdit, setGroupOwnerMayEdit] = useState<boolean | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (!shoppingListGroupId) {
+      setGroupOwnerMayEdit(null);
+      return;
+    }
+    setGroupOwnerMayEdit(null);
+    isViewerGroupOwner(shoppingListGroupId).then(setGroupOwnerMayEdit);
+  }, [shoppingListGroupId, user?.id]);
+
+  const canEditList =
+    !shoppingListGroupId || groupOwnerMayEdit === true;
   const [showToast, setShowToast] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [itemToRemove, setItemToRemove] = useState<Ingredient | null>(null);
@@ -99,11 +118,13 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   );
 
   const handleCheckboxChange = (item: Ingredient) => {
+    if (!canEditList) return;
     setItemToRemove(item);
     setShowConfirmModal(true);
   };
 
   const confirmRemoveItem = () => {
+    if (!canEditList) return;
     if (itemToRemove) {
       const updatedList = shoppingList.filter(
         (item) => item.id !== itemToRemove.id
@@ -124,6 +145,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
     newQuantity: number,
     newUnit?: string
   ) => {
+    if (!canEditList) return;
     if (newQuantity > 0) {
       const updatedList = shoppingList.map((item) => {
         if (item.id === id) {
@@ -146,11 +168,13 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   };
 
   const openQuantityModal = (item: Ingredient) => {
+    if (!canEditList) return;
     setEditingQuantity({ id: item.id, quantity: item.quantity });
     setShowQuantityModal(true);
   };
 
   const handleAddItem = () => {
+    if (!canEditList) return;
     if (newItem.item.trim() && newItem.quantity > 0) {
       const newIngredient: Ingredient = {
         id: `manual_${Date.now()}`,
@@ -166,6 +190,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   };
 
   const openAddModal = () => {
+    if (!canEditList) return;
     setShowAddModal(true);
     setNewItem({ item: "", quantity: 1, unit: "pezzi" });
   };
@@ -204,6 +229,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
   };
 
   const handleUnitChange = (id: string, newUnit: string) => {
+    if (!canEditList) return;
     const updatedList = shoppingList.map((item) => {
       if (item.id === id) {
         return { ...item, unit: newUnit };
@@ -236,28 +262,37 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         >
           {ingredients.map((item) => (
             <motion.li
-              whileHover={{ scale: 0.98 }}
+              whileHover={{ scale: canEditList ? 0.98 : 1 }}
               role="listitem"
               tabIndex={0}
               variants={itemVariantsShoppingList}
               key={item.id}
-              className="group flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 bg-white px-5 py-4 transition-all duration-300"
+              className={`group flex items-center justify-between rounded-lg border border-gray-200 bg-white px-5 py-4 transition-all duration-300 ${
+                canEditList ? "cursor-pointer" : ""
+              }`}
             >
               <div className="flex items-center">
-                <label className="flex items-center cursor-pointer">
+                <label
+                  className={`flex items-center ${
+                    canEditList ? "cursor-pointer" : "cursor-default"
+                  }`}
+                >
                   <input
                     tabIndex={-1}
-                    onChange={() => handleCheckboxChange(item)}
+                    onChange={() =>
+                      canEditList ? handleCheckboxChange(item) : undefined
+                    }
                     type="checkbox"
+                    disabled={!canEditList}
                     style={{
                       accentColor: "var(--accent-light)",
                       width: "1.5rem",
                       height: "1.5rem",
                       marginRight: "0.75rem",
-                      cursor: "pointer",
+                      cursor: canEditList ? "pointer" : "not-allowed",
                       pointerEvents: "none",
                     }}
-                    className="rounded"
+                    className="rounded disabled:opacity-40"
                     checked={false}
                   />
                   <span className="max-w-[130px] truncate" title={item.item}>
@@ -266,25 +301,27 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                 </label>
               </div>
 
-              <div className="flex items-center gap-1 ml-4">
+              <div className="ml-4 flex items-center gap-1">
                 {/* Quantity display */}
-                <span className="font-medium text-center">{item.quantity}</span>
+                <span className="text-center font-medium">{item.quantity}</span>
 
                 <span className="text-gray-600">
                   {getCorrectUnit(item.unit, item.quantity)}
                 </span>
 
-                {/* Quantity edit button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openQuantityModal(item);
-                  }}
-                  className="p-1 hover:bg-gray-100 rounded transition-colors text-primary"
-                  title="Modifica quantità e unità"
-                >
-                  <Pencil size={14} />
-                </button>
+                {canEditList ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openQuantityModal(item);
+                    }}
+                    className="rounded p-1 text-primary transition-colors hover:bg-gray-100"
+                    title="Modifica quantità e unità"
+                  >
+                    <Pencil size={14} />
+                  </button>
+                ) : null}
               </div>
             </motion.li>
           ))}
@@ -299,25 +336,38 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
         <div className="text-center lg:text-left">
           <h1>La tua lista della spesa</h1>
           <p className="text-l max-w-[700px]">
-            Spunta gli elementi quando li hai acquistati per rimuoverli dalla
-            lista. Puoi anche modificare quantità e unità di misura o aggiungere
-            nuovi ingredienti.
+            {canEditList ? (
+              <>
+                Spunta gli elementi quando li hai acquistati per rimuoverli
+                dalla lista. Puoi anche modificare quantità e unità di misura o
+                aggiungere nuovi ingredienti.
+              </>
+            ) : (
+              <>
+                Lista generata dal menu del gruppo: solo il proprietario del
+                gruppo (chi l&apos;ha creato) può apportare modifiche alla lista
+                della spesa. Tutti possono copiarla o condividerla con i pulsanti
+                a destra.
+              </>
+            )}
           </p>
         </div>
-        <div className="flex gap-2 fixed max-sm:bottom-10 bottom-auto sm:top-32 right-10 sm:right-[135px] z-10">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={openAddModal}
-            className="rounded border border-primary/30 bg-primary p-4 text-white"
-            title="Aggiungi ingrediente"
-          >
-            <Plus
-              role="img"
-              aria-label="aggiungi ingrediente"
-              height={25}
-              width={25}
-            />
-          </motion.button>
+        <div className="fixed bottom-auto right-10 z-10 flex gap-2 max-sm:bottom-10 sm:right-[135px] sm:top-32">
+          {canEditList ? (
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={openAddModal}
+              className="rounded border border-primary/30 bg-primary p-4 text-white"
+              title="Aggiungi ingrediente"
+            >
+              <Plus
+                role="img"
+                aria-label="aggiungi ingrediente"
+                height={25}
+                width={25}
+              />
+            </motion.button>
+          ) : null}
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleShare}
@@ -569,6 +619,7 @@ const Checklist: React.FC<{ items: Ingredient[] }> = ({ items }) => {
                       ?.unit || "pezzi"
                   }
                   onChange={(e) => {
+                    if (!canEditList) return;
                     const updatedList = shoppingList.map((item) => {
                       if (item.id === editingQuantity.id) {
                         return { ...item, unit: e.target.value };

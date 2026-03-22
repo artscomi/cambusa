@@ -326,7 +326,7 @@ export const PageContent: React.FC<{
                     variant="solid"
                     onClick={() => {
                       setCurrentGroupId(groupId);
-                      router.push("/meal-menu");
+                      router.push("/my-menu");
                     }}
                   >
                     Apri e vota
@@ -340,8 +340,8 @@ export const PageContent: React.FC<{
                 Tutto il gruppo in un colpo d&apos;occhio
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-gray-700">
-                Nella pagina gruppo vedi le preferenze di tutti e il menu, non
-                appena sarà disponibile.
+                Nella pagina gruppo vedi le preferenze di tutti; il menu e i
+                voti sono in «Il mio menu» quando il menu è pubblicato.
               </p>
               <div className="mt-5">
                 <CTA href={`${groupId}/menu`} variant="outline">

@@ -1,4 +1,4 @@
-import { getGroupInfo, getGroupMealList, getGroupMenuVotes } from "@/app/api/actions";
+import { getGroupInfo, getGroupMealList } from "@/app/api/actions";
 import { PageContent } from "./PageContent";
 import db from "@/utils/db";
 import { getGroupPreferenceProgress } from "@/lib/getGroupPreferenceProgress";
@@ -32,7 +32,6 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
     alcoholPreferences,
     waterPreferences,
     groupMealList,
-    votes,
     preferenceProgress,
   ] = await Promise.all([
     db.foodPreference.findMany({
@@ -54,7 +53,6 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
       },
     }),
     getGroupMealList(groupId),
-    getGroupMenuVotes(groupId),
     getGroupPreferenceProgress(groupId, group.people),
   ]);
 
@@ -66,7 +64,6 @@ const GroupMenu = async ({ params }: { params: { groupId: string } }) => {
         alcoholPreferences={alcoholPreferences}
         waterPreferences={waterPreferences}
         groupMealList={groupMealList ?? undefined}
-        votes={votes ?? undefined}
         preferenceProgress={preferenceProgress}
       />
     </PageContainer>

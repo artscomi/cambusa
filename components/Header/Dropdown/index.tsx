@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, User, Users, UsersIcon } from "lucide-react";
+import { LogOut, User, Users, UsersIcon, UtensilsCrossed } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -12,30 +12,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { getMealListFromDB, getUserGroups } from "@/app/api/actions";
+import { getUserGroups } from "@/app/api/actions";
 import { useState, useEffect } from "react";
 
 export const DropdownMenuComponent = ({ name }: { name: string }) => {
   const { user } = useUser();
-  const [mealList, setMealList] = useState<string | null>(null);
-  const [userGroup, setUserGroup] = useState<any>(null);
+  const [userGroup, setUserGroup] = useState<Awaited<
+    ReturnType<typeof getUserGroups>
+  > | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       if (user?.id) {
-        const [mealListData, userGroupData] = await Promise.all([
-          getMealListFromDB(user.id),
-          getUserGroups(user.id)
-        ]);
-        setMealList(mealListData || null);
-        setUserGroup(userGroupData);
+        setUserGroup(await getUserGroups(user.id));
       }
     };
 
     loadData();
   }, [user?.id]);
 
-  if (!userGroup?.group) return null;
+  const memberships = userGroup?.group ?? [];
 
   return (
     <DropdownMenu>
@@ -48,17 +44,15 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
         </p>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white" align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>Profilo</DropdownMenuLabel>
         <DropdownMenuGroup>
-          {mealList && (
-            <Link href="/my-menu">
-              <DropdownMenuItem>
-                <Users className="mr-2 h-4 w-4" />
-                <span>Il mio menu</span>
-              </DropdownMenuItem>
-            </Link>
-          )}
-          {userGroup.group.length > 0 ? (
+          <Link href="/my-menu">
+            <DropdownMenuItem>
+              <UtensilsCrossed className="mr-2 h-4 w-4" />
+              <span>Il mio menu</span>
+            </DropdownMenuItem>
+          </Link>
+          {memberships.length > 0 ? (
             <Link href="/my-groups">
               <DropdownMenuItem>
                 <Users className="mr-2 h-4 w-4" />

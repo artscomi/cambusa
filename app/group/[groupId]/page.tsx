@@ -159,6 +159,8 @@ const GroupPage: NextPage<{
                         {...preferenceProgress}
                         accentHighlight={crewPreferencesComplete}
                         viewerIsOwner={isTheGroupOwner}
+                        hasPublishedGroupMenu={hasGeneratedMenu}
+                        groupId={groupId}
                       />
                     </div>
                   </div>
@@ -188,6 +190,8 @@ const GroupPage: NextPage<{
                       {...preferenceProgress}
                       accentHighlight={crewPreferencesComplete}
                       viewerIsOwner={isTheGroupOwner}
+                      hasPublishedGroupMenu={hasGeneratedMenu}
+                      groupId={groupId}
                     />
                   </div>
                 </div>

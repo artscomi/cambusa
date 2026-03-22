@@ -1,5 +1,6 @@
 "use client";
 import { ButtonGenerateMealList } from "./ButtonGenerateMealList";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Loading } from "@/components/Loading";
 import { useUser } from "@clerk/nextjs";
@@ -18,9 +19,10 @@ import {
   Droplets,
 } from "lucide-react";
 import { MealList } from "@/types/types";
-import { MealVoteStars } from "./MealVoteStars";
 import { GroupNameHeading } from "../GroupNameHeading";
 import { cn } from "@/lib/utils";
+import { CTA } from "@/components/CTA";
+import { useMealContext } from "@/context/useMealContext";
 
 interface UserPreference {
   name: string;
@@ -51,7 +53,6 @@ export const PageContent = ({
   alcoholPreferences,
   waterPreferences,
   groupMealList,
-  votes,
   preferenceProgress,
 }: {
   group: GroupInfo;
@@ -59,15 +60,11 @@ export const PageContent = ({
   alcoholPreferences: GroupedPreference[];
   waterPreferences: GroupedPreference[];
   groupMealList?: MealList;
-  votes?: {
-    byKey: Record<
-      string,
-      { average: number; count: number; userVote?: number }
-    >;
-  };
   preferenceProgress: GroupPreferenceProgressStats;
 }) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const { setCurrentGroupId } = useMealContext();
   const { user } = useUser();
   const [error, setError] = useState<string | null>(null);
 
@@ -279,9 +276,9 @@ export const PageContent = ({
             <p className={`${sectionLead} mx-auto sm:mx-0`}>
               {group.isTheGroupOwner
                 ? allPreferencesComplete
-                  ? "Tutto l’equipaggio ha completato le preferenze: da qui generi il menu e raccogli i voti sui piatti."
-                  : "Controlli chi ha già inviato le preferenze, condividi il link con chi manca e, quando siete al completo, generi il menu e raccogli i voti — tutto da qui."
-                : `Organizzazione a cura di ${group.ownerName}. Le tue scelte e i voti sui pasti restano in questa pagina: aggiornale quando vuoi.`}
+                  ? "Tutto l’equipaggio ha completato le preferenze: da qui generi il menu; pasti e voti si gestiscono da «Il mio menu»."
+                  : "Controlli chi ha già inviato le preferenze, condividi il link con chi manca e, quando siete al completo, generi il menu da qui. Poi tutti aprono «Il mio menu» per vedere le proposte e votare."
+                : `Organizzazione a cura di ${group.ownerName}. Le preferenze restano in questa pagina; menu e voti sono in «Il mio menu».`}
             </p>
 
             <section
@@ -378,9 +375,13 @@ export const PageContent = ({
               narrowColumn
               accentHighlight={allPreferencesComplete}
               viewerIsOwner={group.isTheGroupOwner}
+              hasPublishedGroupMenu={hasMenu}
+              groupId={group.groupId}
               infoTooltip={
                 group.isTheGroupOwner
-                  ? "Quando il contatore indica che tutti hanno inviato le preferenze, usa il pulsante Genera il menu qui sotto. Dopo la pubblicazione, ogni membro vota i pasti in questa pagina."
+                  ? hasMenu
+                    ? "Puoi rigenerare il menu con il pulsante qui sotto (i voti esistenti potrebbero non corrispondere più ai nuovi pasti). Poi tutti usano «Il mio menu» per votare."
+                    : "Quando il contatore indica che tutti hanno inviato le preferenze, usa il pulsante Genera il menu qui sotto. Dopo la pubblicazione, ogni membro apre «Il mio menu» per vedere i pasti e votare."
                   : undefined
               }
               footer={
@@ -402,6 +403,7 @@ export const PageContent = ({
                       }}
                       groupAlcoholPreferences={alcoholPreferences}
                       groupId={group.groupId}
+                      regenerate={hasMenu}
                     />
                   </div>
                 ) : undefined
@@ -506,64 +508,48 @@ export const PageContent = ({
                 <h2
                   className={`${sectionTitleClass} ${hasMenu ? "mt-2" : ""}`}
                 >
-                  {hasMenu ? "Vota i pasti" : "Menu in arrivo"}
+                  {hasMenu ? "Menu e voti su «Il mio menu»" : "Menu in arrivo"}
                 </h2>
                 <p className={sectionLead}>
                   {hasMenu
-                    ? "La proposta è online: una valutazione da 1 a 5 stelle per ogni pasto (un voto a persona). Puoi aggiornarlo quando vuoi."
-                    : `Quando ${group.ownerName} pubblicherà la lista pasti, la troverai in questa pagina e potrai esprimere la tua opinione su ogni pasto.`}
+                    ? "Qui restano preferenze e organizzazione del gruppo. Per vedere colazioni, pranzi e cene e dare da 1 a 5 stelle a ogni pasto, apri «Il mio menu» e seleziona questo gruppo se ti viene chiesto."
+                    : `Quando ${group.ownerName} pubblicherà la lista pasti, la troverai in «Il mio menu» (scegli il menu del gruppo) e potrai votare ogni proposta.`}
                 </p>
               </div>
 
               {hasMenu ? (
                 <section
-                  id="group-menu-votes"
-                  aria-labelledby="group-menu-votes-heading"
+                  id="group-menu-my-menu"
+                  aria-labelledby="group-menu-my-menu-heading"
                   className={sectionShell}
                 >
-                  <h3 id="group-menu-votes-heading" className="sr-only">
-                    Schede pasto e votazione
+                  <h3 id="group-menu-my-menu-heading" className="sr-only">
+                    Apri Il mio menu per il menu del gruppo
                   </h3>
-                  <div className="space-y-10 sm:space-y-12">
-                    {(groupMealList ?? []).map((mealType) => (
-                      <div
-                        key={mealType.id}
-                        className="rounded-2xl border border-gray-200 bg-gray-50/80 p-5 sm:p-6 md:p-8"
-                      >
-                        <h4 className="font-display text-lg font-bold text-primary sm:text-xl">
-                          {mealType.mealTypeName}
-                        </h4>
-                        <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
-                          {mealType.meals?.map((meal) => {
-                            const voteKey = `${mealType.id}-${meal.id}`;
-                            const voteData = votes?.byKey[voteKey];
-                            return (
-                              <div key={meal.id} className={cardClass}>
-                                <p className="mb-3 text-base font-semibold text-gray-900">
-                                  {meal.mealName}
-                                </p>
-                                <ul className="mb-4 space-y-1.5 border-l-2 border-primary/15 pl-3">
-                                  {meal.dishes?.map((dish) => (
-                                    <li
-                                      key={dish.id}
-                                      className="text-sm leading-snug text-gray-600"
-                                    >
-                                      {dish.dishName}
-                                    </li>
-                                  ))}
-                                </ul>
-                                <MealVoteStars
-                                  groupId={group.groupId}
-                                  mealTypeId={mealType.id}
-                                  mealId={meal.id}
-                                  voteData={voteData}
-                                />
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    ))}
+                  <div
+                    className={`${cardClass} flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8`}
+                  >
+                    <div className="min-w-0 sm:flex-1">
+                      <p className="text-base font-semibold text-gray-900 sm:text-lg">
+                        Il menu non è più elencato in questa pagina
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600 sm:text-[0.95rem]">
+                        Su «Il mio menu» vedi le proposte, voti quando vuoi (un
+                        voto a persona per pasto) e, quando tutta la ciurma ha
+                        finito, puoi generare la lista della spesa da lì.
+                      </p>
+                    </div>
+                    <CTA
+                      variant="accent"
+                      type="button"
+                      className="w-full shrink-0 sm:w-auto"
+                      onClick={() => {
+                        setCurrentGroupId(group.groupId);
+                        router.push("/my-menu");
+                      }}
+                    >
+                      Vai a Il mio menu
+                    </CTA>
                   </div>
                 </section>
               ) : (
@@ -585,7 +571,9 @@ export const PageContent = ({
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-gray-600">
                         Non serve fare altro qui finché il menu non è
-                        pubblicato. Riceverai tutto in questa stessa pagina.
+                        pubblicato. Quando sarà pronto, apri «Il mio menu» e
+                        scegli il menu di questo gruppo per vedere i pasti e
+                        votare.
                       </p>
                     </div>
                     <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-gray-200 bg-gray-100">

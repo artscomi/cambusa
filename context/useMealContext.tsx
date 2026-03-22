@@ -1,13 +1,34 @@
-import { MealList } from "@/types/types";
 import React, {
   createContext,
   useState,
   ReactNode,
   useContext,
   useEffect,
+  useCallback,
 } from "react";
-import { getMealListFromDB } from "@/app/api/actions";
+import {
+  getMealListFromDB,
+  getGroupMealListForViewer,
+  getMemberGroupMenuFallback,
+  getMyMenuSourcesForViewer,
+} from "@/app/api/actions";
 import { useUser } from "@clerk/nextjs";
+import type { MealList } from "@/types/types";
+
+export const MY_MENU_SOURCE_STORAGE_KEY = "myMenuSource";
+
+function tryNonEmptyMealList(
+  raw: string | null | undefined,
+): MealList | undefined {
+  if (raw == null || raw === "") return undefined;
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed) || parsed.length === 0) return undefined;
+    return parsed as MealList;
+  } catch {
+    return undefined;
+  }
+}
 
 interface MyContextType {
   mealList: MealList | undefined;
@@ -30,6 +51,11 @@ interface MyContextType {
   ) => void;
   currentGroupId: string | undefined;
   setCurrentGroupId: (groupId: string | undefined) => void;
+  /** Carica menu personale (`personal`) o di gruppo (`groupId`). Ritorna true se ha trovato un menu non vuoto. */
+  loadMenuForSource: (
+    source: "personal" | string,
+    userId: string,
+  ) => Promise<boolean>;
 }
 
 const MealContext = createContext<MyContextType | undefined>(undefined);
@@ -56,13 +82,52 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
   const [isMounted, setIsMounted] = useState(false);
   const { user } = useUser();
 
-  const setCurrentGroupId = (groupId: string | undefined) => {
+  const setCurrentGroupId = useCallback((groupId: string | undefined) => {
     setCurrentGroupIdState(groupId);
     if (typeof window !== "undefined") {
       if (groupId) localStorage.setItem("currentGroupId", groupId);
       else localStorage.removeItem("currentGroupId");
     }
-  };
+  }, []);
+
+  const loadMenuForSource = useCallback(
+    async (source: "personal" | string, userId: string): Promise<boolean> => {
+      if (source === "personal") {
+        const dbRaw = await getMealListFromDB(userId);
+        const fromDb = tryNonEmptyMealList(dbRaw ?? undefined);
+        if (fromDb) {
+          setMealList(fromDb);
+          setCurrentGroupId(undefined);
+          if (typeof window !== "undefined") {
+            localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, "personal");
+          }
+          return true;
+        }
+        if (typeof window !== "undefined") {
+          const fromLs = tryNonEmptyMealList(localStorage.getItem("mealList"));
+          if (fromLs) {
+            setMealList(fromLs);
+            setCurrentGroupId(undefined);
+            localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, "personal");
+            return true;
+          }
+        }
+        return false;
+      }
+
+      const fromGroup = await getGroupMealListForViewer(source);
+      if (fromGroup && fromGroup.length > 0) {
+        setMealList(fromGroup);
+        setCurrentGroupId(source);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, source);
+        }
+        return true;
+      }
+      return false;
+    },
+    [setCurrentGroupId],
+  );
 
   useEffect(() => {
     setIsMounted(true);
@@ -72,41 +137,133 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
     if (!isMounted || !user?.id) return;
 
     const loadInitialData = async () => {
+      const tryGroupFallback = async () => {
+        if (typeof window === "undefined") return;
+        const preferred = localStorage.getItem("currentGroupId");
+        const groupFb = await getMemberGroupMenuFallback(user.id, preferred);
+        if (groupFb) {
+          setCurrentGroupId(groupFb.groupId);
+          setMealList(groupFb.mealList);
+          localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, groupFb.groupId);
+        }
+      };
+
       try {
-        // First try to load from database
-        const dbMealList = await getMealListFromDB(user.id);
-        if (dbMealList) {
-          setMealList(JSON.parse(dbMealList));
+        const sources = await getMyMenuSourcesForViewer();
+
+        if (sources) {
+          const stored =
+            typeof window !== "undefined"
+              ? localStorage.getItem(MY_MENU_SOURCE_STORAGE_KEY)
+              : null;
+          const valid =
+            stored === "personal"
+              ? sources.hasPersonalMenu
+              : !!(
+                  stored &&
+                  sources.groups.some((g) => g.id === stored)
+                );
+
+          if (valid && stored) {
+            const ok = await loadMenuForSource(
+              stored === "personal" ? "personal" : stored,
+              user.id,
+            );
+            if (ok) return;
+          }
+
+          if (typeof window !== "undefined") {
+            const preferred = localStorage.getItem("currentGroupId");
+            const prefOk =
+              preferred && sources.groups.some((g) => g.id === preferred);
+            if (prefOk && preferred) {
+              const ok = await loadMenuForSource(preferred, user.id);
+              if (ok) return;
+            }
+          }
+
+          if (sources.hasPersonalMenu) {
+            const ok = await loadMenuForSource("personal", user.id);
+            if (ok) return;
+          }
+
+          if (sources.groups.length > 0) {
+            const ok = await loadMenuForSource(sources.groups[0]!.id, user.id);
+            if (ok) return;
+          }
+        }
+
+        const dbRaw = await getMealListFromDB(user.id);
+        const fromDb = tryNonEmptyMealList(dbRaw ?? undefined);
+        if (fromDb) {
+          setMealList(fromDb);
+          setCurrentGroupId(undefined);
+          if (typeof window !== "undefined") {
+            localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, "personal");
+          }
           return;
         }
 
-        // If no data in DB, try localStorage as fallback
         if (typeof window !== "undefined") {
-          const storedMealList = localStorage.getItem("mealList");
-          if (storedMealList) {
-            setMealList(JSON.parse(storedMealList));
+          const preferred = localStorage.getItem("currentGroupId");
+          if (preferred) {
+            const fromGroup = await getGroupMealListForViewer(preferred);
+            if (fromGroup && fromGroup.length > 0) {
+              setCurrentGroupId(preferred);
+              setMealList(fromGroup);
+              localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, preferred);
+              return;
+            }
           }
+
+          const fromLs = tryNonEmptyMealList(localStorage.getItem("mealList"));
+          if (fromLs) {
+            setMealList(fromLs);
+            setCurrentGroupId(undefined);
+            localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, "personal");
+            return;
+          }
+          await tryGroupFallback();
         }
       } catch (error) {
         console.error("Error loading meal list:", error);
-        // If error loading from DB, try localStorage as fallback
         if (typeof window !== "undefined") {
-          const storedMealList = localStorage.getItem("mealList");
-          if (storedMealList) {
-            setMealList(JSON.parse(storedMealList));
+          const preferred = localStorage.getItem("currentGroupId");
+          if (preferred) {
+            const fromGroup = await getGroupMealListForViewer(preferred);
+            if (fromGroup && fromGroup.length > 0) {
+              setCurrentGroupId(preferred);
+              setMealList(fromGroup);
+              localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, preferred);
+              return;
+            }
           }
+
+          const fromLs = tryNonEmptyMealList(localStorage.getItem("mealList"));
+          if (fromLs) {
+            setMealList(fromLs);
+            setCurrentGroupId(undefined);
+            localStorage.setItem(MY_MENU_SOURCE_STORAGE_KEY, "personal");
+            return;
+          }
+          await tryGroupFallback();
         }
       }
     };
 
     loadInitialData();
-  }, [isMounted, user?.id]);
+  }, [isMounted, user?.id, loadMenuForSource, setCurrentGroupId]);
 
   useEffect(() => {
-    if (mealList && isMounted && typeof window !== "undefined") {
+    if (
+      mealList &&
+      isMounted &&
+      typeof window !== "undefined" &&
+      !currentGroupId
+    ) {
       localStorage.setItem("mealList", JSON.stringify(mealList));
     }
-  }, [mealList, isMounted]);
+  }, [mealList, isMounted, currentGroupId]);
 
   // Load alcohol preferences from localStorage
   useEffect(() => {
@@ -199,6 +356,7 @@ export const MealContextProvider: React.FC<MyProviderProps> = ({
         setGroupAlcoholPreferences,
         currentGroupId,
         setCurrentGroupId,
+        loadMenuForSource,
       }}
     >
       {children}

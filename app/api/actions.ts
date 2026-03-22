@@ -21,6 +21,8 @@ import {
   FREE_TIER_API_CALLS,
   UNLIMITED_USERS,
 } from "@/utils/constants";
+import { getGroupPreferenceProgress } from "@/lib/getGroupPreferenceProgress";
+import { isGroupMenuVotingComplete } from "@/lib/isGroupMenuVotingComplete";
 
 export const getUserInfo = async (userId: string) => {
   if (!userId) {
@@ -454,6 +456,21 @@ export const addFoodPreferenceAction = async (
   }
 };
 
+/** True se l'utente autenticato è il proprietario del gruppo. */
+export const isViewerGroupOwner = async (groupId: string): Promise<boolean> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return false;
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true },
+    });
+    return group?.ownerId === userId;
+  } catch {
+    return false;
+  }
+};
+
 /** Salva il menu generato sul gruppo. Solo il group owner può salvare. */
 export const saveGroupMealList = async (
   groupId: string,
@@ -477,6 +494,7 @@ export const saveGroupMealList = async (
       data: { mealList: JSON.stringify(mealList) },
     });
     revalidatePath(`/group/${groupId}/menu`);
+    revalidatePath("/my-menu");
     return {};
   } catch (error) {
     console.error("Error saving group meal list:", error);
@@ -539,6 +557,262 @@ export const getGroupMealList = async (
     return JSON.parse(group.mealList) as MealList;
   } catch (error) {
     console.error("Error getting group meal list:", error);
+    return null;
+  }
+};
+
+function parseNonEmptyMealListJson(
+  raw: string | null | undefined,
+): MealList | null {
+  if (raw == null || raw === "") return null;
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    return parsed as MealList;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Menu del gruppo aggiornato dal DB, solo se l'utente è membro o owner.
+ * Usare al posto di getGroupMealList dal client quando serve coerenza con le modifiche dell'owner.
+ */
+export const getGroupMealListForViewer = async (
+  groupId: string,
+): Promise<MealList | null> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true, mealList: true },
+    });
+    if (!group) return null;
+
+    const membership = await db.groupMembership.findUnique({
+      where: { userId_groupId: { userId, groupId } },
+    });
+    if (!membership && group.ownerId !== userId) return null;
+
+    return parseNonEmptyMealListJson(group.mealList);
+  } catch (error) {
+    console.error("Error getGroupMealListForViewer:", error);
+    return null;
+  }
+};
+
+/** Opzioni menu su «Il mio menu»: personale + gruppi con menu già generato. */
+export const getMyMenuSourcesForViewer = async (): Promise<{
+  hasPersonalMenu: boolean;
+  groups: { id: string; name: string }[];
+} | null> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+      select: { mealList: true },
+    });
+    const hasPersonalMenu = parseNonEmptyMealListJson(user?.mealList) != null;
+
+    const [memberships, ownedGroups] = await Promise.all([
+      db.groupMembership.findMany({
+        where: { userId },
+        include: {
+          group: {
+            select: { id: true, name: true, mealList: true },
+          },
+        },
+      }),
+      db.group.findMany({
+        where: { ownerId: userId },
+        select: { id: true, name: true, mealList: true },
+      }),
+    ]);
+
+    const byId = new Map<string, { id: string; name: string }>();
+
+    for (const m of memberships) {
+      if (parseNonEmptyMealListJson(m.group.mealList)) {
+        byId.set(m.group.id, { id: m.group.id, name: m.group.name });
+      }
+    }
+    for (const g of ownedGroups) {
+      if (parseNonEmptyMealListJson(g.mealList) && !byId.has(g.id)) {
+        byId.set(g.id, { id: g.id, name: g.name });
+      }
+    }
+
+    const groups = [...byId.values()].sort(
+      (a, b) =>
+        a.name.localeCompare(b.name, "it") || a.id.localeCompare(b.id),
+    );
+
+    return { hasPersonalMenu, groups };
+  } catch (error) {
+    console.error("Error getMyMenuSourcesForViewer:", error);
+    return null;
+  }
+};
+
+/**
+ * Dati per il gate lista spesa su «Il mio menu».
+ * `votingMembersRequired` = membri iscritti al gruppo (ciurma effettiva), non il solo campo «persone».
+ */
+export const getGroupExpectedCrewForViewer = async (
+  groupId: string,
+): Promise<{ expectedCrew: number; votingMembersRequired: number } | null> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { people: true, ownerId: true },
+    });
+    if (!group) return null;
+
+    const membership = await db.groupMembership.findUnique({
+      where: { userId_groupId: { userId, groupId } },
+    });
+    if (!membership && group.ownerId !== userId) return null;
+
+    const progress = await getGroupPreferenceProgress(groupId, group.people);
+    return {
+      expectedCrew: progress.expectedCrew,
+      votingMembersRequired: Math.max(1, progress.membersJoined),
+    };
+  } catch (error) {
+    console.error("Error getGroupExpectedCrewForViewer:", error);
+    return null;
+  }
+};
+
+/**
+ * Stato lista spesa da DB (menu gruppo + voti + membri). Evita falsi «ancora disabilitato»
+ * su «Il mio menu» quando il mealList in contesto non coincide col menu del gruppo.
+ */
+export const getGroupShoppingListGateForViewer = async (
+  groupId: string,
+): Promise<{ unlocked: boolean } | null> => {
+  try {
+    const { userId } = await auth();
+    if (!userId) return null;
+
+    const group = await db.group.findUnique({
+      where: { id: groupId },
+      select: { ownerId: true, mealList: true, people: true },
+    });
+    if (!group) return null;
+
+    const membership = await db.groupMembership.findUnique({
+      where: { userId_groupId: { userId, groupId } },
+    });
+    if (!membership && group.ownerId !== userId) return null;
+
+    const mealList = parseNonEmptyMealListJson(group.mealList);
+    if (!mealList) return { unlocked: false };
+
+    const rows = await db.menuItemVote.findMany({
+      where: { groupId },
+      select: { mealTypeId: true, mealId: true },
+    });
+    const counts: Record<string, number> = {};
+    for (const r of rows) {
+      const key = `${r.mealTypeId}-${r.mealId}`;
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    const votesByKey: Record<
+      string,
+      { average: number; count: number; userVote?: number }
+    > = {};
+    for (const [key, count] of Object.entries(counts)) {
+      votesByKey[key] = { average: 0, count };
+    }
+
+    const progress = await getGroupPreferenceProgress(groupId, group.people);
+    const votersRequired = Math.max(1, progress.membersJoined);
+    const unlocked = isGroupMenuVotingComplete(
+      mealList,
+      votesByKey,
+      votersRequired,
+    );
+    return { unlocked };
+  } catch (error) {
+    console.error("Error getGroupShoppingListGateForViewer:", error);
+    return null;
+  }
+};
+
+/**
+ * Menu di gruppo già generato a cui l'utente ha accesso come membro.
+ * Se `preferredGroupId` è tra i gruppi con menu, viene preferito (es. ultimo visitato).
+ */
+export const getMemberGroupMenuFallback = async (
+  userId: string,
+  preferredGroupId?: string | null,
+): Promise<{ groupId: string; mealList: MealList } | null> => {
+  try {
+    if (!userId) return null;
+
+    const [memberships, ownedGroups] = await Promise.all([
+      db.groupMembership.findMany({
+        where: { userId },
+        include: {
+          group: {
+            select: { id: true, name: true, mealList: true },
+          },
+        },
+      }),
+      db.group.findMany({
+        where: { ownerId: userId },
+        select: { id: true, name: true, mealList: true },
+      }),
+    ]);
+
+    type Entry = { groupId: string; mealList: MealList; name: string };
+    const byId = new Map<string, Entry>();
+
+    for (const m of memberships) {
+      const mealList = parseNonEmptyMealListJson(m.group.mealList);
+      if (mealList) {
+        byId.set(m.group.id, {
+          groupId: m.group.id,
+          mealList,
+          name: m.group.name,
+        });
+      }
+    }
+
+    for (const g of ownedGroups) {
+      const mealList = parseNonEmptyMealListJson(g.mealList);
+      if (mealList && !byId.has(g.id)) {
+        byId.set(g.id, { groupId: g.id, mealList, name: g.name });
+      }
+    }
+
+    const entries = [...byId.values()];
+
+    if (entries.length === 0) return null;
+
+    if (preferredGroupId) {
+      const hit = entries.find((e) => e.groupId === preferredGroupId);
+      if (hit) return { groupId: hit.groupId, mealList: hit.mealList };
+    }
+
+    entries.sort(
+      (a, b) =>
+        a.name.localeCompare(b.name, "it") ||
+        a.groupId.localeCompare(b.groupId),
+    );
+
+    const chosen = entries[0]!;
+    return { groupId: chosen.groupId, mealList: chosen.mealList };
+  } catch (error) {
+    console.error("Error getMemberGroupMenuFallback:", error);
     return null;
   }
 };
@@ -611,6 +885,7 @@ export const voteMenuItem = async (
       },
     });
     revalidatePath(`/group/${groupId}/menu`);
+    revalidatePath("/my-menu");
     return {};
   } catch (error) {
     console.error("Error voting menu item:", error);

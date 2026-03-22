@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import { Info, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useId, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { CTA } from "@/components/CTA";
+import { useMealContext } from "@/context/useMealContext";
 
 function CounterInfoTooltip({
   text,
@@ -99,6 +102,10 @@ export type GroupPreferenceCounterProps = GroupPreferenceProgressStats & {
   footer?: ReactNode;
   /** Stile accent (come box inviti) quando equipaggio al completo. */
   accentHighlight?: boolean;
+  /** Menu del gruppo già salvato: copy e CTA verso «Il mio menu». */
+  hasPublishedGroupMenu?: boolean;
+  /** Per aprire «Il mio menu» con il gruppo già selezionato nel contesto. */
+  groupId?: string;
 };
 
 export function GroupPreferenceCounter({
@@ -112,7 +119,12 @@ export function GroupPreferenceCounter({
   viewerIsOwner,
   footer,
   accentHighlight = false,
+  hasPublishedGroupMenu = false,
+  groupId,
 }: GroupPreferenceCounterProps) {
+  const router = useRouter();
+  const { setCurrentGroupId } = useMealContext();
+
   const pct =
     expectedCrew > 0
       ? Math.min(100, Math.round((completedCount / expectedCrew) * 100))
@@ -185,9 +197,15 @@ export function GroupPreferenceCounter({
       ? "Imposta quante siete nel gruppo per vedere l’avanzamento."
       : "Imposta il numero di persone nel gruppo per vedere l’avanzamento.";
   } else if (pct >= 100) {
-    progressMessage = showOwnerCompletionCopy
-      ? "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento puoi generare il menu."
-      : "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento è possibile generare il menu! Chiedi al group owner.";
+    if (hasPublishedGroupMenu) {
+      progressMessage = showOwnerCompletionCopy
+        ? "Il menu condiviso è stato generato. Su «Il mio menu» puoi rivedere le proposte, far votare la ciurma pasto per pasto e creare la lista della spesa quando tutti avranno votato."
+        : "Il menu è stato pubblicato dall’organizzatore. Su «Il mio menu» (scegli il menu di questo gruppo) trovi le proposte, i voti e la lista della spesa.";
+    } else {
+      progressMessage = showOwnerCompletionCopy
+        ? "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento puoi generare il menu."
+        : "Tutta la ciurma ha registrato le proprie preferenze alimentari! Da questo momento è possibile generare il menu: chiedi al referente del gruppo di generarlo.";
+    }
   } else if (completedCount === 0) {
     if (isOrganizerContext) {
       progressMessage = narrowColumn
@@ -338,8 +356,25 @@ export function GroupPreferenceCounter({
         >
           {progressMessage}
         </p>
+        {hasPublishedGroupMenu && pct >= 100 && groupId ? (
+          <div
+            className={`mt-4 min-w-0 ${narrowColumn ? "" : prominent ? "flex justify-center sm:justify-start" : ""}`}
+          >
+            <CTA
+              variant="accent"
+              type="button"
+              className={narrowColumn ? "w-full" : "w-full sm:w-auto"}
+              onClick={() => {
+                setCurrentGroupId(groupId);
+                router.push("/my-menu");
+              }}
+            >
+              Vai a Il mio menu
+            </CTA>
+          </div>
+        ) : null}
         {footer ? <div className="mt-4 min-w-0">{footer}</div> : null}
-        {infoTooltip && !narrowColumn && pct >= 100 ? (
+        {infoTooltip && !narrowColumn && pct >= 100 && !hasPublishedGroupMenu ? (
           <p
             className={`mt-4 border-t border-primary/20 pt-4 text-sm font-semibold leading-relaxed text-primary sm:text-base ${prominent ? "text-center sm:text-left" : ""}`}
           >

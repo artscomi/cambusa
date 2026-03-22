@@ -28,6 +28,8 @@ export const ButtonGenerateMealList: React.FC<{
     user: { name: string };
   }>;
   groupId?: string;
+  /** Se il gruppo ha già un menu salvato, etichetta «Rigenera menu». */
+  regenerate?: boolean;
 }> = ({
   userId,
   dietaryPreferences,
@@ -38,6 +40,7 @@ export const ButtonGenerateMealList: React.FC<{
   startTransition,
   setError,
   groupId,
+  regenerate = false,
 }) => {
   const {
     setMealList,
@@ -82,7 +85,7 @@ export const ButtonGenerateMealList: React.FC<{
 
   return (
     <CTA variant="accent" full onClick={handleCtaClick}>
-      Genera il menu
+      {regenerate ? "Rigenera menu" : "Genera il menu"}
     </CTA>
   );
 };
