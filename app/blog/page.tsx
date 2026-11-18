@@ -17,6 +17,25 @@ import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
 
 const articles = [
   {
+    title: "Cambusa Invernale: Cosa Portare in Barca per Navigare al Caldo",
+    description:
+      "Pasti caldi, frutta e verdura di stagione, bevande calde e consigli pratici per organizzare la cambusa quando navighi d'inverno.",
+    slug: "cambusa-invernale",
+    date: "2026-11-18",
+    readTime: "5 min",
+    category: "Guida",
+  },
+  {
+    title:
+      "Come Conservare il Cibo in Barca Senza Frigorifero: Guida Pratica",
+    description:
+      "Frutta, verdura, uova, formaggi e pane: come farli durare tutta la crociera anche con poco freddo a bordo. Dove stivare le provviste e in che ordine consumarle.",
+    slug: "conservare-cibo-barca-senza-frigo",
+    date: "2026-11-18",
+    readTime: "5 min",
+    category: "Organizzazione",
+  },
+  {
     title:
       "Cibi Contro il Mal di Mare: Alimentazione per Navigare Senza Nausea",
     description:
