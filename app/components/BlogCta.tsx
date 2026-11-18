@@ -30,7 +30,7 @@ export const BlogCta: React.FC<BlogCtaProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="relative mt-20 mb-16"
+      className="not-prose isolate relative mt-16 mb-12 px-6 py-10 sm:px-10 md:px-12 md:py-14"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 blog-cta-background -z-10"></div>
@@ -69,7 +69,7 @@ export const BlogCta: React.FC<BlogCtaProps> = ({
               href={linkUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:text-primary-light transition-colors duration-300 decoration-2 underline-offset-4"
+              className="text-primary hover:text-primary-light transition-colors duration-300 underline decoration-2 underline-offset-4"
             >
               {ctaText}
             </a>{" "}
