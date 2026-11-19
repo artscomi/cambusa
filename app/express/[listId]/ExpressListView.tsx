@@ -120,8 +120,8 @@ export function ExpressListView({
     return () => clearTimeout(t);
   }, [notice]);
 
-  const refresh = useCallback(async () => {
-    const fresh = await getExpressList(initialList.id);
+  /** Applica una versione aggiornata della lista (dal polling o dalla risposta di un'azione). */
+  const applyFresh = useCallback((fresh: ListData | null) => {
     // Non sovrascrivere mentre un'azione è in corso (aggiornamento ottimistico)
     if (!fresh || busy.current !== 0) return;
     // Evidenzia per qualche secondo i prodotti appena aggiunti dagli altri
@@ -140,7 +140,11 @@ export function ExpressListView({
       }, NEW_HIGHLIGHT_MS);
     }
     setList(fresh);
-  }, [initialList.id]);
+  }, []);
+
+  const refresh = useCallback(async () => {
+    applyFresh(await getExpressList(initialList.id));
+  }, [initialList.id, applyFresh]);
 
   // Aggiornamento periodico: così si vedono i prodotti e i voti degli altri
   useEffect(() => {
@@ -211,15 +215,21 @@ export function ExpressListView({
     setError(null);
     setList((l) => ({ ...l, items: optimistic(l.items) }));
     let data: T | undefined;
+    let freshFromAction: ListData | null = null;
     try {
       const result = await action();
-      if (result.ok) data = result.data;
-      else setError(result.error);
+      if (result.ok) {
+        data = result.data;
+        // Alcune azioni restituiscono già la lista aggiornata: niente seconda richiesta
+        const maybe = (data as { list?: ListData | null } | undefined)?.list;
+        if (maybe) freshFromAction = maybe;
+      } else setError(result.error);
     } catch {
       setError("Connessione assente, riprova");
     } finally {
       busy.current -= 1;
-      await refresh();
+      if (freshFromAction) applyFresh(freshFromAction);
+      else await refresh();
     }
     return data;
   };
@@ -785,7 +795,7 @@ export function ExpressListView({
                 <section
                   key={category}
                   aria-label={category}
-                  className="lg:mb-7 lg:break-inside-avoid"
+                  className="lg:break-inside-avoid lg:pb-7"
                 >
                   <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
                     {category}
