@@ -17,6 +17,16 @@ import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
 
 const articles = [
   {
+    title:
+      "Lista della Spesa Condivisa per la Barca: Come Organizzare la Cambusa con Tutta la Crew",
+    description:
+      "Con Cambusa Express crei in 30 secondi una lista condivisa: ognuno aggiunge e vota i prodotti dal telefono, divisi per reparto. Gratis e senza registrazione.",
+    slug: "lista-spesa-condivisa-barca",
+    date: "2026-11-19",
+    readTime: "5 min",
+    category: "Novità",
+  },
+  {
     title: "Cambusa Invernale: Cosa Portare in Barca per Navigare al Caldo",
     description:
       "Pasti caldi, frutta e verdura di stagione, bevande calde e consigli pratici per organizzare la cambusa quando navighi d'inverno.",
