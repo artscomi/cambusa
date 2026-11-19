@@ -6,6 +6,7 @@ import { Checkbox, CheckboxProps } from "@/components/Checkbox";
 import { Select } from "@/components/Select";
 import { SelectConfig } from "@/hooks/useFormConfig";
 import { createGroupAction } from "@/app/api/actions";
+import { trackEvent } from "@/lib/gtag";
 import { useFormConfig } from "@/hooks/useFormConfig";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -125,6 +126,7 @@ export const CreateGroupForm = () => {
 
       const groupId = await createGroupAction(formData);
       if (groupId) {
+        trackEvent("group_created");
         router.push(`/group/${groupId}`);
       } else {
         console.error("Error creating group");
