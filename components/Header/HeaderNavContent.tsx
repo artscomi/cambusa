@@ -34,7 +34,7 @@ export function HeaderNavContent({
       className={`w-full ${wrapperClass}`}
       aria-label="Navigazione principale"
     >
-      <ul className="flex justify-end items-center gap-5 sm:gap-6 text-sm md:text-base w-full">
+      <ul className="flex justify-end items-center gap-4 sm:gap-6 text-sm md:text-base w-full">
         <li>
           <Link href="/express" className={linkClass}>
             Express

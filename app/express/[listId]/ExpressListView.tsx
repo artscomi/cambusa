@@ -78,6 +78,10 @@ export function ExpressListView({
   const busy = useRef(0);
   const seenIds = useRef(new Set(initialList.items.map((i) => i.id)));
   const inputRef = useRef<HTMLInputElement>(null);
+  // Telefono, lista non vuota: barra di inserimento fissa in basso (come una chat)
+  const barInputRef = useRef<HTMLInputElement>(null);
+  const [barFocused, setBarFocused] = useState(false);
+  const [nameSheetOpen, setNameSheetOpen] = useState(false);
   const addSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -197,7 +201,12 @@ export function ExpressListView({
     saveGuestName(name);
     setGuestName(name);
     setError(null);
-    setTimeout(() => inputRef.current?.focus(), 0);
+    setNameSheetOpen(false);
+    // Mette il cursore nel campo visibile: la barra in basso su telefono, altrimenti quello in alto
+    setTimeout(() => {
+      const bar = barInputRef.current;
+      (bar && bar.offsetParent ? bar : inputRef.current)?.focus();
+    }, 0);
   };
 
   /** Aggiunge uno o più prodotti; compaiono subito, poi si riallinea col server. */
@@ -248,6 +257,12 @@ export function ExpressListView({
     e.preventDefault();
     void addProducts(itemText);
     inputRef.current?.focus();
+  };
+
+  const submitBar = (e: React.FormEvent) => {
+    e.preventDefault();
+    void addProducts(itemText);
+    barInputRef.current?.focus();
   };
 
   const focusAdd = () => {
@@ -330,7 +345,7 @@ export function ExpressListView({
   const inviteHighlight = lonely && (justCreated || list.isCreator);
 
   return (
-    <div className="space-y-6 pb-20 sm:pb-0">
+    <div className={cn("space-y-6 sm:pb-0", hasItems ? "pb-28" : "pb-6")}>
       {/* Intestazione */}
       <header className="text-center">
         <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
@@ -411,7 +426,11 @@ export function ExpressListView({
       <section
         ref={addSectionRef}
         aria-label="Aggiungi prodotti"
-        className="scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5"
+        className={cn(
+          "scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5",
+          // Su telefono, con la lista piena, si aggiunge dalla barra in basso
+          hasItems && "hidden sm:block",
+        )}
       >
         {!nameReady ? (
           <div className="h-[4.5rem]" aria-hidden />
@@ -628,12 +647,117 @@ export function ExpressListView({
         </Link>
       </section>
 
-      {/* Pulsante sempre a portata quando il campo per aggiungere non si vede */}
+      {/* Barra di inserimento in basso: solo telefono e lista non vuota */}
+      {hasItems && nameReady && (
+        <div
+          className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/95 backdrop-blur sm:hidden"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        >
+          {(error || notice) && (
+            <p
+              role={error ? "alert" : "status"}
+              className={cn(
+                "px-4 pt-2 text-sm font-medium",
+                error ? "text-red-600" : "text-emerald-700",
+              )}
+            >
+              {error ?? notice}
+            </p>
+          )}
+          {guestName ? (
+            <>
+              {barFocused && suggestions.length > 0 && (
+                <div className="flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]">
+                  {suggestions.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      // Non togliere il focus al campo, così la tastiera resta aperta
+                      onPointerDown={(e) => e.preventDefault()}
+                      onClick={() => void addProducts(s)}
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/[0.04] px-3 py-1.5 text-sm font-medium text-primary"
+                    >
+                      <Plus className="h-3.5 w-3.5" aria-hidden />
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <form onSubmit={submitBar} className="flex gap-2 p-3">
+                <input
+                  ref={barInputRef}
+                  aria-label="Aggiungi un prodotto"
+                  className={cn(inputClass, "py-2.5")}
+                  placeholder="Aggiungi un prodotto…"
+                  value={itemText}
+                  maxLength={300}
+                  onChange={(e) => setItemText(e.target.value)}
+                  onFocus={() => setBarFocused(true)}
+                  onBlur={() => setBarFocused(false)}
+                  enterKeyHint="send"
+                  autoComplete="off"
+                />
+                <button
+                  type="submit"
+                  disabled={!itemText.trim()}
+                  aria-label="Aggiungi"
+                  className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition disabled:opacity-50"
+                >
+                  <Plus className="h-5 w-5" aria-hidden />
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="p-3">
+              <button
+                type="button"
+                onClick={() => setNameSheetOpen(true)}
+                className="w-full rounded-xl bg-primary py-3 font-semibold text-white"
+              >
+                Partecipa alla lista
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Pannello dal basso per scrivere il nome (telefono) */}
+      {nameSheetOpen && (
+        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:hidden" onClick={() => setNameSheetOpen(false)}>
+          <form
+            onSubmit={confirmName}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full space-y-3 rounded-t-3xl bg-white p-5"
+            style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+          >
+            <span className="mx-auto block h-1.5 w-10 rounded-full bg-gray-300" aria-hidden />
+            <label htmlFor="express-guest-sheet" className="block font-semibold text-gray-900">
+              Come ti chiami?
+            </label>
+            <p className="-mt-2 text-sm text-gray-500">Così la crew sa chi ha proposto cosa.</p>
+            <input
+              id="express-guest-sheet"
+              className={inputClass}
+              placeholder="Il tuo nome"
+              value={nameDraft}
+              maxLength={30}
+              onChange={(e) => setNameDraft(e.target.value)}
+              autoComplete="given-name"
+              autoFocus
+            />
+            <button type="submit" className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
+              Entra e aggiungi prodotti
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Pulsante sempre a portata quando il campo per aggiungere non si vede (da tablet in su) */}
       {guestName && !addFormVisible && (
         <button
           type="button"
           onClick={focusAdd}
-          className="fixed bottom-5 right-5 z-30 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3.5 font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.35)] transition hover:bg-accent-light"
+          className="fixed bottom-5 right-5 z-30 hidden sm:inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3.5 font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.35)] transition hover:bg-accent-light"
         >
           <Plus className="h-5 w-5" aria-hidden />
           Aggiungi

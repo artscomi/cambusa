@@ -13,7 +13,7 @@ export const Logo = () => {
   return (
     <Link
       href="/"
-      className="text-primary hover:text-primary-light transition-colors"
+      className="shrink-0 text-primary hover:text-primary-light transition-colors"
       aria-label="Torna alla home di Cambusaai"
     >
       <p className="text-2xl sm:text-3xl font-display font-bold relative py-2">
