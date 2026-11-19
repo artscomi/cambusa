@@ -4,7 +4,7 @@ import { ExpressListSkeleton } from "../ExpressListSkeleton";
 /** Mostrato mentre la lista si carica (per esempio aprendo il link d'invito). */
 export default function Loading() {
   return (
-    <PageContainer narrow>
+    <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12">
       <ExpressListSkeleton />
     </PageContainer>
   );

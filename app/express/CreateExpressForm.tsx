@@ -49,7 +49,7 @@ export function CreateExpressForm() {
       {/* Mentre la lista viene creata, la pagina diventa subito la lista (skeleton) */}
       {isPending && (
         <div className="fixed inset-0 z-30 overflow-y-auto bg-white pt-[75px] md:pt-20">
-          <PageContainer narrow>
+          <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12">
             <ExpressListSkeleton name={name.trim()} empty />
           </PageContainer>
         </div>

@@ -18,7 +18,7 @@ const steps = [
 
 export default function ExpressPage() {
   return (
-    <PageContainer narrow>
+    <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12">
       <div className="text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.07] px-3.5 py-1.5 font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
           <Zap className="h-3.5 w-3.5" aria-hidden />
@@ -27,13 +27,9 @@ export default function ExpressPage() {
         <h1 className="mt-5 font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
           La lista della cambusa, decisa da tutta la crew
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-          Crea una lista condivisa in 30 secondi: ognuno aggiunge quello che
-          vuole a bordo e vota le proposte degli altri. Nessuna registrazione.
-        </p>
       </div>
 
-      <div className="mx-auto mt-10 max-w-xl">
+      <div className="mx-auto mt-6 max-w-xl sm:mt-8">
         <CreateExpressForm />
       </div>
 
