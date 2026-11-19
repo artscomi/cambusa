@@ -27,6 +27,8 @@ export type ExpressItemView = {
   score: number;
   myVote: 1 | -1 | 0;
   canDelete: boolean;
+  /** Aggiunto da chi sta guardando la lista. */
+  mine: boolean;
 };
 
 export type ExpressListView = {
@@ -124,6 +126,7 @@ export async function getExpressList(
       myVote,
       canDelete:
         !!token && (token === item.addedBy || token === list.creatorToken),
+      mine: !!token && token === item.addedBy,
     };
   });
 
@@ -142,39 +145,86 @@ export async function getExpressList(
   };
 }
 
+/** Chiave per riconoscere i doppioni: "  Nutella " e "nutella" sono lo stesso prodotto. */
+const sameProductKey = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+/** Divide "pomodori, birra x24\nNutella" in più prodotti. */
+const splitProducts = (raw: string) =>
+  String(raw ?? "")
+    .split(/[,;\n]+/)
+    .map((t) => clean(t, MAX_ITEM_LENGTH))
+    .filter(Boolean)
+    .slice(0, MAX_ITEMS_PER_ADD);
+
+const MAX_ITEMS_PER_ADD = 20;
+
+/**
+ * Aggiunge uno o più prodotti (separati da virgola o a capo).
+ * Se un prodotto c'è già, non lo duplica: aggiunge il voto di chi l'ha proposto.
+ */
 export async function addExpressItem(input: {
   listId: string;
   text: string;
   guestName: string;
-}): Promise<Result> {
-  const text = clean(input.text, MAX_ITEM_LENGTH);
+}): Promise<Result<{ added: string[]; merged: string[] }>> {
+  const texts = splitProducts(input.text);
   const guestName = clean(input.guestName, MAX_NAME_LENGTH);
-  if (!text) return { ok: false, error: "Scrivi un prodotto" };
+  if (texts.length === 0) return { ok: false, error: "Scrivi un prodotto" };
   if (!guestName) return { ok: false, error: "Scrivi il tuo nome" };
 
   const list = await db.expressList.findUnique({
     where: { id: input.listId },
-    select: { id: true, _count: { select: { items: true } } },
+    select: { id: true, items: { select: { id: true, text: true } } },
   });
   if (!list) return { ok: false, error: "Lista non trovata" };
-  if (list._count.items >= MAX_ITEMS_PER_LIST) {
-    return { ok: false, error: "La lista è piena (massimo 150 prodotti)" };
-  }
 
   const token = ensureGuestToken();
-  // Chi aggiunge un prodotto lo vota anche: così parte da +1
-  await db.expressItem.create({
-    data: {
-      listId: list.id,
-      text,
-      category: categorizeExpressItem(text),
-      addedByName: guestName,
-      addedBy: token,
-      votes: { create: { voter: token, value: 1 } },
-    },
-  });
+  const existing = new Map(list.items.map((i) => [sameProductKey(i.text), i]));
+  const added: string[] = [];
+  const merged: string[] = [];
+  let room = MAX_ITEMS_PER_LIST - list.items.length;
+
+  for (const text of texts) {
+    const key = sameProductKey(text);
+    const duplicate = existing.get(key);
+    if (duplicate) {
+      await db.expressVote.upsert({
+        where: { itemId_voter: { itemId: duplicate.id, voter: token } },
+        update: { value: 1 },
+        create: { itemId: duplicate.id, voter: token, value: 1 },
+      });
+      merged.push(duplicate.text);
+      continue;
+    }
+    if (room <= 0) break;
+    // Chi aggiunge un prodotto lo vota anche: così parte da +1
+    const item = await db.expressItem.create({
+      data: {
+        listId: list.id,
+        text,
+        category: categorizeExpressItem(text),
+        addedByName: guestName,
+        addedBy: token,
+        votes: { create: { voter: token, value: 1 } },
+      },
+      select: { id: true, text: true },
+    });
+    existing.set(key, item);
+    added.push(text);
+    room -= 1;
+  }
+
   revalidatePath(`/express/${list.id}`);
-  return { ok: true };
+  if (added.length === 0 && merged.length === 0) {
+    return { ok: false, error: "La lista è piena (massimo 150 prodotti)" };
+  }
+  return { ok: true, data: { added, merged } };
 }
 
 /** Vota +1 o -1. Rivotare lo stesso valore toglie il voto. */
