@@ -367,21 +367,22 @@ export function ExpressListView({
           </span>
         </div>
         {hasItems && (
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1">
+          <div className="mt-5 flex flex-col items-center gap-2">
             <div className="relative" ref={inviteRef}>
               <button
                 type="button"
                 onClick={invite}
                 aria-expanded={canNativeShare ? undefined : inviteOpen}
                 className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold transition",
+                  // Area di tocco di almeno 44 px, come raccomandato per il mobile
+                  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition active:scale-[0.98]",
                   inviteHighlight
-                    ? "bg-accent text-white hover:bg-accent-light"
-                    : "border border-gray-300 text-gray-700 hover:border-primary hover:text-primary",
+                    ? "bg-accent text-white shadow-[0_8px_24px_rgb(var(--accent-rgb),0.28)] hover:bg-accent-light"
+                    : "border-2 border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary",
                 )}
               >
-                <Plus className="h-4 w-4" aria-hidden />
-                Invita
+                <Share2 className="h-5 w-5" aria-hidden />
+                Invita la crew
               </button>
               {inviteOpen && !canNativeShare && (
                 <div className="absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]">
@@ -414,7 +415,7 @@ export function ExpressListView({
               )}
             </div>
             {inviteHighlight && (
-              <span className="text-xs text-gray-500">
+              <span className="text-sm text-gray-500">
                 Chi apre il link aggiunge e vota, senza registrarsi
               </span>
             )}
