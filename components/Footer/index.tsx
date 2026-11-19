@@ -10,11 +10,13 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
 import { LegalLinks } from "./LegalLinks";
 
 export const Footer = () => {
   const { resetConsent, isMounted } = useCookieConsent();
+  const pathname = usePathname();
 
   const handleCookieSettings = () => {
     // Rimuovi le preferenze salvate per mostrare di nuovo il banner
@@ -26,7 +28,12 @@ export const Footer = () => {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-gray-50 to-blue-50 border-t border-gray-200 mt-20">
+    <footer
+      className={`bg-gradient-to-br from-gray-50 to-blue-50 border-t border-gray-200 ${
+        // In home la pagina finisce con il riquadro blu: niente spazio vuoto prima del footer
+        pathname === "/" ? "" : "mt-20"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
@@ -34,7 +41,7 @@ export const Footer = () => {
           <div className="text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start mb-4">
               <h3 className="text-2xl font-display font-bold text-primary">
-                Cambusa<span className="text-secondary">ai</span>
+                Cambusa<span className="text-primary-light">ai</span>
               </h3>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed max-w-xs mx-auto md:mx-0">
