@@ -117,6 +117,18 @@ export default function PrivacyPolicyPage() {
           ]}
         />
         <p>
+          <strong>Splitwise (solo se lo scegli tu).</strong> In Cambusa Express
+          puoi collegare il tuo account Splitwise per registrare il totale della
+          spesa in un tuo gruppo. In quel caso inviamo a Splitwise, a tuo nome,
+          solo i dati di quella spesa: importo, nome della lista e prodotti
+          presi. Il permesso di accesso che Splitwise ci dà resta in un cookie
+          nel tuo browser per 30 giorni e non lo salviamo nei nostri database;
+          puoi revocarlo in qualsiasi momento dalla lista (&quot;Scollega
+          Splitwise&quot;) o dalle impostazioni del tuo account Splitwise.
+          Splitwise (USA) tratta questi dati come titolare autonomo, secondo la
+          sua privacy policy.
+        </p>
+        <p>
           Possiamo comunicare i dati alle autorità quando lo richiede la legge.
         </p>
       </Section>

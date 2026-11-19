@@ -39,6 +39,7 @@ import {
 } from "../actions";
 import { readGuestName, saveGuestName } from "../guestName";
 import { trackEvent } from "@/lib/gtag";
+import { SplitwiseShare } from "./SplitwiseShare";
 
 // Aggiornamento automatico della lista: frequente mentre la usi, più lento quando è ferma,
 // sospeso dopo un po' di inattività (riparte appena tocchi lo schermo o torni sulla scheda)
@@ -70,9 +71,12 @@ const inputClass =
 
 export function ExpressListView({
   initialList,
+  splitwise = false,
 }: {
   initialList: ListData;
   justCreated: boolean;
+  /** Integrazione Splitwise attiva (chiavi configurate sul server) */
+  splitwise?: boolean;
 }) {
   const [list, setList] = useState(initialList);
   const [guestName, setGuestName] = useState("");
@@ -768,6 +772,11 @@ export function ExpressListView({
           </div>
         )}
 
+        {/* Desktop: dividere la spesa su Splitwise */}
+        {splitwise && hasItems && (
+          <SplitwiseShare listId={list.id} place="desktop" className="hidden lg:flex" />
+        )}
+
         {/* Desktop: invito al menu con l'AI, compatto nel pannello */}
         <Link
           href="/"
@@ -859,6 +868,11 @@ export function ExpressListView({
               </section>
             )}
           </div>
+        )}
+
+        {/* Telefono e tablet: dividere la spesa su Splitwise */}
+        {splitwise && hasItems && (
+          <SplitwiseShare listId={list.id} place="mobile" className="lg:hidden" />
         )}
 
         {/* Passaggio al menu completo: una riga compatta su telefono */}

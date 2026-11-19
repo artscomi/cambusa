@@ -32,6 +32,7 @@ export default function CookiesPage() {
             ["Clerk (__session, __client e simili)", "Mantenere l'accesso al tuo account", "Sessione / fino a 1 anno"],
             ["cambusa_guest", "Cambusa Express: riconoscere chi ha aggiunto o votato un prodotto, senza account", "1 anno"],
             ["Stripe", "Pagamento sicuro e prevenzione delle frodi, solo durante l'acquisto", "Fino a 1 anno"],
+            ["splitwise_token, splitwise_state", "Cambusa Express: ricordare il collegamento al tuo account Splitwise, solo se scegli di collegarlo", "30 giorni (10 minuti per splitwise_state)"],
             ["Memoria locale del browser", "Ricordare la tua scelta sui cookie, il nome usato in Express e le preferenze dei menu", "Finché non la cancelli"],
           ]}
         />

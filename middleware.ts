@@ -15,6 +15,8 @@ const isPublicRoute = createRouteMatcher([
   "/express(.*)",
   // Cron di Vercel: protetto dalla variabile CRON_SECRET, non dal login
   "/api/cron(.*)",
+  // Collegamento a Splitwise da Cambusa Express, senza account Cambusa
+  "/api/splitwise(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

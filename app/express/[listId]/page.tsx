@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PageContainer } from "@/components/PageContainer";
 import { getExpressList } from "../actions";
 import { ExpressListView } from "./ExpressListView";
+import { splitwiseEnabled } from "@/lib/splitwise";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,11 @@ export default async function ExpressListPage({ params, searchParams }: Props) {
 
   return (
     <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12 lg:max-w-6xl">
-      <ExpressListView initialList={list} justCreated={searchParams.nuova === "1"} />
+      <ExpressListView
+        initialList={list}
+        justCreated={searchParams.nuova === "1"}
+        splitwise={splitwiseEnabled()}
+      />
     </PageContainer>
   );
 }
