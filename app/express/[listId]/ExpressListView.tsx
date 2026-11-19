@@ -70,6 +70,8 @@ export function ExpressListView({
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [canNativeShare, setCanNativeShare] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const inviteRef = useRef<HTMLDivElement>(null);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
   const [addFormVisible, setAddFormVisible] = useState(true);
   const busy = useRef(0);
@@ -254,6 +256,21 @@ export function ExpressListView({
 
   const shareText = `Aiutami a fare la cambusa per "${list.name}": aggiungi quello che vuoi a bordo e vota le proposte!`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+  const invite = () => {
+    if (canNativeShare) return void shareLink();
+    setInviteOpen((v) => !v);
+  };
+
+  // Chiude il menu "Invita" toccando fuori
+  useEffect(() => {
+    if (!inviteOpen) return;
+    const close = (e: MouseEvent) => {
+      if (!inviteRef.current?.contains(e.target as Node)) setInviteOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [inviteOpen]);
+
   const shareLink = async () => {
     if (!canNativeShare) return copyLink();
     try {
@@ -296,8 +313,8 @@ export function ExpressListView({
   const lonely = list.contributors <= 1;
   // Una lista vuota non si condivide: i pulsanti compaiono dopo il primo prodotto
   const hasItems = list.items.length > 0;
-  // Riquadro grande finché chi ha creato la lista è ancora da solo/a
-  const showBigShare = lonely && (justCreated || list.isCreator);
+  // "Invita" colorato finché chi ha creato la lista è ancora da solo/a, poi discreto
+  const inviteHighlight = lonely && (justCreated || list.isCreator);
 
   return (
     <div className="space-y-6 pb-20 sm:pb-0">
@@ -309,7 +326,7 @@ export function ExpressListView({
         <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
           {list.name}
         </h1>
-        <p className="mt-3 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600">
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600">
           <span className="inline-flex items-center gap-1.5">
             <Users className="h-4 w-4 text-primary" aria-hidden />
             {list.contributors === 1 ? "1 partecipante" : `${list.contributors} partecipanti`}
@@ -320,7 +337,58 @@ export function ExpressListView({
             {toBuy.length === 1 ? "1 da comprare" : `${toBuy.length} da comprare`}
             {bought.length > 0 ? `, ${bought.length} presi` : ""}
           </span>
-        </p>
+        </div>
+        {hasItems && (
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1">
+            <div className="relative" ref={inviteRef}>
+              <button
+                type="button"
+                onClick={invite}
+                aria-expanded={canNativeShare ? undefined : inviteOpen}
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-semibold transition",
+                  inviteHighlight
+                    ? "bg-accent text-white hover:bg-accent-light"
+                    : "border border-gray-300 text-gray-700 hover:border-primary hover:text-primary",
+                )}
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+                Invita
+              </button>
+              {inviteOpen && !canNativeShare && (
+                <div className="absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setInviteOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+                  >
+                    <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />
+                    Invia su WhatsApp
+                  </a>
+                  <button
+                    type="button"
+                    onClick={copyLink}
+                    className="flex w-full items-center gap-2.5 border-t border-gray-100 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-emerald-600" aria-hidden />
+                    ) : (
+                      <Copy className="h-4 w-4 text-primary" aria-hidden />
+                    )}
+                    {copied ? "Link copiato!" : "Copia link"}
+                  </button>
+                </div>
+              )}
+            </div>
+            {inviteHighlight && (
+              <span className="text-xs text-gray-500">
+                Chi apre il link aggiunge e vota, senza registrarsi
+              </span>
+            )}
+          </div>
+        )}
       </header>
 
       {/* Nome ospite oppure campo per aggiungere prodotti */}
@@ -427,60 +495,6 @@ export function ExpressListView({
           </p>
         )}
       </section>
-
-      {/* Condivisione: dopo il primo prodotto; grande finché si è da soli, poi compatta */}
-      {!hasItems ? null : showBigShare ? (
-        <section
-          aria-label="Condividi la lista"
-          className="rounded-2xl border border-accent-40 bg-gradient-to-br from-accent/15 via-white to-accent-light/20 p-4 sm:p-5"
-        >
-          <p className="font-semibold text-gray-900">
-            {list.isCreator ? "Ottimo inizio! Ora mandala alla crew 👇" : "Invita la crew 👇"}
-          </p>
-          <p className="mt-1 text-sm text-gray-600">
-            Chi apre il link può aggiungere e votare prodotti, senza registrarsi.
-          </p>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-white transition hover:brightness-95"
-            >
-              <Share2 className="h-4 w-4" aria-hidden />
-              Invia su WhatsApp
-            </a>
-            <button
-              type="button"
-              onClick={shareLink}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-primary px-5 py-2.5 font-semibold text-primary transition hover:bg-secondary"
-            >
-              {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
-              {copied ? "Link copiato!" : canNativeShare ? "Condividi link" : "Copia link"}
-            </button>
-          </div>
-        </section>
-      ) : (
-        <div className="flex items-center justify-center gap-2">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-[#25D366] hover:text-[#128C7E]"
-          >
-            <Share2 className="h-4 w-4" aria-hidden />
-            Invita su WhatsApp
-          </a>
-          <button
-            type="button"
-            onClick={shareLink}
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary hover:text-primary"
-          >
-            {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
-            {copied ? "Copiato!" : canNativeShare ? "Condividi" : "Copia link"}
-          </button>
-        </div>
-      )}
 
       {/* Lista per reparto */}
       {list.items.length === 0 ? (
@@ -631,13 +645,34 @@ function ItemRow({
   const pending = item.id.startsWith("tmp-");
   // Bocciato: più 👎 che 👍. Resta in lista (si può cambiare idea) ma sbiadito.
   const rejected = !item.checked && item.score < 0;
+
+  // In attesa del server: il nome si legge subito, il resto è uno skeleton animato
+  if (pending) {
+    return (
+      <li
+        data-pending
+        aria-busy="true"
+        className="flex items-center gap-2.5 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3"
+      >
+        <span className="h-6 w-6 shrink-0 animate-pulse rounded-md bg-gray-200" aria-hidden />
+        <div className="min-w-0 flex-1">
+          <p className="break-words font-medium leading-snug text-gray-900">{item.text}</p>
+          <span className="mt-1.5 block h-2.5 w-24 animate-pulse rounded-full bg-gray-200" aria-hidden />
+        </div>
+        <div className="flex shrink-0 items-center gap-1" aria-hidden>
+          <span className="h-8 w-[2.6rem] animate-pulse rounded-lg bg-gray-200" />
+          <span className="h-8 w-[2.6rem] animate-pulse rounded-lg bg-gray-200" />
+        </div>
+      </li>
+    );
+  }
+
   return (
     <li
       className={cn(
         "flex items-center gap-2.5 px-3 py-2.5 transition-colors duration-700 sm:gap-3 sm:px-4 sm:py-3",
         item.checked && "bg-gray-50",
         isNew && "bg-amber-50",
-        pending && "opacity-60",
       )}
     >
       <button
