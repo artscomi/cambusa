@@ -55,7 +55,6 @@ const inputClass =
 
 export function ExpressListView({
   initialList,
-  justCreated,
 }: {
   initialList: ListData;
   justCreated: boolean;
@@ -79,9 +78,12 @@ export function ExpressListView({
   const busy = useRef(0);
   const seenIds = useRef(new Set(initialList.items.map((i) => i.id)));
   const inputRef = useRef<HTMLInputElement>(null);
-  // Telefono, lista non vuota: barra di inserimento fissa in basso (come una chat)
-  const barInputRef = useRef<HTMLInputElement>(null);
-  const [barFocused, setBarFocused] = useState(false);
+  // Telefono, lista non vuota: pulsante "+" che apre un pannello dal basso per aggiungere
+  const sheetInputRef = useRef<HTMLInputElement>(null);
+  const [addSheetOpen, setAddSheetOpen] = useState(false);
+  const [sessionAdded, setSessionAdded] = useState<string[]>([]);
+  // Prodotto da mostrare (scorrendo fino a lui) quando il pannello si chiude
+  const [scrollTarget, setScrollTarget] = useState<string | null>(null);
   const [nameSheetOpen, setNameSheetOpen] = useState(false);
   const addSectionRef = useRef<HTMLElement>(null);
 
@@ -217,11 +219,10 @@ export function ExpressListView({
     setGuestName(name);
     setError(null);
     setNameSheetOpen(false);
-    // Mette il cursore nel campo visibile: la barra in basso su telefono, altrimenti quello in alto
-    setTimeout(() => {
-      const bar = barInputRef.current;
-      (bar && bar.offsetParent ? bar : inputRef.current)?.focus();
-    }, 0);
+    // Su telefono con la lista piena si passa al pannello per aggiungere, altrimenti al campo in alto
+    const phone = window.matchMedia("(max-width: 639px)").matches;
+    if (phone && list.items.length > 0) setAddSheetOpen(true);
+    else setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   /** Aggiunge uno o più prodotti; compaiono subito, poi si riallinea col server. */
@@ -231,6 +232,10 @@ export function ExpressListView({
       .map((t) => t.replace(/\s+/g, " ").trim().slice(0, 60))
       .filter(Boolean);
     if (texts.length === 0) return;
+    if (addSheetOpen) {
+      setSessionAdded((prev) => [...prev, ...texts]);
+      setScrollTarget(texts[texts.length - 1]);
+    }
     const present = new Set(list.items.map((i) => normalize(i.text)));
     const temp: ExpressItemView[] = texts
       .filter((t) => !present.has(normalize(t)))
@@ -274,11 +279,57 @@ export function ExpressListView({
     inputRef.current?.focus();
   };
 
-  const submitBar = (e: React.FormEvent) => {
+  const submitSheet = (e: React.FormEvent) => {
     e.preventDefault();
     void addProducts(itemText);
-    barInputRef.current?.focus();
+    sheetInputRef.current?.focus();
   };
+
+  const openAddSheet = () => {
+    setError(null);
+    setSessionAdded([]);
+    if (guestName) setAddSheetOpen(true);
+    else setNameSheetOpen(true);
+  };
+
+  const closeAddSheet = () => {
+    setAddSheetOpen(false);
+    setSessionAdded([]);
+  };
+
+  // Mentre un pannello è aperto la pagina sotto non scorre
+  useEffect(() => {
+    if (!addSheetOpen && !nameSheetOpen) return;
+    const targets = [document.body, document.getElementById("app-main-scroll")].filter(
+      (el): el is HTMLElement => !!el,
+    );
+    const previous = targets.map((el) => el.style.overflow);
+    targets.forEach((el) => (el.style.overflow = "hidden"));
+    return () => targets.forEach((el, i) => (el.style.overflow = previous[i]));
+  }, [addSheetOpen, nameSheetOpen]);
+
+  // Chiuso il pannello, scorre fino all'ultimo prodotto aggiunto e lo evidenzia
+  useEffect(() => {
+    if (addSheetOpen || !scrollTarget) return;
+    const item = list.items.find(
+      (i) => normalize(i.text) === normalize(scrollTarget) && !i.id.startsWith("tmp-"),
+    );
+    if (!item) return; // ancora in salvataggio: riprova al prossimo aggiornamento della lista
+    setScrollTarget(null);
+    requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-item-id="${item.id}"]`)
+        ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    setFreshIds((ids) => new Set([...ids, item.id]));
+    setTimeout(() => {
+      setFreshIds((ids) => {
+        const next = new Set(ids);
+        next.delete(item.id);
+        return next;
+      });
+    }, NEW_HIGHLIGHT_MS);
+  }, [addSheetOpen, scrollTarget, list.items]);
 
   const focusAdd = () => {
     addSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -353,14 +404,11 @@ export function ExpressListView({
     return SUGGESTIONS.filter((s) => !present.has(normalize(s))).slice(0, 6);
   }, [list.items]);
 
-  const lonely = list.contributors <= 1;
-  // Una lista vuota non si condivide: i pulsanti compaiono dopo il primo prodotto
+  // Una lista vuota non si condivide: il pulsante "Invita" compare dopo il primo prodotto
   const hasItems = list.items.length > 0;
-  // "Invita" colorato finché chi ha creato la lista è ancora da solo/a, poi discreto
-  const inviteHighlight = lonely && (justCreated || list.isCreator);
 
   return (
-    <div className={cn("space-y-6 sm:pb-0", hasItems ? "pb-28" : "pb-6")}>
+    <div className={cn("space-y-6 sm:pb-0", hasItems ? "pb-24" : "pb-6")}>
       {/* Intestazione */}
       <header className="text-center">
         <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
@@ -381,61 +429,6 @@ export function ExpressListView({
             {bought.length > 0 ? `, ${bought.length} presi` : ""}
           </span>
         </div>
-        {hasItems && (
-          <div className="mt-5 flex flex-col items-center gap-2">
-            <div className="relative" ref={inviteRef}>
-              <button
-                type="button"
-                onClick={invite}
-                aria-expanded={canNativeShare ? undefined : inviteOpen}
-                className={cn(
-                  // Area di tocco di almeno 44 px, come raccomandato per il mobile
-                  "inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 text-base font-semibold transition active:scale-[0.98]",
-                  inviteHighlight
-                    ? "bg-accent text-white shadow-[0_8px_24px_rgb(var(--accent-rgb),0.28)] hover:bg-accent-light"
-                    : "border-2 border-gray-200 bg-white text-gray-700 hover:border-primary hover:text-primary",
-                )}
-              >
-                <Share2 className="h-5 w-5" aria-hidden />
-                Invita la crew
-              </button>
-              {inviteOpen && !canNativeShare && (
-                <div className="absolute left-1/2 top-full z-30 mt-2 w-56 -translate-x-1/2 overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]">
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      trackEvent("express_invite", { method: "whatsapp" });
-                      setInviteOpen(false);
-                    }}
-                    className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
-                  >
-                    <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />
-                    Invia su WhatsApp
-                  </a>
-                  <button
-                    type="button"
-                    onClick={copyLink}
-                    className="flex w-full items-center gap-2.5 border-t border-gray-100 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
-                  >
-                    {copied ? (
-                      <Check className="h-4 w-4 text-emerald-600" aria-hidden />
-                    ) : (
-                      <Copy className="h-4 w-4 text-primary" aria-hidden />
-                    )}
-                    {copied ? "Link copiato!" : "Copia link"}
-                  </button>
-                </div>
-              )}
-            </div>
-            {inviteHighlight && (
-              <span className="text-sm text-gray-500">
-                Chi apre il link aggiunge e vota, senza registrarsi
-              </span>
-            )}
-          </div>
-        )}
       </header>
 
       {/* Nome ospite oppure campo per aggiungere prodotti */}
@@ -646,8 +639,21 @@ export function ExpressListView({
         </div>
       )}
 
-      {/* Passaggio al menu completo */}
-      <section className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] to-transparent p-5 text-center sm:p-6">
+      {/* Passaggio al menu completo: una riga compatta su telefono */}
+      <Link
+        href="/"
+        className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 sm:hidden"
+      >
+        <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+        <span className="min-w-0 flex-1 text-sm text-gray-700">
+          Volete anche il <strong>menu della settimana</strong>?
+        </span>
+        <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
+          Crea con l&apos;AI
+          <ArrowRight className="h-4 w-4" aria-hidden />
+        </span>
+      </Link>
+      <section className="hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] to-transparent p-5 text-center sm:block sm:p-6">
         <Sparkles className="mx-auto h-6 w-6 text-primary" aria-hidden />
         <p className="mt-2 font-semibold text-gray-900">Volete anche il menu della settimana?</p>
         <p className="mx-auto mt-1 max-w-md text-sm text-gray-600">
@@ -663,77 +669,153 @@ export function ExpressListView({
         </Link>
       </section>
 
-      {/* Barra di inserimento in basso: solo telefono e lista non vuota */}
-      {hasItems && nameReady && (
+      {/* Invita la crew: pulsante tondo flottante in basso a sinistra, solo icona */}
+      {hasItems && !addSheetOpen && !nameSheetOpen && (
         <div
-          className="fixed inset-x-0 bottom-0 z-30 border-t border-gray-200 bg-white/95 backdrop-blur sm:hidden"
-          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+          ref={inviteRef}
+          className="fixed bottom-5 left-5 z-30"
+          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
-          {(error || notice) && (
-            <p
-              role={error ? "alert" : "status"}
-              className={cn(
-                "px-4 pt-2 text-sm font-medium",
-                error ? "text-red-600" : "text-emerald-700",
-              )}
-            >
-              {error ?? notice}
-            </p>
-          )}
-          {guestName ? (
-            <>
-              {barFocused && suggestions.length > 0 && (
-                <div className="flex gap-2 overflow-x-auto px-3 pt-2.5 [scrollbar-width:none]">
-                  {suggestions.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      // Non togliere il focus al campo, così la tastiera resta aperta
-                      onPointerDown={(e) => e.preventDefault()}
-                      onClick={() => void addProducts(s)}
-                      className="inline-flex shrink-0 items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/[0.04] px-3 py-1.5 text-sm font-medium text-primary"
-                    >
-                      <Plus className="h-3.5 w-3.5" aria-hidden />
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-              <form onSubmit={submitBar} className="flex gap-2 p-3">
-                <input
-                  ref={barInputRef}
-                  aria-label="Aggiungi un prodotto"
-                  className={cn(inputClass, "py-2.5")}
-                  placeholder="Aggiungi un prodotto…"
-                  value={itemText}
-                  maxLength={300}
-                  onChange={(e) => setItemText(e.target.value)}
-                  onFocus={() => setBarFocused(true)}
-                  onBlur={() => setBarFocused(false)}
-                  enterKeyHint="send"
-                  autoComplete="off"
-                />
-                <button
-                  type="submit"
-                  disabled={!itemText.trim()}
-                  aria-label="Aggiungi"
-                  className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition disabled:opacity-50"
-                >
-                  <Plus className="h-5 w-5" aria-hidden />
-                </button>
-              </form>
-            </>
-          ) : (
-            <div className="p-3">
+          <button
+            type="button"
+            onClick={invite}
+            aria-label="Invita la crew"
+            title="Invita la crew"
+            aria-expanded={canNativeShare ? undefined : inviteOpen}
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-accent text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] transition hover:bg-accent-light active:scale-95"
+          >
+            <Share2 className="h-6 w-6" aria-hidden />
+          </button>
+              {inviteOpen && !canNativeShare && (
+            <div className="absolute bottom-full left-0 z-30 mb-3 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  trackEvent("express_invite", { method: "whatsapp" });
+                  setInviteOpen(false);
+                }}
+                className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+              >
+                <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />
+                Invia su WhatsApp
+              </a>
               <button
                 type="button"
-                onClick={() => setNameSheetOpen(true)}
-                className="w-full rounded-xl bg-primary py-3 font-semibold text-white"
+                onClick={copyLink}
+                className="flex w-full items-center gap-2.5 border-t border-gray-100 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
               >
-                Partecipa alla lista
+                {copied ? (
+                  <Check className="h-4 w-4 text-emerald-600" aria-hidden />
+                ) : (
+                  <Copy className="h-4 w-4 text-primary" aria-hidden />
+                )}
+                {copied ? "Link copiato!" : "Copia link"}
               </button>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Telefono, lista non vuota: pulsante "+" che apre il pannello per aggiungere */}
+      {hasItems && nameReady && !addSheetOpen && !nameSheetOpen && (
+        <button
+          type="button"
+          onClick={openAddSheet}
+          className="fixed bottom-5 right-5 z-30 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-accent px-6 text-base font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] active:scale-95 sm:hidden"
+          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
+        >
+          <Plus className="h-6 w-6" aria-hidden />
+          {guestName ? "Aggiungi" : "Partecipa"}
+        </button>
+      )}
+
+      {/* Pannello dal basso per aggiungere prodotti (telefono) */}
+      {addSheetOpen && (
+        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:hidden" onClick={closeAddSheet}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="express-add-sheet-title"
+            onClick={(e) => e.stopPropagation()}
+            className="w-full space-y-3 rounded-t-3xl bg-white p-5"
+            style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+          >
+            <span className="mx-auto block h-1.5 w-10 rounded-full bg-gray-300" aria-hidden />
+            <div className="flex items-center justify-between">
+              <p id="express-add-sheet-title" className="font-semibold text-gray-900">
+                Cosa vuoi a bordo, {guestName}?
+              </p>
+              <button
+                type="button"
+                onClick={closeAddSheet}
+                className="rounded-full px-3 py-1.5 text-sm font-semibold text-primary"
+              >
+                Fatto
+              </button>
+            </div>
+            <form onSubmit={submitSheet} className="flex gap-2">
+              <input
+                ref={sheetInputRef}
+                aria-label="Aggiungi un prodotto"
+                className={inputClass}
+                placeholder="Es. pomodori, birra x24, Nutella"
+                value={itemText}
+                maxLength={300}
+                onChange={(e) => setItemText(e.target.value)}
+                enterKeyHint="send"
+                autoComplete="off"
+                autoFocus
+              />
+              <button
+                type="submit"
+                disabled={!itemText.trim()}
+                aria-label="Aggiungi"
+                className="inline-flex w-12 shrink-0 items-center justify-center rounded-xl bg-accent text-white transition disabled:opacity-50"
+              >
+                <Plus className="h-5 w-5" aria-hidden />
+              </button>
+            </form>
+            {(error || notice) && (
+              <p
+                role={error ? "alert" : "status"}
+                className={cn("text-sm font-medium", error ? "text-red-600" : "text-emerald-700")}
+              >
+                {error ?? notice}
+              </p>
+            )}
+            {sessionAdded.length > 0 && (
+              <div className="flex flex-wrap gap-1.5" aria-live="polite">
+                {sessionAdded.map((t, i) => (
+                  <span
+                    key={`${t}-${i}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700"
+                  >
+                    <Check className="h-3.5 w-3.5" aria-hidden />
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
+            {suggestions.length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {suggestions.map((sug) => (
+                  <button
+                    key={sug}
+                    type="button"
+                    // Non togliere il focus al campo, così la tastiera resta aperta
+                    onPointerDown={(e) => e.preventDefault()}
+                    onClick={() => void addProducts(sug)}
+                    className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/[0.04] px-3 py-1.5 text-sm font-medium text-primary"
+                  >
+                    <Plus className="h-3.5 w-3.5" aria-hidden />
+                    {sug}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -868,8 +950,9 @@ function ItemRow({
 
   return (
     <li
+      data-item-id={item.id}
       className={cn(
-        "flex items-center gap-2.5 px-3 py-2.5 transition-colors duration-700 sm:gap-3 sm:px-4 sm:py-3",
+        "flex scroll-mt-24 items-center gap-2.5 px-3 py-2.5 transition-colors duration-700 sm:gap-3 sm:px-4 sm:py-3",
         item.checked && "bg-gray-50",
         isNew && "bg-amber-50",
       )}
