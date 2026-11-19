@@ -98,12 +98,20 @@ model MenuItemVote {
 // Cambusa Express: lista della spesa condivisa, senza registrazione.
 // Gli ospiti sono riconosciuti da un token casuale salvato in un cookie.
 model ExpressList {
-  id           String        @id @default(cuid())
-  name         String
-  people       Int?
-  creatorToken String
-  createdAt    DateTime      @default(now())
-  items        ExpressItem[]
+  id            String        @id @default(cuid())
+  name          String
+  people        Int?
+  creatorToken  String
+  // Impronta (hash) dell'IP di chi ha creato la lista: serve solo a limitare le creazioni a raffica
+  creatorIpHash String?
+  createdAt     DateTime      @default(now())
+  // Ultima modifica (prodotti, voti, spunte): le liste ferme da 3 mesi vengono cancellate
+  updatedAt     DateTime      @default(now()) @updatedAt
+  items         ExpressItem[]
+
+  @@index([creatorToken, createdAt])
+  @@index([creatorIpHash, createdAt])
+  @@index([updatedAt])
 }
 
 model ExpressItem {
