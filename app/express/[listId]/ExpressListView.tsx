@@ -66,6 +66,7 @@ export function ExpressListView({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [showChecked, setShowChecked] = useState(false);
+  const [hideRejected, setHideRejected] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [canNativeShare, setCanNativeShare] = useState(false);
@@ -264,13 +265,27 @@ export function ExpressListView({
 
   const toBuy = useMemo(() => list.items.filter((i) => !i.checked), [list.items]);
   const bought = useMemo(() => list.items.filter((i) => i.checked), [list.items]);
+  /** Esito del voto: approvato (+), bocciato (−), in parità (0). */
+  const summary = useMemo(
+    () => ({
+      approved: toBuy.filter((i) => i.score > 0).length,
+      rejected: toBuy.filter((i) => i.score < 0).length,
+      toVote: toBuy.filter((i) => i.myVote === 0 && !i.id.startsWith("tmp-")).length,
+    }),
+    [toBuy],
+  );
   const byCategory = useMemo(
     () =>
-      EXPRESS_CATEGORIES.map((category) => ({
-        category,
-        items: toBuy.filter((i) => i.category === category),
-      })).filter((g) => g.items.length > 0),
-    [toBuy],
+      EXPRESS_CATEGORIES.map((category) => {
+        const all = toBuy.filter((i) => i.category === category);
+        const items = hideRejected ? all.filter((i) => i.score >= 0) : all;
+        // "Il più votato" del reparto: solo se ha almeno 2 punti ed è l'unico in testa
+        const best = Math.max(...all.map((i) => i.score));
+        const leaders = all.filter((i) => i.score === best);
+        const topId = all.length > 1 && best >= 2 && leaders.length === 1 ? leaders[0].id : null;
+        return { category, items, topId };
+      }).filter((g) => g.items.length > 0),
+    [toBuy, hideRejected],
   );
   const suggestions = useMemo(() => {
     if (list.items.length >= 10) return [];
@@ -474,7 +489,37 @@ export function ExpressListView({
         </p>
       ) : (
         <div className="space-y-5">
-          {byCategory.map(({ category, items }) => (
+          {toBuy.length > 0 && (
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-semibold">
+                <span className="text-emerald-700">
+                  ✓ {summary.approved} {summary.approved === 1 ? "approvato" : "approvati"}
+                </span>
+                {summary.rejected > 0 && (
+                  <span className="text-red-600">
+                    ✕ {summary.rejected} {summary.rejected === 1 ? "bocciato" : "bocciati"}
+                  </span>
+                )}
+                {summary.toVote > 0 && (
+                  <span className="text-amber-700">
+                    {summary.toVote} da votare per te
+                  </span>
+                )}
+              </div>
+              {summary.rejected > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setHideRejected((v) => !v)}
+                  aria-pressed={hideRejected}
+                  className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
+                >
+                  {hideRejected ? "Mostra i bocciati" : "Nascondi i bocciati"}
+                </button>
+              )}
+            </div>
+          )}
+
+          {byCategory.map(({ category, items, topId }) => (
             <section key={category} aria-label={category}>
               <h2 className="mb-2 flex items-baseline justify-between px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
                 {category}
@@ -486,6 +531,7 @@ export function ExpressListView({
                     key={item.id}
                     item={item}
                     isNew={freshIds.has(item.id)}
+                    isTop={item.id === topId}
                     onVote={vote}
                     onToggle={toggleChecked}
                     onDelete={remove}
@@ -522,6 +568,7 @@ export function ExpressListView({
                       key={item.id}
                       item={item}
                       isNew={false}
+                      isTop={false}
                       onVote={vote}
                       onToggle={toggleChecked}
                       onDelete={remove}
@@ -569,17 +616,21 @@ export function ExpressListView({
 function ItemRow({
   item,
   isNew,
+  isTop,
   onVote,
   onToggle,
   onDelete,
 }: {
   item: ExpressItemView;
   isNew: boolean;
+  isTop: boolean;
   onVote: (item: ExpressItemView, value: 1 | -1) => void;
   onToggle: (item: ExpressItemView) => void;
   onDelete: (item: ExpressItemView) => void;
 }) {
   const pending = item.id.startsWith("tmp-");
+  // Bocciato: più 👎 che 👍. Resta in lista (si può cambiare idea) ma sbiadito.
+  const rejected = !item.checked && item.score < 0;
   return (
     <li
       className={cn(
@@ -608,12 +659,20 @@ function ItemRow({
         </span>
       </button>
 
-      <div className="min-w-0 flex-1">
-        <p className={cn("break-words font-medium leading-snug text-gray-900", item.checked && "text-gray-400 line-through")}>
+      <div className={cn("min-w-0 flex-1", rejected && "opacity-60")}>
+        <p
+          className={cn(
+            "break-words font-medium leading-snug text-gray-900",
+            item.checked && "text-gray-400 line-through",
+            rejected && "text-gray-500 line-through decoration-red-300",
+          )}
+        >
           {item.text}
         </p>
         <p className="truncate text-xs text-gray-500">
           {isNew ? <span className="font-semibold text-amber-700">Nuovo · </span> : null}
+          {isTop ? <span className="font-semibold text-amber-600">⭐ Il più votato · </span> : null}
+          {rejected ? <span className="font-semibold text-red-600">La crew non lo vuole · </span> : null}
           {item.mine ? "proposto da te" : `proposto da ${item.addedByName}`}
         </p>
       </div>
