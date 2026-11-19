@@ -2,7 +2,6 @@
 
 import { createHash, randomUUID } from "crypto";
 import { cookies, headers } from "next/headers";
-import { revalidatePath } from "next/cache";
 import db from "@/utils/db";
 import {
   categorizeExpressItem,
@@ -211,7 +210,7 @@ export async function addExpressItem(input: {
   listId: string;
   text: string;
   guestName: string;
-}): Promise<Result<{ added: string[]; merged: string[] }>> {
+}): Promise<Result<{ added: string[]; merged: string[]; list: ExpressListView | null }>> {
   const texts = splitProducts(input.text);
   const guestName = clean(input.guestName, MAX_NAME_LENGTH);
   if (texts.length === 0) return { ok: false, error: "Scrivi un prodotto" };
@@ -227,44 +226,62 @@ export async function addExpressItem(input: {
   const existing = new Map(list.items.map((i) => [sameProductKey(i.text), i]));
   const added: string[] = [];
   const merged: string[] = [];
+  const mergedIds: string[] = [];
+  const newItems: { id: string; text: string }[] = [];
   let room = MAX_ITEMS_PER_LIST - list.items.length;
 
+  // Prima si decide cosa aggiungere e cosa è un doppione, poi si scrive tutto in poche richieste
   for (const text of texts) {
     const key = sameProductKey(text);
     const duplicate = existing.get(key);
     if (duplicate) {
-      await db.expressVote.upsert({
-        where: { itemId_voter: { itemId: duplicate.id, voter: token } },
-        update: { value: 1, voterName: guestName },
-        create: { itemId: duplicate.id, voter: token, voterName: guestName, value: 1 },
-      });
-      merged.push(duplicate.text);
+      if (!mergedIds.includes(duplicate.id)) {
+        mergedIds.push(duplicate.id);
+        merged.push(duplicate.text);
+      }
       continue;
     }
     if (room <= 0) break;
-    // Chi aggiunge un prodotto lo vota anche: così parte da +1
-    const item = await db.expressItem.create({
-      data: {
-        listId: list.id,
-        text,
-        category: categorizeExpressItem(text),
-        addedByName: guestName,
-        addedBy: token,
-        votes: { create: { voter: token, voterName: guestName, value: 1 } },
-      },
-      select: { id: true, text: true },
-    });
+    const item = { id: randomUUID(), text };
     existing.set(key, item);
+    newItems.push(item);
     added.push(text);
     room -= 1;
   }
 
-  await touchList(list.id);
-  revalidatePath(`/express/${list.id}`);
+  if (newItems.length > 0) {
+    await db.expressItem.createMany({
+      data: newItems.map((item) => ({
+        id: item.id,
+        listId: list.id,
+        text: item.text,
+        category: categorizeExpressItem(item.text),
+        addedByName: guestName,
+        addedBy: token,
+      })),
+    });
+  }
+  // Chi aggiunge un prodotto (o ne ripropone uno già presente) lo vota anche: 👍
+  const voteItemIds = [...newItems.map((i) => i.id), ...mergedIds];
+  await Promise.all([
+    voteItemIds.length > 0 &&
+      db.expressVote.createMany({
+        data: voteItemIds.map((itemId) => ({ itemId, voter: token, voterName: guestName, value: 1 })),
+        skipDuplicates: true,
+      }),
+    mergedIds.length > 0 &&
+      db.expressVote.updateMany({
+        where: { itemId: { in: mergedIds }, voter: token },
+        data: { value: 1, voterName: guestName },
+      }),
+    touchList(list.id),
+  ]);
+
   if (added.length === 0 && merged.length === 0) {
     return { ok: false, error: "La lista è piena (massimo 150 prodotti)" };
   }
-  return { ok: true, data: { added, merged } };
+  // Restituisce subito la lista aggiornata: il browser non deve chiederla di nuovo
+  return { ok: true, data: { added, merged, list: await getExpressList(list.id) } };
 }
 
 /** Vota +1 o -1. Rivotare lo stesso valore toglie il voto. */
@@ -297,7 +314,6 @@ export async function voteExpressItem(input: {
     });
   }
   await touchList(item.listId);
-  revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }
 
@@ -313,7 +329,6 @@ export async function toggleExpressItemChecked(input: {
   }).catch(() => null);
   if (!item) return { ok: false, error: "Prodotto non trovato" };
   await touchList(item.listId);
-  revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }
 
@@ -338,6 +353,5 @@ export async function deleteExpressItem(input: {
   }
   await db.expressItem.delete({ where: { id: item.id } });
   await touchList(item.listId);
-  revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }
