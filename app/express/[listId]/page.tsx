@@ -31,7 +31,7 @@ export default async function ExpressListPage({ params, searchParams }: Props) {
   if (!list) notFound();
 
   return (
-    <PageContainer narrow>
+    <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12">
       <ExpressListView initialList={list} justCreated={searchParams.nuova === "1"} />
     </PageContainer>
   );

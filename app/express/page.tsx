@@ -18,7 +18,7 @@ const steps = [
 
 export default function ExpressPage() {
   return (
-    <PageContainer narrow>
+    <PageContainer narrow className="pt-2 sm:pt-10 md:pt-12">
       <div className="text-center">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.07] px-3.5 py-1.5 font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
           <Zap className="h-3.5 w-3.5" aria-hidden />
