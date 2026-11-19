@@ -8,6 +8,7 @@ import { PageContainer } from "@/components/PageContainer";
 import { createExpressList } from "./actions";
 import { saveGuestName, readGuestName } from "./guestName";
 import { ExpressListSkeleton } from "./ExpressListSkeleton";
+import { trackEvent } from "@/lib/gtag";
 
 const inputClass =
   "block w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20";
@@ -38,6 +39,7 @@ export function CreateExpressForm() {
         );
         return;
       }
+      trackEvent("express_list_created", { people: people ? Number(people) : 0 });
       router.push(`/express/${result.data.id}?nuova=1`);
     });
   };

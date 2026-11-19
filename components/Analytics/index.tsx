@@ -12,12 +12,14 @@ declare global {
 }
 
 export const Analytics: React.FC = () => {
-  const { canLoadAnalytics, isLoaded, isMounted } = useCookieConsent();
+  const { preferences, isLoaded, isMounted } = useCookieConsent();
+  const analyticsAllowed = preferences.analytics;
 
   useEffect(() => {
     if (!isLoaded || !isMounted) return;
 
-    if (canLoadAnalytics()) {
+    // Carica gli script una sola volta, appena c'è il consenso (anche senza ricaricare la pagina)
+    if (analyticsAllowed && !document.querySelector('script[src*="googletagmanager"]')) {
       // Carica Google Analytics
       const script1 = document.createElement("script");
       script1.async = true;
@@ -48,16 +50,32 @@ export const Analytics: React.FC = () => {
       `;
       document.head.appendChild(script3);
 
+      // Carica Hotjar (registrazioni e chat), solo in produzione
+      if (process.env.NODE_ENV === "production") {
+        const script4 = document.createElement("script");
+        script4.innerHTML = `
+          (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6380619,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+          })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        `;
+        document.head.appendChild(script4);
+      }
+
       // Cleanup function
       return () => {
         // Rimuovi gli script quando il componente viene smontato
         const scripts = document.querySelectorAll(
-          'script[src*="googletagmanager"], script[src*="clarity"]'
+          'script[src*="googletagmanager"], script[src*="clarity"], script[src*="hotjar"]'
         );
         scripts.forEach((script) => script.remove());
       };
     }
-  }, [canLoadAnalytics, isLoaded, isMounted]);
+  }, [analyticsAllowed, isLoaded, isMounted]);
 
   return null; // Questo componente non renderizza nulla
 };

@@ -12,6 +12,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { CookieConsentProvider } from "../components/CookieConsent/CookieConsentProvider";
 
 export const metadata = {
+  metadataBase: new URL("https://www.cambusa-online.com"),
+  // Ogni pagina indica il proprio indirizzo come canonico (prima tutte puntavano alla home)
+  alternates: { canonical: "./" },
   title:
     "Cambusaai - Crea la cambusa perfetta per la tua vacanza in barca a vela",
   description:
@@ -23,7 +26,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isProduction = process.env.NODE_ENV === "production";
 
   return (
     <ClerkProvider localization={itIT} dynamic>
@@ -59,30 +61,10 @@ export default function RootLayout({
           <link rel="preconnect" href="https://analytics.ahrefs.com" />
           <link rel="dns-prefetch" href="https://analytics.ahrefs.com" />
           
-          {/* Hotjar - Solo se l'utente ha accettato i cookie analitici */}
-          {isProduction && (
-            <Script id="hotjar" strategy="afterInteractive">
-              {`
-              (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:6380619,hjsv:6};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-            `}
-            </Script>
-          )}
           <Script
             src="https://analytics.ahrefs.com/analytics.js"
             data-key="0936IsFm5X3AsXRbCcwqZw"
             strategy="afterInteractive"
-          />
-          <link
-            rel="canonical"
-            href="https://www.cambusa-online.com"
-            key="canonical"
           />
           <meta
             name="google-site-verification"

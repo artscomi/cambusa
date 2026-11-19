@@ -1,3 +1,4 @@
+import { trackEvent } from "@/lib/gtag";
 import { Dispatch, SetStateAction } from "react";
 import {
   getMaxAiCall,
@@ -129,6 +130,7 @@ const handleResult = async (
   setCurrentGroupId?: (groupId: string | undefined) => void
 ) => {
   if (result.type === "success") {
+    trackEvent("menu_generated", { type: groupId ? "group" : "personal" });
     setMealList(result.menu);
     setAlcoholPreferences(alcoholPreferences);
     setWaterPreference(waterPreference);

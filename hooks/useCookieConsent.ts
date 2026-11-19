@@ -8,6 +8,9 @@ export interface CookiePreferences {
   functional: boolean;
 }
 
+/** Evento con cui il banner avvisa gli altri componenti che il consenso è cambiato. */
+const CONSENT_EVENT = "cookie-consent-change";
+
 export const useCookieConsent = () => {
   const [preferences, setPreferences] = useState<CookiePreferences>({
     necessary: true,
@@ -32,12 +35,20 @@ export const useCookieConsent = () => {
       }
     }
     setIsLoaded(true);
+
+    // Aggiorna subito questo componente quando il consenso cambia altrove (es. il banner)
+    const onChange = (e: Event) => {
+      setPreferences((e as CustomEvent<CookiePreferences>).detail);
+    };
+    window.addEventListener(CONSENT_EVENT, onChange);
+    return () => window.removeEventListener(CONSENT_EVENT, onChange);
   }, []);
 
   const updatePreferences = useCallback((newPreferences: CookiePreferences) => {
     setPreferences(newPreferences);
     if (typeof window !== "undefined") {
       localStorage.setItem("cookie-consent", JSON.stringify(newPreferences));
+      window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: newPreferences }));
     }
   }, []);
 
@@ -54,14 +65,12 @@ export const useCookieConsent = () => {
   };
 
   const resetConsent = useCallback(() => {
+    const reset = { necessary: true, analytics: false, functional: false };
     if (typeof window !== "undefined") {
       localStorage.removeItem("cookie-consent");
+      window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: reset }));
     }
-    setPreferences({
-      necessary: true,
-      analytics: false,
-      functional: false,
-    });
+    setPreferences(reset);
   }, []);
 
   return {

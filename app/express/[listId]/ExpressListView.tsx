@@ -27,6 +27,7 @@ import {
   type ExpressListView as ListData,
 } from "../actions";
 import { readGuestName, saveGuestName } from "../guestName";
+import { trackEvent } from "@/lib/gtag";
 
 const REFRESH_MS = 5000;
 const NEW_HIGHLIGHT_MS = 4000;
@@ -158,8 +159,9 @@ export function ExpressListView({
     return data;
   };
 
-  const vote = (item: ExpressItemView, value: 1 | -1) =>
-    run(
+  const vote = (item: ExpressItemView, value: 1 | -1) => {
+    trackEvent("express_vote", { value: value === 1 ? "up" : "down" });
+    return run(
       (items) =>
         items.map((i) => {
           if (i.id !== item.id) return i;
@@ -170,12 +172,15 @@ export function ExpressListView({
         }),
       () => voteExpressItem({ itemId: item.id, value }),
     );
+  };
 
-  const toggleChecked = (item: ExpressItemView) =>
-    run(
+  const toggleChecked = (item: ExpressItemView) => {
+    if (!item.checked) trackEvent("express_item_checked");
+    return run(
       (items) => items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)),
       () => toggleExpressItemChecked({ itemId: item.id, checked: !item.checked }),
     );
+  };
 
   const remove = (item: ExpressItemView) => {
     if (!window.confirm(`Eliminare "${item.text}" dalla lista?`)) return;
@@ -223,6 +228,12 @@ export function ExpressListView({
       (items) => [...items, ...temp],
       () => addExpressItem({ listId: list.id, text: texts.join(", "), guestName }),
     );
+    if (data) {
+      trackEvent("express_item_added", {
+        added: data.added.length,
+        merged: data.merged.length,
+      });
+    }
     if (data?.merged.length) {
       const names = data.merged.map((t) => `"${t}"`).join(", ");
       setNotice(
@@ -247,6 +258,7 @@ export function ExpressListView({
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
+      trackEvent("express_invite", { method: "copy_link" });
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -275,6 +287,7 @@ export function ExpressListView({
     if (!canNativeShare) return copyLink();
     try {
       await navigator.share({ title: list.name, text: shareText, url: shareUrl });
+      trackEvent("express_invite", { method: "native_share" });
     } catch {
       // condivisione annullata
     }
@@ -361,7 +374,10 @@ export function ExpressListView({
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => setInviteOpen(false)}
+                    onClick={() => {
+                      trackEvent("express_invite", { method: "whatsapp" });
+                      setInviteOpen(false);
+                    }}
                     className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
                   >
                     <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />

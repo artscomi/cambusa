@@ -27,3 +27,16 @@ export const GAevent = ({
     });
   }
 };
+
+/**
+ * Evento Google Analytics 4 per le azioni importanti (lista creata, invito, menu generato...).
+ * Se l'utente non ha accettato i cookie analitici GA non è caricato e l'evento non parte.
+ */
+export const trackEvent = (
+  name: string,
+  params: Record<string, string | number | boolean> = {},
+) => {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("event", name, params);
+  }
+};
