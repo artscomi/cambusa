@@ -109,6 +109,8 @@ export default function RootLayout({
 
             <Footer />
           </CookieConsentProvider>
+          {/* Vercel Web Analytics: visite senza cookie, attivo anche senza consenso */}
+          <Analytics />
         </body>
         <SpeedInsights />
       </html>
