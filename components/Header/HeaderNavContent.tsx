@@ -36,6 +36,11 @@ export function HeaderNavContent({
     >
       <ul className="flex justify-end items-center gap-5 sm:gap-6 text-sm md:text-base w-full">
         <li>
+          <Link href="/express" className={linkClass}>
+            Express
+          </Link>
+        </li>
+        <li>
           <Link href="/blog" className={linkClass}>
             Blog
           </Link>

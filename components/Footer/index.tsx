@@ -7,6 +7,7 @@ import {
   Heart,
   BookOpen,
   Settings,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
@@ -53,6 +54,15 @@ export const Footer = () => {
                 >
                   <BookOpen className="w-4 h-4" />
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/express"
+                  className="text-gray-600 hover:text-primary transition-colors flex items-center justify-center md:justify-start gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  Cambusa Express
                 </Link>
               </li>
               <li>
