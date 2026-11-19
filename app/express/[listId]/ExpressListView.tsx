@@ -771,6 +771,7 @@ export function ExpressListView({
         {/* Desktop: invito al menu con l'AI, compatto nel pannello */}
         <Link
           href="/"
+          onClick={() => trackEvent("express_menu_click", { position: "desktop" })}
           className="hidden items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 lg:flex"
         >
           <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
@@ -863,6 +864,7 @@ export function ExpressListView({
         {/* Passaggio al menu completo: una riga compatta su telefono */}
         <Link
           href="/"
+          onClick={() => trackEvent("express_menu_click", { position: "mobile" })}
           className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 sm:hidden"
         >
           <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
@@ -885,6 +887,7 @@ export function ExpressListView({
           </p>
           <Link
             href="/"
+            onClick={() => trackEvent("express_menu_click", { position: "tablet" })}
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-light"
           >
             Genera il menu con l&apos;AI
