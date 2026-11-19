@@ -579,9 +579,8 @@ export function ExpressListView({
 
           {byCategory.map(({ category, items, topId }) => (
             <section key={category} aria-label={category}>
-              <h2 className="mb-2 flex items-baseline justify-between px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
+              <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
                 {category}
-                <span className="font-semibold normal-case tracking-normal text-gray-400">{items.length}</span>
               </h2>
               <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
                 {items.map((item) => (
