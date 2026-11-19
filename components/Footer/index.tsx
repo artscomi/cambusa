@@ -31,7 +31,8 @@ export const Footer = () => {
     <footer
       className={`bg-gradient-to-br from-gray-50 to-blue-50 border-t border-gray-200 ${
         // In home la pagina finisce con il riquadro blu: niente spazio vuoto prima del footer
-        pathname === "/" ? "" : "mt-20"
+        // Le pagine hanno già il loro spazio in fondo: qui basta un minimo
+        pathname === "/" ? "" : "mt-8"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-12">
