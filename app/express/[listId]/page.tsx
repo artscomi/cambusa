@@ -22,7 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     robots: { index: false, follow: false },
-    openGraph: { title, description, type: "website" },
+    // L'immagine va ripetuta qui: definendo openGraph la pagina sostituisce quella di /express
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: [{ url: "/express/opengraph-image.jpg", width: 1200, height: 630, alt: "Cambusa Express" }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: ["/express/opengraph-image.jpg"] },
   };
 }
 

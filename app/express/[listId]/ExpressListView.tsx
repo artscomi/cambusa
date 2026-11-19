@@ -388,7 +388,9 @@ export function ExpressListView({
   const shareLink = async () => {
     if (!canNativeShare) return copyLink();
     try {
-      await navigator.share({ title: list.name, text: shareText, url: shareUrl });
+      // Testo e link in un unico messaggio: così il testo viene prima e il link dopo
+      // (passandoli separati, app come WhatsApp mettono il link in testa)
+      await navigator.share({ title: list.name, text: `${shareText}\n${shareUrl}` });
       trackEvent("express_invite", { method: "native_share" });
     } catch {
       // condivisione annullata
