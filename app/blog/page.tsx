@@ -18,6 +18,16 @@ import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
 const articles = [
   {
     title:
+      "Come Dividere le Spese della Cambusa con la Crew (Senza Discussioni)",
+    description:
+      "Cassa comune, app per le spese o conto finale? I metodi per dividere la spesa in barca, cosa mettere in comune e come gestire i casi delicati.",
+    slug: "dividere-spese-cambusa-crew",
+    date: "2026-11-19",
+    readTime: "5 min",
+    category: "Organizzazione",
+  },
+  {
+    title:
       "Lista della Spesa Condivisa per la Barca: Come Organizzare la Cambusa con Tutta la Crew",
     description:
       "Con Cambusa Express crei in 30 secondi una lista condivisa: ognuno aggiunge e vota i prodotti dal telefono, divisi per reparto. Gratis e senza registrazione.",
