@@ -25,9 +25,9 @@ export const ApiCallCountComponent = ({
 
   return (
     <>
-      <li className="text-center" onClick={handleIconClick}>
+      <li className="flex items-center gap-1.5 whitespace-nowrap" onClick={handleIconClick}>
         {!hasInfiniteApiCalls && <strong>{aiCallLeft}</strong>}
-        <i className="inline-block align-middle ml-2">
+        <i className="inline-block align-middle">
           <RefreshCcw width={25} />
         </i>
       </li>

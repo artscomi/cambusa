@@ -36,11 +36,12 @@ export const DropdownMenuComponent = ({ name }: { name: string }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <p className="font-bold cursor-pointer">
-          <i className="inline-block align-middle mr-2">
+        <p className="font-bold cursor-pointer whitespace-nowrap" aria-label={name || "Il tuo account"}>
+          <i className="inline-block align-middle sm:mr-2">
             <User />
           </i>
-          {name}
+          {/* Su telefono solo l'icona, altrimenti il menu non ci sta */}
+          <span className="hidden sm:inline">{name}</span>
         </p>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 bg-white" align="end">

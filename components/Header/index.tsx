@@ -16,7 +16,7 @@ export const Header = async () => {
 
   return (
     <HeaderBar>
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex items-center w-full">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 py-3 flex items-center gap-4 w-full">
         <Logo />
         <HeaderNavContent
           userId={userId}
