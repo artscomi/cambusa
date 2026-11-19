@@ -22,6 +22,7 @@ import {
   blogHeaderVariants,
 } from "@/animations/framer-variants";
 import { useUser } from "@clerk/nextjs";
+import { ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -189,6 +190,33 @@ export default function Home() {
                 <CreateGroupBox />
               </motion.div>
             </div>
+
+            {/* Cambusa Express */}
+            <motion.div variants={itemVariants} className="mt-8 sm:mt-10">
+              <Link
+                href="/express"
+                className="group flex flex-col items-start gap-4 rounded-2xl border border-accent-40 bg-gradient-to-br from-accent/10 via-white to-accent-light/15 p-5 transition hover:shadow-[0_12px_40px_rgb(var(--accent-rgb),0.14)] sm:flex-row sm:items-center sm:p-6"
+              >
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                  <Zap className="h-6 w-6" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
+                    Novità · Cambusa Express
+                  </span>
+                  <span className="mt-1 block text-lg font-bold text-gray-900">
+                    Una lista della spesa condivisa con la crew, in 30 secondi
+                  </span>
+                  <span className="mt-0.5 block text-sm text-gray-600">
+                    Ognuno aggiunge e vota i prodotti dal telefono. Senza registrazione.
+                  </span>
+                </span>
+                <span className="inline-flex items-center gap-2 font-semibold text-accent">
+                  Crea la lista
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden />
+                </span>
+              </Link>
+            </motion.div>
         </motion.section>
 
         {/* How It Works Section */}
