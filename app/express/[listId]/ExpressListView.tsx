@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -74,7 +74,6 @@ export function ExpressListView({
   const [inviteOpen, setInviteOpen] = useState(false);
   const inviteRef = useRef<HTMLDivElement>(null);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
-  const [addFormVisible, setAddFormVisible] = useState(true);
   const busy = useRef(0);
   const seenIds = useRef(new Set(initialList.items.map((i) => i.id)));
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,10 +81,9 @@ export function ExpressListView({
   const sheetInputRef = useRef<HTMLInputElement>(null);
   const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [sessionAdded, setSessionAdded] = useState<string[]>([]);
-  // Prodotto da mostrare (scorrendo fino a lui) quando il pannello si chiude
-  const [scrollTarget, setScrollTarget] = useState<string | null>(null);
+  // Prodotti da evidenziare in lista quando la modale si chiude (la pagina non scorre)
+  const [highlightTexts, setHighlightTexts] = useState<string[]>([]);
   const [nameSheetOpen, setNameSheetOpen] = useState(false);
-  const addSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const saved = readGuestName();
@@ -96,14 +94,6 @@ export function ExpressListView({
     setCanNativeShare(typeof navigator.share === "function");
   }, [initialList.id]);
 
-  // Mostra il pulsante "+ Aggiungi" solo quando il campo è fuori dallo schermo
-  useEffect(() => {
-    const el = addSectionRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const obs = new IntersectionObserver(([entry]) => setAddFormVisible(entry.isIntersecting));
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!notice) return;
@@ -219,9 +209,8 @@ export function ExpressListView({
     setGuestName(name);
     setError(null);
     setNameSheetOpen(false);
-    // Su telefono con la lista piena si passa al pannello per aggiungere, altrimenti al campo in alto
-    const phone = window.matchMedia("(max-width: 639px)").matches;
-    if (phone && list.items.length > 0) setAddSheetOpen(true);
+    // Con la lista piena si passa alla modale per aggiungere, altrimenti al campo in alto
+    if (list.items.length > 0) setAddSheetOpen(true);
     else setTimeout(() => inputRef.current?.focus(), 0);
   };
 
@@ -234,7 +223,6 @@ export function ExpressListView({
     if (texts.length === 0) return;
     if (addSheetOpen) {
       setSessionAdded((prev) => [...prev, ...texts]);
-      setScrollTarget(texts[texts.length - 1]);
     }
     const present = new Set(list.items.map((i) => normalize(i.text)));
     const temp: ExpressItemView[] = texts
@@ -285,7 +273,19 @@ export function ExpressListView({
     sheetInputRef.current?.focus();
   };
 
+  /** Prodotto in cima allo schermo: serve a tenere ferma la vista mentre la lista cambia. */
+  const anchorRef = useRef<{ id: string; top: number } | null>(null);
+  const captureAnchor = () => {
+    const first = [...document.querySelectorAll<HTMLElement>("li[data-item-id]")].find(
+      (li) => li.getBoundingClientRect().top >= 80,
+    );
+    anchorRef.current = first
+      ? { id: first.dataset.itemId!, top: first.getBoundingClientRect().top }
+      : null;
+  };
+
   const openAddSheet = () => {
+    captureAnchor();
     setError(null);
     setSessionAdded([]);
     if (guestName) setAddSheetOpen(true);
@@ -293,7 +293,10 @@ export function ExpressListView({
   };
 
   const closeAddSheet = () => {
+    // Tiene ferma la vista ancora un attimo, finché il server conferma gli ultimi prodotti
+    setTimeout(() => (anchorRef.current = null), 2500);
     setAddSheetOpen(false);
+    setHighlightTexts(sessionAdded);
     setSessionAdded([]);
   };
 
@@ -308,33 +311,38 @@ export function ExpressListView({
     return () => targets.forEach((el, i) => (el.style.overflow = previous[i]));
   }, [addSheetOpen, nameSheetOpen]);
 
-  // Chiuso il pannello, scorre fino all'ultimo prodotto aggiunto e lo evidenzia
+  // Mentre si aggiunge, i prodotti nuovi possono entrare sopra lo schermo e spostare la lista:
+  // riporta la vista esattamente dov'era (con la modale aperta il browser non lo fa da solo)
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    if (!anchor) return;
+    const el = document.querySelector<HTMLElement>(`[data-item-id="${anchor.id}"]`);
+    if (!el) return;
+    const delta = el.getBoundingClientRect().top - anchor.top;
+    if (Math.abs(delta) < 1) return;
+    const main = document.getElementById("app-main-scroll");
+    if (main && main.scrollHeight > main.clientHeight) main.scrollTop += delta;
+    else window.scrollBy(0, delta);
+  }, [list.items]);
+
+  // Chiusa la modale, evidenzia per qualche secondo i prodotti appena aggiunti
   useEffect(() => {
-    if (addSheetOpen || !scrollTarget) return;
-    const item = list.items.find(
-      (i) => normalize(i.text) === normalize(scrollTarget) && !i.id.startsWith("tmp-"),
-    );
-    if (!item) return; // ancora in salvataggio: riprova al prossimo aggiornamento della lista
-    setScrollTarget(null);
-    requestAnimationFrame(() => {
-      document
-        .querySelector(`[data-item-id="${item.id}"]`)
-        ?.scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-    setFreshIds((ids) => new Set([...ids, item.id]));
+    if (addSheetOpen || highlightTexts.length === 0) return;
+    const wanted = new Set(highlightTexts.map(normalize));
+    const found = list.items.filter((i) => wanted.has(normalize(i.text)) && !i.id.startsWith("tmp-"));
+    if (found.length === 0) return; // ancora in salvataggio: riprova al prossimo aggiornamento
+    setHighlightTexts([]);
+    const ids = found.map((i) => i.id);
+    setFreshIds((prev) => new Set([...prev, ...ids]));
     setTimeout(() => {
-      setFreshIds((ids) => {
-        const next = new Set(ids);
-        next.delete(item.id);
+      setFreshIds((prev) => {
+        const next = new Set(prev);
+        ids.forEach((id) => next.delete(id));
         return next;
       });
     }, NEW_HIGHLIGHT_MS);
-  }, [addSheetOpen, scrollTarget, list.items]);
+  }, [addSheetOpen, highlightTexts, list.items]);
 
-  const focusAdd = () => {
-    addSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 300);
-  };
 
   const copyLink = async () => {
     try {
@@ -433,12 +441,11 @@ export function ExpressListView({
 
       {/* Nome ospite oppure campo per aggiungere prodotti */}
       <section
-        ref={addSectionRef}
         aria-label="Aggiungi prodotti"
         className={cn(
           "scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5",
-          // Su telefono, con la lista piena, si aggiunge dalla barra in basso
-          hasItems && "hidden sm:block",
+          // Con la lista piena si aggiunge dalla modale ("+ Aggiungi")
+          hasItems && "hidden",
         )}
       >
         {!nameReady ? (
@@ -717,12 +724,12 @@ export function ExpressListView({
         </div>
       )}
 
-      {/* Telefono, lista non vuota: pulsante "+" che apre il pannello per aggiungere */}
+      {/* Lista non vuota: pulsante "+" che apre la modale per aggiungere */}
       {hasItems && nameReady && !addSheetOpen && !nameSheetOpen && (
         <button
           type="button"
           onClick={openAddSheet}
-          className="fixed bottom-5 right-5 z-30 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-accent px-6 text-base font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] active:scale-95 sm:hidden"
+          className="fixed bottom-5 right-5 z-30 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-accent px-6 text-base font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] transition hover:bg-accent-light active:scale-95"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <Plus className="h-6 w-6" aria-hidden />
@@ -730,18 +737,19 @@ export function ExpressListView({
         </button>
       )}
 
-      {/* Pannello dal basso per aggiungere prodotti (telefono) */}
+      {/* Modale per aggiungere prodotti: la pagina sotto resta ferma dov'era */}
       {addSheetOpen && (
-        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:hidden" onClick={closeAddSheet}>
+        <div
+          className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 px-4 pt-20 sm:items-center sm:pt-4"
+          onClick={closeAddSheet}
+        >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="express-add-sheet-title"
             onClick={(e) => e.stopPropagation()}
-            className="w-full space-y-3 rounded-t-3xl bg-white p-5"
-            style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+            className="w-full max-w-md space-y-3 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(13,32,49,0.25)]"
           >
-            <span className="mx-auto block h-1.5 w-10 rounded-full bg-gray-300" aria-hidden />
             <div className="flex items-center justify-between">
               <p id="express-add-sheet-title" className="font-semibold text-gray-900">
                 Cosa vuoi a bordo, {guestName}?
@@ -818,16 +826,17 @@ export function ExpressListView({
         </div>
       )}
 
-      {/* Pannello dal basso per scrivere il nome (telefono) */}
+      {/* Modale per scrivere il nome */}
       {nameSheetOpen && (
-        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:hidden" onClick={() => setNameSheetOpen(false)}>
+        <div
+          className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 px-4 pt-20 sm:items-center sm:pt-4"
+          onClick={() => setNameSheetOpen(false)}
+        >
           <form
             onSubmit={confirmName}
             onClick={(e) => e.stopPropagation()}
-            className="w-full space-y-3 rounded-t-3xl bg-white p-5"
-            style={{ paddingBottom: "calc(1.25rem + env(safe-area-inset-bottom))" }}
+            className="w-full max-w-md space-y-3 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(13,32,49,0.25)]"
           >
-            <span className="mx-auto block h-1.5 w-10 rounded-full bg-gray-300" aria-hidden />
             <label htmlFor="express-guest-sheet" className="block font-semibold text-gray-900">
               Come ti chiami?
             </label>
@@ -892,17 +901,6 @@ export function ExpressListView({
         </div>
       )}
 
-      {/* Pulsante sempre a portata quando il campo per aggiungere non si vede (da tablet in su) */}
-      {guestName && !addFormVisible && (
-        <button
-          type="button"
-          onClick={focusAdd}
-          className="fixed bottom-5 right-5 z-30 hidden sm:inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3.5 font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.35)] transition hover:bg-accent-light"
-        >
-          <Plus className="h-5 w-5" aria-hidden />
-          Aggiungi
-        </button>
-      )}
     </div>
   );
 }
