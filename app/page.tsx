@@ -1,10 +1,9 @@
 "use client";
 
-import { CreateGroupBox } from "@/components/CreateGroupBox";
 import { Loading } from "@/components/Loading";
 import { ToastError } from "@/components/ToastError";
 import { FeaturesCarousel } from "@/components/FeaturesCarousel";
-import { MenuFormBox } from "@/components/MenuFormBox";
+import { HomeChoiceCards } from "@/components/HomeChoiceCards";
 import { HowItWorksSection } from "@/components/HowItWorksSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { FAQSection } from "@/components/FAQSection";
@@ -22,7 +21,6 @@ import {
   blogHeaderVariants,
 } from "@/animations/framer-variants";
 import { useUser } from "@clerk/nextjs";
-import { ArrowRight, Zap } from "lucide-react";
 
 export default function Home() {
   const [isPending, startTransition] = useTransition();
@@ -88,7 +86,7 @@ export default function Home() {
               background: "linear-gradient(to bottom, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.65))",
             }}
           />
-          <div className="relative z-20 max-w-7xl mx-auto w-full pb-14 sm:pb-20 md:pb-28">
+          <div className="relative z-20 max-w-7xl mx-auto w-full pb-28 sm:pb-20 md:pb-28">
             {/* Header */}
             <motion.header
               variants={itemVariants}
@@ -115,8 +113,8 @@ export default function Home() {
                 className="mx-auto mb-6 max-w-3xl px-2 text-lg leading-relaxed text-white/95 sm:mb-8 sm:text-xl lg:text-2xl"
                 role="doc-subtitle"
               >
-                Crea il menu perfetto per tutto l&apos;equipaggio con l&apos;aiuto
-                dell&apos;intelligenza artificiale. Siete pronti a salpare? ⛵
+                Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti
+                a salpare? ⛵
               </motion.p>
 
               <motion.div
@@ -137,7 +135,7 @@ export default function Home() {
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="mb-12 sm:mb-16 md:mb-20"
+              className="mb-12 hidden sm:mb-16 sm:block md:mb-20"
             >
               <FeaturesCarousel />
             </motion.div>
@@ -169,54 +167,15 @@ export default function Home() {
           className="relative py-12 sm:py-16 md:py-20 px-6 md:px-10 max-w-7xl mx-auto bg-white"
           aria-label="Strumenti di pianificazione menu"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-16 items-stretch">
-              {/* Menu Form Box */}
-              <motion.div
-                variants={itemVariants}
-                className="order-1 w-full h-full"
-                role="complementary"
-                aria-label="Box di creazione menu"
-              >
-                <MenuFormBox />
-              </motion.div>
-
-              {/* Create Group Box */}
-              <motion.div
-                variants={itemVariants}
-                className="order-2 w-full h-full"
-                role="complementary"
-                aria-label="Creazione gruppo"
-              >
-                <CreateGroupBox />
-              </motion.div>
-            </div>
-
-            {/* Cambusa Express */}
-            <motion.div variants={itemVariants} className="mt-8 sm:mt-10">
-              <Link
-                href="/express"
-                className="group flex flex-col items-start gap-4 rounded-2xl border border-accent-40 bg-gradient-to-br from-accent/10 via-white to-accent-light/15 p-5 transition hover:shadow-[0_12px_40px_rgb(var(--accent-rgb),0.14)] sm:flex-row sm:items-center sm:p-6"
-              >
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-white">
-                  <Zap className="h-6 w-6" aria-hidden />
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
-                    Novità · Cambusa Express
-                  </span>
-                  <span className="mt-1 block text-lg font-bold text-gray-900">
-                    Una lista della spesa condivisa con la crew, in 30 secondi
-                  </span>
-                  <span className="mt-0.5 block text-sm text-gray-600">
-                    Ognuno aggiunge e vota i prodotti dal telefono. Senza registrazione.
-                  </span>
-                </span>
-                <span className="inline-flex items-center gap-2 font-semibold text-accent">
-                  Crea la lista
-                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden />
-                </span>
-              </Link>
-            </motion.div>
+          <motion.div variants={itemVariants} className="mb-8 text-center sm:mb-10">
+            <h2 className="font-display text-3xl font-bold text-primary sm:text-4xl">
+              Da dove vuoi partire?
+            </h2>
+            <p className="mx-auto mt-2 max-w-xl text-base text-gray-600 sm:text-lg">
+              Tre modi per preparare la cambusa, da soli o con tutta la crew.
+            </p>
+          </motion.div>
+          <HomeChoiceCards />
         </motion.section>
 
         {/* How It Works Section */}
