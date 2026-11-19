@@ -1,257 +1,166 @@
-"use client";
+import { Metadata } from "next";
+import Link from "next/link";
+import { LegalDoc, List, Section, TITOLARE } from "@/components/Legal/LegalDoc";
 
-import { motion } from "framer-motion";
-import { itemVariants } from "@/animations/framer-variants";
-import { PageContainer } from "@/components/PageContainer";
-import { FileText, AlertTriangle, CheckCircle, Scale } from "lucide-react";
+export const metadata: Metadata = {
+  title: "Termini di Servizio | Cambusa",
+  description: "Le condizioni di utilizzo di Cambusa e di Cambusa Express.",
+};
 
 export default function TermsPage() {
   return (
-    <PageContainer narrow>
-    <motion.div
-      variants={itemVariants}
-      initial="hidden"
-      animate="visible"
-      className="w-full"
-    >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="text-center mb-10 sm:mb-12">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
-          <FileText className="w-8 h-8 text-primary" />
-        </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-primary mb-4">
-          Termini di Servizio
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Ultimo aggiornamento: 27 luglio 2025
+    <LegalDoc
+      title="Termini di Servizio"
+      updated="19 novembre 2026"
+      intro={
+        <p>
+          Questi termini regolano l&apos;uso di Cambusa (cambusa-online.com).
+          Usando il sito li accetti; se non sei d&apos;accordo, ti chiediamo di
+          non utilizzarlo.
         </p>
-      </motion.div>
+      }
+    >
+      <Section title="1. Chi fornisce il servizio">
+        <p>
+          Cambusa è un progetto gestito a titolo privato da {TITOLARE.nome}.
+          Contatti:{" "}
+          <a href={`mailto:${TITOLARE.email}`}>{TITOLARE.email}</a>.
+        </p>
+      </Section>
 
-      {/* Content */}
-      <motion.div variants={itemVariants} className="space-y-8">
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Accettazione dei Termini
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            Utilizzando Cambusaai ("il Servizio"), accetti di essere vincolato
-            da questi Termini di Servizio ("Termini"). Se non accetti questi
-            Termini, non utilizzare il Servizio.
-          </p>
-          <p className="text-gray-700 leading-relaxed">
-            Ci riserviamo il diritto di modificare questi Termini in qualsiasi
-            momento. Le modifiche saranno effettive immediatamente dopo la
-            pubblicazione sul sito web.
-          </p>
-        </section>
+      <Section title="2. Il servizio">
+        <List>
+          <li>
+            <strong>Menu con l&apos;AI</strong>: generazione di menu e liste
+            della spesa per la tua vacanza in barca, a partire da giorni, pasti,
+            persone e preferenze.
+          </li>
+          <li>
+            <strong>Gruppi</strong>: raccolta delle preferenze di tutto
+            l&apos;equipaggio e voto dei piatti.
+          </li>
+          <li>
+            <strong>Cambusa Express</strong>: lista della spesa condivisa, che
+            si usa senza account.
+          </li>
+        </List>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-6 h-6 text-primary" />
-            Descrizione del Servizio
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            Cambusaai è un servizio di pianificazione menu per barche a vela che
-            utilizza l'intelligenza artificiale per generare menu personalizzati
-            e liste della spesa basati su:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-            <li>Durata del viaggio</li>
-            <li>Numero di persone</li>
-            <li>Preferenze alimentari</li>
-            <li>Restrizioni dietetiche</li>
-            <li>Allergie e intolleranze</li>
-          </ul>
-        </section>
+      <Section title="3. Account">
+        <p>
+          Per generare menu e usare i gruppi serve accedere con un account
+          Google. Sei responsabile
+          dei dati che inserisci e della sicurezza del tuo accesso; avvisaci se
+          noti un uso non autorizzato. Puoi chiedere di chiudere l&apos;account in
+          qualsiasi momento scrivendoci.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Registrazione e Account
-          </h2>
-          <div className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">
-              Per utilizzare il Servizio, potresti dover creare un account. Sei
-              responsabile di:
-            </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-              <li>Fornire informazioni accurate e complete</li>
-              <li>Mantenere la sicurezza del tuo account</li>
-              <li>Notificare immediatamente qualsiasi uso non autorizzato</li>
-              <li>
-                Essere responsabile di tutte le attività che avvengono nel tuo
-                account
-              </li>
-            </ul>
-          </div>
-        </section>
+      <Section title="4. Liste e gruppi condivisi">
+        <List>
+          <li>
+            Chiunque abbia il link di una lista Express o di un gruppo può
+            vederne il contenuto, i nomi dei partecipanti e, nelle liste
+            Express, aggiungere e votare prodotti. Condividi il link solo con chi
+            vuoi.
+          </li>
+          <li>
+            Sei responsabile di ciò che scrivi. Non inserire contenuti offensivi,
+            illegali o dati personali di altre persone senza il loro permesso.
+          </li>
+          <li>
+            Chi ha creato la lista può eliminare qualsiasi prodotto; ciascuno può
+            eliminare i prodotti che ha aggiunto. Possiamo rimuovere contenuti
+            che violano questi termini.
+          </li>
+        </List>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-6 h-6 text-primary" />
-            Limitazioni di Responsabilità
-          </h2>
-          <div className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">
-              <strong>Disclaimer:</strong> I menu e le liste della spesa
-              generati sono suggerimenti basati sui dati forniti. Non garantiamo
-              che siano privi di errori o completamente accurati.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              <strong>Allergie e Intolleranze:</strong> Sebbene ci sforziamo di
-              evitare ingredienti problematici, è tua responsabilità verificare
-              sempre gli ingredienti e consultare un medico per gravi allergie.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              <strong>Conservazione Alimenti:</strong> Non siamo responsabili
-              per la conservazione o la preparazione degli alimenti. Segui
-              sempre le linee guida di sicurezza alimentare.
-            </p>
-          </div>
-        </section>
+      <Section title="5. Prezzi e pagamenti">
+        <p>
+          Cambusa è gratuito, con un numero limitato di generazioni del menu con
+          l&apos;AI (3 per account). Puoi acquistare un pacchetto di{" "}
+          <strong>5 rigenerazioni aggiuntive</strong> al prezzo indicato prima
+          del pagamento (IVA inclusa), con pagamento unico tramite Stripe
+          (carta o PayPal). Non ci sono abbonamenti né rinnovi automatici.
+        </p>
+        <p>
+          <strong>Diritto di recesso.</strong> Le rigenerazioni sono un
+          contenuto digitale fornito subito dopo il pagamento. Al momento
+          dell&apos;acquisto ci chiedi di renderle disponibili immediatamente e
+          riconosci che, per questo, perdi il diritto di recesso di 14 giorni
+          (art. 59, lett. o, Codice del Consumo). Se le rigenerazioni non ti
+          vengono accreditate per un nostro errore, scrivici e ti rimborsiamo.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Uso Accettabile
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            Ti impegni a utilizzare il Servizio solo per scopi legittimi e in
-            conformità con questi Termini. Non è consentito:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-            <li>Utilizzare il Servizio per scopi illegali o fraudolenti</li>
-            <li>Tentare di accedere non autorizzato ai nostri sistemi</li>
-            <li>Interferire con il funzionamento del Servizio</li>
-            <li>Violare i diritti di proprietà intellettuale</li>
-            <li>Trasmettere virus o codice dannoso</li>
-            <li>Utilizzare il Servizio per spam o contenuti offensivi</li>
-          </ul>
-        </section>
+      <Section title="6. Menu, allergie e sicurezza alimentare">
+        <p>
+          I menu e le liste sono <strong>suggerimenti generati automaticamente</strong>{" "}
+          e possono contenere errori. In caso di allergie o intolleranze
+          controlla sempre gli ingredienti e le etichette: Cambusa non sostituisce
+          il parere di un medico. Conservazione e preparazione degli alimenti a
+          bordo restano sotto la tua responsabilità.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Scale className="w-6 h-6 text-primary" />
-            Proprietà Intellettuale
-          </h2>
-          <div className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">
-              Il Servizio e tutto il suo contenuto, inclusi ma non limitati a
-              testi, grafica, loghi, icone, immagini, clip audio, download
-              digitali e software, sono di proprietà di Cambusaai o dei suoi
-              fornitori di contenuti e sono protetti dalle leggi italiane e
-              internazionali sulla proprietà intellettuale.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              Ti viene concessa una licenza limitata, non esclusiva e revocabile
-              per utilizzare il Servizio per scopi personali e non commerciali.
-            </p>
-          </div>
-        </section>
+      <Section title="7. Uso corretto">
+        <p>Non è consentito:</p>
+        <List>
+          <li>usare Cambusa per scopi illegali o per inviare spam;</li>
+          <li>tentare di accedere senza autorizzazione ai nostri sistemi o di ostacolarne il funzionamento;</li>
+          <li>usare strumenti automatici per generare menu o contenuti in massa.</li>
+        </List>
+        <p>Possiamo sospendere gli account o le liste che violano queste regole.</p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Privacy e Dati Personali
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            La raccolta e l'utilizzo dei tuoi dati personali sono regolati dalla
-            nostra Privacy Policy, che forma parte integrante di questi Termini.
-            Utilizzando il Servizio, accetti anche i termini della nostra
-            Privacy Policy.
-          </p>
-        </section>
+      <Section title="8. Proprietà intellettuale">
+        <p>
+          Il sito, il marchio, i testi e la grafica di Cambusa sono di{" "}
+          {TITOLARE.nome}. Puoi usare liberamente, per uso personale, i menu e le
+          liste che generi.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Modifiche al Servizio
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            Ci riserviamo il diritto di modificare, sospendere o interrompere il
-            Servizio in qualsiasi momento, con o senza preavviso. Non saremo
-            responsabili nei tuoi confronti o nei confronti di terze parti per
-            qualsiasi modifica, sospensione o interruzione del Servizio.
-          </p>
-        </section>
+      <Section title="9. Disponibilità e responsabilità">
+        <p>
+          Facciamo del nostro meglio perché Cambusa funzioni sempre, ma non
+          possiamo garantire che sia privo di interruzioni o errori. Possiamo
+          modificare o sospendere funzioni del servizio; per le modifiche
+          importanti ti avviseremo sul sito.
+        </p>
+        <p>
+          Nei limiti consentiti dalla legge, non rispondiamo dei danni indiretti
+          derivanti dall&apos;uso del servizio. Restano salvi i diritti che la
+          legge riconosce ai consumatori e la responsabilità per dolo o colpa
+          grave.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Limitazione di Responsabilità
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            In nessun caso Cambusaai, i suoi dirigenti, dipendenti o agenti
-            saranno responsabili per danni diretti, indiretti, incidentali,
-            speciali, consequenziali o punitivi, inclusi ma non limitati a:
-          </p>
-          <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
-            <li>Perdita di profitti</li>
-            <li>Perdita di dati</li>
-            <li>Interruzione del servizio</li>
-            <li>Danni alla reputazione</li>
-            <li>Qualsiasi altro danno immateriale</li>
-          </ul>
-        </section>
+      <Section title="10. Privacy">
+        <p>
+          L&apos;uso dei tuoi dati è descritto nella{" "}
+          <Link href="/privacy-policy">Privacy Policy</Link> e nella{" "}
+          <Link href="/cookies">Cookie Policy</Link>.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Indennizzo
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            Ti impegni a indennizzare e tenere indenne Cambusaai da qualsiasi
-            reclamo, danno, perdita, responsabilità, costo o spesa (incluse le
-            spese legali) derivanti da o in qualsiasi modo correlati al tuo
-            utilizzo del Servizio o alla violazione di questi Termini.
-          </p>
-        </section>
+      <Section title="11. Modifiche a questi termini">
+        <p>
+          Possiamo aggiornare questi termini. La data in alto indica
+          l&apos;ultima modifica; continuando a usare Cambusa dopo una modifica,
+          accetti la nuova versione.
+        </p>
+      </Section>
 
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Legge Applicabile e Foro Competente
-          </h2>
-          <p className="text-gray-700 leading-relaxed">
-            Questi Termini sono regolati e interpretati in conformità con le
-            leggi italiane. Qualsiasi controversia derivante da o correlata a
-            questi Termini sarà soggetta alla giurisdizione esclusiva dei
-            tribunali italiani.
-          </p>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Disposizioni Generali
-          </h2>
-          <div className="space-y-4">
-            <p className="text-gray-700 leading-relaxed">
-              Se una qualsiasi disposizione di questi Termini è ritenuta
-              invalida o inapplicabile, le restanti disposizioni continueranno
-              ad essere in pieno vigore ed effetto.
-            </p>
-            <p className="text-gray-700 leading-relaxed">
-              La mancata applicazione di qualsiasi diritto o disposizione di
-              questi Termini non costituisce una rinuncia a tale diritto o
-              disposizione.
-            </p>
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-            Contattaci
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-4">
-            Se hai domande su questi Termini di Servizio, contattaci:
-          </p>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-gray-700">
-              <strong>Email:</strong>{" "}
-              <a
-                href="mailto:artscomi.web@gmail.com"
-                className="text-primary hover:underline"
-              >
-                artscomi.web@gmail.com
-              </a>
-            </p>
-          </div>
-        </section>
-      </motion.div>
-    </motion.div>
-    </PageContainer>
+      <Section title="12. Legge applicabile">
+        <p>
+          Si applica la legge italiana. Se sei un consumatore, per eventuali
+          controversie è competente il giudice del luogo in cui risiedi.
+          Puoi anche usare la piattaforma europea per la risoluzione online
+          delle controversie.
+        </p>
+      </Section>
+    </LegalDoc>
   );
 }

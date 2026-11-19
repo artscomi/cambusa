@@ -5,8 +5,8 @@ export default function Page() {
     <SignUp
       appearance={{
         layout: {
-          termsPageUrl: "/termini",
-          privacyPageUrl: "/privacy",
+          termsPageUrl: "/terms",
+          privacyPageUrl: "/privacy-policy",
         },
       }}
     />

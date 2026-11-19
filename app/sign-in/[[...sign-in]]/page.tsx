@@ -43,8 +43,8 @@ export default function Page() {
           },
         },
         layout: {
-          termsPageUrl: "/termini",
-          privacyPageUrl: "/privacy",
+          termsPageUrl: "/terms",
+          privacyPageUrl: "/privacy-policy",
         },
       }}
     />
