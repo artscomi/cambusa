@@ -67,7 +67,6 @@ export function ExpressListView({
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [showChecked, setShowChecked] = useState(false);
-  const [hideRejected, setHideRejected] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const [canNativeShare, setCanNativeShare] = useState(false);
@@ -84,12 +83,16 @@ export function ExpressListView({
   // Prodotti da evidenziare in lista quando la modale si chiude (la pagina non scorre)
   const [highlightTexts, setHighlightTexts] = useState<string[]>([]);
   const [nameSheetOpen, setNameSheetOpen] = useState(false);
+  // Azione da riprendere dopo che l'ospite ha scritto il nome (aggiungere o votare)
+  const afterNameRef = useRef<((name: string) => void) | null>(null);
 
   useEffect(() => {
     const saved = readGuestName();
     setGuestName(saved);
     setNameDraft(saved);
     setNameReady(true);
+    // Invitato che apre il link per la prima volta: gli chiediamo subito come si chiama
+    if (!saved) setNameSheetOpen(true);
     setShareUrl(`${window.location.origin}/express/${initialList.id}`);
     setCanNativeShare(typeof navigator.share === "function");
   }, [initialList.id]);
@@ -156,7 +159,12 @@ export function ExpressListView({
     return data;
   };
 
-  const vote = (item: ExpressItemView, value: 1 | -1) => {
+  const vote = (item: ExpressItemView, value: 1 | -1, nameNow: string = guestName) => {
+    if (!nameNow) {
+      afterNameRef.current = (name) => void vote(item, value, name);
+      setNameSheetOpen(true);
+      return;
+    }
     trackEvent("express_vote", { value: value === 1 ? "up" : "down" });
     return run(
       (items) =>
@@ -167,7 +175,7 @@ export function ExpressListView({
           const down = i.down - (i.myVote === -1 ? 1 : 0) + (next === -1 ? 1 : 0);
           return { ...i, myVote: next, up, down, score: up - down };
         }),
-      () => voteExpressItem({ itemId: item.id, value }),
+      () => voteExpressItem({ itemId: item.id, value, guestName: nameNow }),
     );
   };
 
@@ -209,9 +217,10 @@ export function ExpressListView({
     setGuestName(name);
     setError(null);
     setNameSheetOpen(false);
-    // Con la lista piena si passa alla modale per aggiungere, altrimenti al campo in alto
-    if (list.items.length > 0) setAddSheetOpen(true);
-    else setTimeout(() => inputRef.current?.focus(), 0);
+    // Riprende l'azione che aveva chiesto il nome (aggiungere o votare), se c'era
+    const next = afterNameRef.current;
+    afterNameRef.current = null;
+    if (next) setTimeout(() => next(name), 0);
   };
 
   /** Aggiunge uno o più prodotti; compaiono subito, poi si riallinea col server. */
@@ -237,6 +246,7 @@ export function ExpressListView({
         down: 0,
         score: 1,
         myVote: 1,
+        downVoters: [],
         canDelete: false,
         mine: true,
       }));
@@ -289,7 +299,10 @@ export function ExpressListView({
     setError(null);
     setSessionAdded([]);
     if (guestName) setAddSheetOpen(true);
-    else setNameSheetOpen(true);
+    else {
+      afterNameRef.current = () => setAddSheetOpen(true);
+      setNameSheetOpen(true);
+    }
   };
 
   const closeAddSheet = () => {
@@ -384,27 +397,23 @@ export function ExpressListView({
 
   const toBuy = useMemo(() => list.items.filter((i) => !i.checked), [list.items]);
   const bought = useMemo(() => list.items.filter((i) => i.checked), [list.items]);
-  /** Esito del voto: approvato (+), bocciato (−), in parità (0). */
-  const summary = useMemo(
-    () => ({
-      approved: toBuy.filter((i) => i.score > 0).length,
-      rejected: toBuy.filter((i) => i.score < 0).length,
-      toVote: toBuy.filter((i) => i.myVote === 0 && !i.id.startsWith("tmp-")).length,
-    }),
+  /** Prodotti che chi guarda non ha ancora votato. */
+  const toVote = useMemo(
+    () => toBuy.filter((i) => i.myVote === 0 && !i.id.startsWith("tmp-")).length,
     [toBuy],
   );
   const byCategory = useMemo(
     () =>
       EXPRESS_CATEGORIES.map((category) => {
-        const all = toBuy.filter((i) => i.category === category);
-        const items = hideRejected ? all.filter((i) => i.score >= 0) : all;
+        const items = toBuy.filter((i) => i.category === category);
+        const all = items;
         // "Il più votato" del reparto: solo se ha almeno 2 punti ed è l'unico in testa
         const best = Math.max(...all.map((i) => i.score));
         const leaders = all.filter((i) => i.score === best);
         const topId = all.length > 1 && best >= 2 && leaders.length === 1 ? leaders[0].id : null;
         return { category, items, topId };
       }).filter((g) => g.items.length > 0),
-    [toBuy, hideRejected],
+    [toBuy],
   );
   const suggestions = useMemo(() => {
     if (list.items.length >= 10) return [];
@@ -554,34 +563,10 @@ export function ExpressListView({
         </p>
       ) : (
         <div className="space-y-5">
-          {toBuy.length > 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3">
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-semibold">
-                <span className="text-emerald-700">
-                  ✓ {summary.approved} {summary.approved === 1 ? "approvato" : "approvati"}
-                </span>
-                {summary.rejected > 0 && (
-                  <span className="text-red-600">
-                    ✕ {summary.rejected} {summary.rejected === 1 ? "bocciato" : "bocciati"}
-                  </span>
-                )}
-                {summary.toVote > 0 && (
-                  <span className="text-amber-700">
-                    {summary.toVote} da votare per te
-                  </span>
-                )}
-              </div>
-              {summary.rejected > 0 && (
-                <button
-                  type="button"
-                  onClick={() => setHideRejected((v) => !v)}
-                  aria-pressed={hideRejected}
-                  className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300 hover:bg-gray-50"
-                >
-                  {hideRejected ? "Mostra i bocciati" : "Nascondi i bocciati"}
-                </button>
-              )}
-            </div>
+          {guestName && toVote > 0 && (
+            <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+              {toVote === 1 ? "1 prodotto da votare per te" : `${toVote} prodotti da votare per te`}
+            </p>
           )}
 
           {byCategory.map(({ category, items, topId }) => (
@@ -733,7 +718,7 @@ export function ExpressListView({
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <Plus className="h-6 w-6" aria-hidden />
-          {guestName ? "Aggiungi" : "Partecipa"}
+          Aggiungi
         </button>
       )}
 
@@ -829,18 +814,26 @@ export function ExpressListView({
       {/* Modale per scrivere il nome */}
       {nameSheetOpen && (
         <div
-          className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 px-4 pt-20 sm:items-center sm:pt-4"
-          onClick={() => setNameSheetOpen(false)}
+          className="fixed inset-0 z-40 flex items-start justify-center bg-black/40 px-4 pt-20 backdrop-blur-sm sm:items-center sm:pt-4"
+          onClick={() => {
+            afterNameRef.current = null;
+            setNameSheetOpen(false);
+          }}
         >
           <form
             onSubmit={confirmName}
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md space-y-3 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(13,32,49,0.25)]"
           >
-            <label htmlFor="express-guest-sheet" className="block font-semibold text-gray-900">
+            <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary/80">
+              Sei a bordo di «{list.name}»
+            </p>
+            <label htmlFor="express-guest-sheet" className="block text-lg font-semibold text-gray-900">
               Come ti chiami?
             </label>
-            <p className="-mt-2 text-sm text-gray-500">Così la crew sa chi ha proposto cosa.</p>
+            <p className="-mt-2 text-sm text-gray-500">
+              Così la crew sa chi propone cosa e chi ha votato.
+            </p>
             <input
               id="express-guest-sheet"
               className={inputClass}
@@ -852,7 +845,7 @@ export function ExpressListView({
               autoFocus
             />
             <button type="submit" className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
-              Entra e aggiungi prodotti
+              Entra nella lista
             </button>
           </form>
         </div>
@@ -921,8 +914,8 @@ function ItemRow({
   onDelete: (item: ExpressItemView) => void;
 }) {
   const pending = item.id.startsWith("tmp-");
-  // Bocciato: più 👎 che 👍. Resta in lista (si può cambiare idea) ma sbiadito.
-  const rejected = !item.checked && item.score < 0;
+  // Chi non lo vuole: "Marco non lo vuole", "Marco e Anna non lo vogliono"...
+  const notWanted = describeDownVoters(item.downVoters);
 
   // In attesa del server: il nome si legge subito, il resto è uno skeleton animato
   if (pending) {
@@ -973,12 +966,11 @@ function ItemRow({
         </span>
       </button>
 
-      <div className={cn("min-w-0 flex-1", rejected && "opacity-60")}>
+      <div className="min-w-0 flex-1">
         <p
           className={cn(
             "break-words font-medium leading-snug text-gray-900",
             item.checked && "text-gray-400 line-through",
-            rejected && "text-gray-500 line-through decoration-red-300",
           )}
         >
           {item.text}
@@ -986,9 +978,11 @@ function ItemRow({
         <p className="truncate text-xs text-gray-500">
           {isNew ? <span className="font-semibold text-amber-700">Nuovo · </span> : null}
           {isTop ? <span className="font-semibold text-amber-600">⭐ Il più votato · </span> : null}
-          {rejected ? <span className="font-semibold text-red-600">La crew non lo vuole · </span> : null}
           {item.mine ? "proposto da te" : `proposto da ${item.addedByName}`}
         </p>
+        {notWanted && !item.checked && (
+          <p className="text-xs font-medium text-red-600">👎 {notWanted}</p>
+        )}
       </div>
 
       <div className="flex shrink-0 items-center gap-1">
@@ -1059,4 +1053,13 @@ function VoteButton({
       {count}
     </button>
   );
+}
+
+/** "Marco non lo vuole" · "Marco e Anna non lo vogliono" · "Marco, Anna e altri 2 non lo vogliono" */
+function describeDownVoters(names: string[]): string | null {
+  if (names.length === 0) return null;
+  if (names.length === 1) return `${names[0]} non lo vuole`;
+  if (names.length === 2) return `${names[0]} e ${names[1]} non lo vogliono`;
+  const others = names.length - 2;
+  return `${names[0]}, ${names[1]} e ${others === 1 ? "un altro" : `altri ${others}`} non lo vogliono`;
 }

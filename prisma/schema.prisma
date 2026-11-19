@@ -123,11 +123,13 @@ model ExpressItem {
 
 // Un voto per (prodotto, ospite): +1 o -1.
 model ExpressVote {
-  id     String      @id @default(cuid())
-  itemId String
-  item   ExpressItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-  voter  String
-  value  Int
+  id        String      @id @default(cuid())
+  itemId    String
+  item      ExpressItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  voter     String
+  // Nome mostrato accanto al voto ("Marco non lo vuole"); vuoto per i voti vecchi
+  voterName String      @default("")
+  value     Int
 
   @@unique([itemId, voter])
 }

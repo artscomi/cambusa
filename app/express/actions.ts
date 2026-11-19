@@ -26,6 +26,8 @@ export type ExpressItemView = {
   down: number;
   score: number;
   myVote: 1 | -1 | 0;
+  /** Nomi di chi ha votato 👎 ("Qualcuno" per i voti senza nome). Esclude chi sta guardando. */
+  downVoters: string[];
   canDelete: boolean;
   /** Aggiunto da chi sta guardando la lista. */
   mine: boolean;
@@ -104,11 +106,14 @@ export async function getExpressList(
     let up = 0;
     let down = 0;
     let myVote: 1 | -1 | 0 = 0;
+    const downVoters: string[] = [];
     for (const v of item.votes) {
       contributors.add(v.voter);
       if (v.value > 0) up += 1;
       else down += 1;
-      if (token && v.voter === token) myVote = v.value > 0 ? 1 : -1;
+      const isMe = !!token && v.voter === token;
+      if (isMe) myVote = v.value > 0 ? 1 : -1;
+      else if (v.value < 0) downVoters.push(v.voterName.trim() || "Qualcuno");
     }
     const category = (EXPRESS_CATEGORIES as readonly string[]).includes(
       item.category,
@@ -125,6 +130,7 @@ export async function getExpressList(
       down,
       score: up - down,
       myVote,
+      downVoters,
       canDelete:
         !!token && (token === item.addedBy || token === list.creatorToken),
       mine: !!token && token === item.addedBy,
@@ -197,8 +203,8 @@ export async function addExpressItem(input: {
     if (duplicate) {
       await db.expressVote.upsert({
         where: { itemId_voter: { itemId: duplicate.id, voter: token } },
-        update: { value: 1 },
-        create: { itemId: duplicate.id, voter: token, value: 1 },
+        update: { value: 1, voterName: guestName },
+        create: { itemId: duplicate.id, voter: token, voterName: guestName, value: 1 },
       });
       merged.push(duplicate.text);
       continue;
@@ -212,7 +218,7 @@ export async function addExpressItem(input: {
         category: categorizeExpressItem(text),
         addedByName: guestName,
         addedBy: token,
-        votes: { create: { voter: token, value: 1 } },
+        votes: { create: { voter: token, voterName: guestName, value: 1 } },
       },
       select: { id: true, text: true },
     });
@@ -232,7 +238,10 @@ export async function addExpressItem(input: {
 export async function voteExpressItem(input: {
   itemId: string;
   value: 1 | -1;
+  guestName: string;
 }): Promise<Result> {
+  const guestName = clean(input.guestName, MAX_NAME_LENGTH);
+  if (!guestName) return { ok: false, error: "Scrivi il tuo nome per votare" };
   if (input.value !== 1 && input.value !== -1) {
     return { ok: false, error: "Voto non valido" };
   }
@@ -250,8 +259,8 @@ export async function voteExpressItem(input: {
   } else {
     await db.expressVote.upsert({
       where: key,
-      update: { value: input.value },
-      create: { itemId: item.id, voter: token, value: input.value },
+      update: { value: input.value, voterName: guestName },
+      create: { itemId: item.id, voter: token, voterName: guestName, value: input.value },
     });
   }
   revalidatePath(`/express/${item.listId}`);
