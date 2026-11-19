@@ -97,7 +97,8 @@ export async function getExpressList(
   });
   if (!list) return null;
 
-  const contributors = new Set<string>();
+  // Chi ha creato la lista conta come partecipante anche prima di aggiungere prodotti
+  const contributors = new Set<string>([list.creatorToken]);
   const items: ExpressItemView[] = list.items.map((item) => {
     contributors.add(item.addedBy);
     let up = 0;

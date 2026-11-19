@@ -279,6 +279,8 @@ export function ExpressListView({
   }, [list.items]);
 
   const lonely = list.contributors <= 1;
+  // Una lista vuota non si condivide: i pulsanti compaiono dopo il primo prodotto
+  const hasItems = list.items.length > 0;
   // Riquadro grande finché chi ha creato la lista è ancora da solo/a
   const showBigShare = lonely && (justCreated || list.isCreator);
 
@@ -305,60 +307,6 @@ export function ExpressListView({
           </span>
         </p>
       </header>
-
-      {/* Condivisione: grande all'inizio, compatta quando la crew è già dentro */}
-      {showBigShare ? (
-        <section
-          aria-label="Condividi la lista"
-          className="rounded-2xl border border-accent-40 bg-gradient-to-br from-accent/15 via-white to-accent-light/20 p-4 sm:p-5"
-        >
-          <p className="font-semibold text-gray-900">
-            {justCreated ? "Lista creata! Ora mandala alla crew 👇" : "Sei ancora da solo/a: invita la crew 👇"}
-          </p>
-          <p className="mt-1 text-sm text-gray-600">
-            Chi apre il link può aggiungere e votare prodotti, senza registrarsi.
-          </p>
-          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-white transition hover:brightness-95"
-            >
-              <Share2 className="h-4 w-4" aria-hidden />
-              Invia su WhatsApp
-            </a>
-            <button
-              type="button"
-              onClick={shareLink}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-primary px-5 py-2.5 font-semibold text-primary transition hover:bg-secondary"
-            >
-              {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
-              {copied ? "Link copiato!" : canNativeShare ? "Condividi link" : "Copia link"}
-            </button>
-          </div>
-        </section>
-      ) : (
-        <div className="flex items-center justify-center gap-2">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-[#25D366] hover:text-[#128C7E]"
-          >
-            <Share2 className="h-4 w-4" aria-hidden />
-            Invita su WhatsApp
-          </a>
-          <button
-            type="button"
-            onClick={shareLink}
-            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary hover:text-primary"
-          >
-            {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
-            {copied ? "Copiato!" : canNativeShare ? "Condividi" : "Copia link"}
-          </button>
-        </div>
-      )}
 
       {/* Nome ospite oppure campo per aggiungere prodotti */}
       <section
@@ -464,6 +412,60 @@ export function ExpressListView({
           </p>
         )}
       </section>
+
+      {/* Condivisione: dopo il primo prodotto; grande finché si è da soli, poi compatta */}
+      {!hasItems ? null : showBigShare ? (
+        <section
+          aria-label="Condividi la lista"
+          className="rounded-2xl border border-accent-40 bg-gradient-to-br from-accent/15 via-white to-accent-light/20 p-4 sm:p-5"
+        >
+          <p className="font-semibold text-gray-900">
+            {list.isCreator ? "Ottimo inizio! Ora mandala alla crew 👇" : "Invita la crew 👇"}
+          </p>
+          <p className="mt-1 text-sm text-gray-600">
+            Chi apre il link può aggiungere e votare prodotti, senza registrarsi.
+          </p>
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 font-semibold text-white transition hover:brightness-95"
+            >
+              <Share2 className="h-4 w-4" aria-hidden />
+              Invia su WhatsApp
+            </a>
+            <button
+              type="button"
+              onClick={shareLink}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-primary px-5 py-2.5 font-semibold text-primary transition hover:bg-secondary"
+            >
+              {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
+              {copied ? "Link copiato!" : canNativeShare ? "Condividi link" : "Copia link"}
+            </button>
+          </div>
+        </section>
+      ) : (
+        <div className="flex items-center justify-center gap-2">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-[#25D366] hover:text-[#128C7E]"
+          >
+            <Share2 className="h-4 w-4" aria-hidden />
+            Invita su WhatsApp
+          </a>
+          <button
+            type="button"
+            onClick={shareLink}
+            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:border-primary hover:text-primary"
+          >
+            {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
+            {copied ? "Copiato!" : canNativeShare ? "Condividi" : "Copia link"}
+          </button>
+        </div>
+      )}
 
       {/* Lista per reparto */}
       {list.items.length === 0 ? (
