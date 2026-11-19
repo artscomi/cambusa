@@ -13,6 +13,8 @@ const isPublicRoute = createRouteMatcher([
   "/blog(.*)",
   // Cambusa Express: liste condivise senza registrazione
   "/express(.*)",
+  // Cron di Vercel: protetto dalla variabile CRON_SECRET, non dal login
+  "/api/cron(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { LegalDoc, List, Section, Table, TITOLARE } from "@/components/Legal/LegalDoc";
+import { EXPRESS_RETENTION_MONTHS } from "@/lib/express/retention";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Cambusa",
@@ -49,6 +50,8 @@ export default function PrivacyPolicyPage() {
           spunte. Per riconoscerti tra una visita e l&apos;altra salviamo nel
           tuo browser un codice casuale anonimo (cookie
           &quot;cambusa_guest&quot;) e il tuo nome (memoria locale del browser).
+          Quando crei una lista salviamo anche un&apos;impronta non reversibile
+          del tuo indirizzo IP, solo per impedire la creazione di liste a raffica.
         </p>
         <p>
           <strong>Quando acquisti rigenerazioni</strong>: i dati di pagamento
@@ -130,7 +133,7 @@ export default function PrivacyPolicyPage() {
       <Section title="7. Per quanto tempo conserviamo i dati">
         <List>
           <li>Dati dell&apos;account, menu e gruppi: finché l&apos;account è attivo; li cancelliamo entro 30 giorni dalla tua richiesta di eliminazione.</li>
-          <li>Liste Express: finché chi ha creato la lista non ci chiede di cancellarla; puoi chiedere in qualsiasi momento la cancellazione dei prodotti e dei voti associati al tuo nome.</li>
+          <li>Liste Express: vengono cancellate automaticamente, con prodotti e voti, dopo {EXPRESS_RETENTION_MONTHS} mesi senza modifiche. Prima di allora puoi chiederne la cancellazione in qualsiasi momento.</li>
           <li>Dati dei pagamenti: 10 anni, come richiesto dalle norme fiscali.</li>
           <li>Statistiche: secondo le impostazioni dei singoli strumenti (per esempio 14 mesi per Google Analytics).</li>
         </List>

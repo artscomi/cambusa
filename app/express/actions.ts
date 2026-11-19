@@ -1,7 +1,7 @@
 "use server";
 
-import { randomUUID } from "crypto";
-import { cookies } from "next/headers";
+import { createHash, randomUUID } from "crypto";
+import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import db from "@/utils/db";
 import {
@@ -15,6 +15,23 @@ const MAX_ITEMS_PER_LIST = 150;
 const MAX_ITEM_LENGTH = 60;
 const MAX_NAME_LENGTH = 30;
 const MAX_LIST_NAME_LENGTH = 60;
+// Limiti contro la creazione di liste a raffica (per esempio da bot), nell'ultima ora
+const MAX_LISTS_PER_HOUR_PER_GUEST = 10;
+// Per indirizzo IP il limite è più alto: più persone possono condividere la stessa rete (wifi del porto)
+const MAX_LISTS_PER_HOUR_PER_IP = 30;
+
+/** Impronta non reversibile dell'IP di chi fa la richiesta (non salviamo l'IP in chiaro). */
+function requestIpHash(): string | null {
+  const forwarded = headers().get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || headers().get("x-real-ip");
+  if (!ip) return null;
+  return createHash("sha256").update(`cambusa-express:${ip}`).digest("hex").slice(0, 32);
+}
+
+/** Segna la lista come modificata adesso (serve alla pulizia delle liste inattive). */
+async function touchList(listId: string) {
+  await db.expressList.update({ where: { id: listId }, data: { updatedAt: new Date() } });
+}
 
 export type ExpressItemView = {
   id: string;
@@ -82,8 +99,23 @@ export async function createExpressList(input: {
       : null;
 
   const token = ensureGuestToken();
+  const ipHash = requestIpHash();
+  const since = new Date(Date.now() - 60 * 60 * 1000);
+  const [byGuest, byIp] = await Promise.all([
+    db.expressList.count({ where: { creatorToken: token, createdAt: { gte: since } } }),
+    ipHash
+      ? db.expressList.count({ where: { creatorIpHash: ipHash, createdAt: { gte: since } } })
+      : Promise.resolve(0),
+  ]);
+  if (byGuest >= MAX_LISTS_PER_HOUR_PER_GUEST || byIp >= MAX_LISTS_PER_HOUR_PER_IP) {
+    return {
+      ok: false,
+      error: "Hai creato molte liste in poco tempo. Riprova tra un'ora.",
+    };
+  }
+
   const list = await db.expressList.create({
-    data: { name, people, creatorToken: token },
+    data: { name, people, creatorToken: token, creatorIpHash: ipHash },
     select: { id: true },
   });
   return { ok: true, data: { id: list.id } };
@@ -227,6 +259,7 @@ export async function addExpressItem(input: {
     room -= 1;
   }
 
+  await touchList(list.id);
   revalidatePath(`/express/${list.id}`);
   if (added.length === 0 && merged.length === 0) {
     return { ok: false, error: "La lista è piena (massimo 150 prodotti)" };
@@ -263,6 +296,7 @@ export async function voteExpressItem(input: {
       create: { itemId: item.id, voter: token, voterName: guestName, value: input.value },
     });
   }
+  await touchList(item.listId);
   revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }
@@ -278,6 +312,7 @@ export async function toggleExpressItemChecked(input: {
     select: { listId: true },
   }).catch(() => null);
   if (!item) return { ok: false, error: "Prodotto non trovato" };
+  await touchList(item.listId);
   revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }
@@ -302,6 +337,7 @@ export async function deleteExpressItem(input: {
     return { ok: false, error: "Non puoi eliminare questo prodotto" };
   }
   await db.expressItem.delete({ where: { id: item.id } });
+  await touchList(item.listId);
   revalidatePath(`/express/${item.listId}`);
   return { ok: true };
 }

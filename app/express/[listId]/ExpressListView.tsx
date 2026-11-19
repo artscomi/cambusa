@@ -30,7 +30,12 @@ import {
 import { readGuestName, saveGuestName } from "../guestName";
 import { trackEvent } from "@/lib/gtag";
 
-const REFRESH_MS = 5000;
+// Aggiornamento automatico della lista: frequente mentre la usi, più lento quando è ferma,
+// sospeso dopo un po' di inattività (riparte appena tocchi lo schermo o torni sulla scheda)
+const REFRESH_ACTIVE_MS = 5000; // primo minuto dall'ultima interazione
+const REFRESH_IDLE_MS = 30000; // fino a 5 minuti dall'ultima interazione
+const ACTIVE_WINDOW_MS = 60 * 1000;
+const STOP_AFTER_MS = 5 * 60 * 1000;
 const NEW_HIGHLIGHT_MS = 4000;
 
 /** Proposte rapide per iniziare: si nascondono quelle già in lista. */
@@ -126,13 +131,54 @@ export function ExpressListView({
 
   // Aggiornamento periodico: così si vedono i prodotti e i voti degli altri
   useEffect(() => {
-    const id = window.setInterval(() => {
-      if (document.visibilityState === "visible") void refresh();
-    }, REFRESH_MS);
-    const onVisible = () => document.visibilityState === "visible" && void refresh();
+    let lastActivity = Date.now();
+    let timer: number | undefined;
+    let stopped = false;
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      const idle = Date.now() - lastActivity;
+      if (idle >= STOP_AFTER_MS || document.visibilityState !== "visible") {
+        stopped = true; // fermo finché non torni a usare la pagina
+        return;
+      }
+      stopped = false;
+      timer = window.setTimeout(
+        async () => {
+          await refresh();
+          schedule();
+        },
+        idle < ACTIVE_WINDOW_MS ? REFRESH_ACTIVE_MS : REFRESH_IDLE_MS,
+      );
+    };
+
+    const onActivity = () => {
+      const wasStopped = stopped;
+      lastActivity = Date.now();
+      if (wasStopped) {
+        void refresh(); // dopo una pausa, mostra subito le novità
+        schedule();
+      }
+    };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        lastActivity = Date.now();
+        void refresh();
+        schedule();
+      } else {
+        window.clearTimeout(timer);
+        stopped = true;
+      }
+    };
+
+    const events = ["pointerdown", "keydown", "scroll", "touchstart"] as const;
+    // In cattura: lo scorrimento avviene in un contenitore interno e non arriverebbe alla finestra
+    events.forEach((e) => window.addEventListener(e, onActivity, { passive: true, capture: true }));
     document.addEventListener("visibilitychange", onVisible);
+    schedule();
     return () => {
-      window.clearInterval(id);
+      window.clearTimeout(timer);
+      events.forEach((e) => window.removeEventListener(e, onActivity, { capture: true }));
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [refresh]);
