@@ -334,7 +334,7 @@ export function ExpressListView({
         score: 1,
         myVote: 1,
         downVoters: [],
-        canDelete: false,
+        canDelete: true, // chi aggiunge può eliminarlo: il cestino c'è già, attivo dopo la conferma
         mine: true,
       }));
     setItemText("");
@@ -771,6 +771,7 @@ export function ExpressListView({
         {/* Desktop: invito al menu con l'AI, compatto nel pannello */}
         <Link
           href="/"
+          onClick={() => trackEvent("express_menu_click", { position: "desktop" })}
           className="hidden items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 lg:flex"
         >
           <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
@@ -863,6 +864,7 @@ export function ExpressListView({
         {/* Passaggio al menu completo: una riga compatta su telefono */}
         <Link
           href="/"
+          onClick={() => trackEvent("express_menu_click", { position: "mobile" })}
           className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 sm:hidden"
         >
           <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
@@ -885,6 +887,7 @@ export function ExpressListView({
           </p>
           <Link
             href="/"
+            onClick={() => trackEvent("express_menu_click", { position: "tablet" })}
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-light"
           >
             Genera il menu con l&apos;AI
@@ -1136,38 +1139,20 @@ function ItemRow({
   // Chi non lo vuole: "Marco non lo vuole", "Marco e Anna non lo vogliono"...
   const notWanted = describeDownVoters(item.downVoters);
 
-  // In attesa del server: il nome si legge subito, il resto è uno skeleton animato
-  if (pending) {
-    return (
-      <li
-        data-pending
-        aria-busy="true"
-        className="flex items-center gap-2.5 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3"
-      >
-        <span
-          className="h-6 w-6 shrink-0 animate-pulse rounded-md bg-gray-200"
-          aria-hidden
-        />
-        <div className="min-w-0 flex-1">
-          <p className="break-words font-medium leading-snug text-gray-900">
-            {item.text}
-          </p>
-          <span
-            className="mt-1.5 block h-2.5 w-24 animate-pulse rounded-full bg-gray-200"
-            aria-hidden
-          />
-        </div>
-        <div className="flex shrink-0 items-center gap-1" aria-hidden>
-          <span className="h-8 w-[2.6rem] animate-pulse rounded-lg bg-gray-200" />
-          <span className="h-8 w-[2.6rem] animate-pulse rounded-lg bg-gray-200" />
-        </div>
-      </li>
-    );
-  }
+  // In attesa del server la riga è già quella definitiva, solo non cliccabile;
+  // se la conferma tarda (connessione lenta) compare "salvataggio…"
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    if (!pending) return;
+    const t = setTimeout(() => setSlow(true), 1000);
+    return () => clearTimeout(t);
+  }, [pending]);
 
   return (
     <li
       data-item-id={item.id}
+      data-pending={pending || undefined}
+      aria-busy={pending || undefined}
       className={cn(
         "flex scroll-mt-24 items-center gap-2.5 px-3 py-2.5 transition-colors duration-700 sm:gap-3 sm:px-4 sm:py-3",
         item.checked && "bg-gray-50",
@@ -1220,6 +1205,7 @@ function ItemRow({
             </span>
           ) : null}
           {item.mine ? "proposto da te" : `proposto da ${item.addedByName}`}
+          {pending && slow ? <span className="text-gray-400"> · salvataggio…</span> : null}
         </p>
         {notWanted && !item.checked && (
           <p className="text-xs font-medium text-red-600">👎 {notWanted}</p>
@@ -1247,6 +1233,7 @@ function ItemRow({
           <button
             type="button"
             onClick={() => onDelete(item)}
+            disabled={pending}
             aria-label={`Elimina ${item.text}`}
             className="flex h-8 w-7 items-center justify-center rounded-lg text-gray-300 transition hover:bg-red-50 hover:text-red-600"
           >
