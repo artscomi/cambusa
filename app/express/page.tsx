@@ -27,13 +27,9 @@ export default function ExpressPage() {
         <h1 className="mt-5 font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
           La lista della cambusa, decisa da tutta la crew
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-          Crea una lista condivisa in 30 secondi: ognuno aggiunge quello che
-          vuole a bordo e vota le proposte degli altri. Nessuna registrazione.
-        </p>
       </div>
 
-      <div className="mx-auto mt-10 max-w-xl">
+      <div className="mx-auto mt-6 max-w-xl sm:mt-8">
         <CreateExpressForm />
       </div>
 
