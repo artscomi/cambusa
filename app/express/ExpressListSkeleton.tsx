@@ -31,27 +31,27 @@ export function ExpressListSkeleton({
 
   return (
     <div
-      className="space-y-6 lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start lg:gap-8 lg:space-y-0"
+      className="space-y-6 lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start lg:gap-x-8 lg:gap-y-4 lg:space-y-0"
       aria-busy="true"
       aria-label="Caricamento della lista"
     >
-      {/* Pannello: a sinistra su desktop */}
-      <div className="space-y-6 lg:space-y-4">
-        {/* Intestazione */}
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-          <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
-            Cambusa Express
-          </p>
-          {name ? (
-            <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
-              {name}
-            </h1>
-          ) : (
-            <span className={`mt-3 h-8 w-56 ${bar}`} />
-          )}
-          <span className={`mt-4 h-4 w-60 ${bar}`} />
-        </div>
+      {/* Intestazione */}
+      <div className="flex flex-col items-center text-center lg:col-start-1 lg:row-start-1 lg:items-start lg:text-left">
+        <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
+          Cambusa Express
+        </p>
+        {name ? (
+          <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
+            {name}
+          </h1>
+        ) : (
+          <span className={`mt-3 h-8 w-56 ${bar}`} />
+        )}
+        <span className={`mt-4 h-4 w-60 ${bar}`} />
+      </div>
 
+      {/* Pannello: a sinistra su desktop */}
+      <div className="space-y-6 lg:col-start-1 lg:row-start-2 lg:space-y-4">
         {/* Campo per aggiungere prodotti */}
         <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5">
           <span className={`block h-4 w-44 ${bar}`} />
@@ -83,9 +83,9 @@ export function ExpressListSkeleton({
 
       {/* Reparti: due colonne su desktop */}
       {empty ? (
-        <div className="h-[5.5rem] rounded-2xl border border-dashed border-gray-300 bg-white/60" />
+        <div className="h-[5.5rem] rounded-2xl border border-dashed border-gray-300 bg-white/60 lg:col-start-2 lg:row-start-2" />
       ) : (
-        <div className="space-y-5 lg:columns-2 lg:gap-5 lg:space-y-0">
+        <div className="space-y-5 lg:col-start-2 lg:row-start-2 lg:columns-2 lg:gap-5 lg:space-y-0">
           {[
             [60, 45, 70],
             [55, 40],
