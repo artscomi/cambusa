@@ -11,40 +11,38 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
-
 model User {
-  id                 String            @id @default(cuid())
-  clerkUserId        String            @unique // Store Clerk user ID
+  id                 String              @id @default(cuid())
+  clerkUserId        String              @unique // Store Clerk user ID
   name               String
-  email              String            @unique
-  ownedGroups        Group[]           @relation("GroupOwner")
+  email              String              @unique
+  ownedGroups        Group[]             @relation("GroupOwner")
   memberships        GroupMembership[] // Relation to the groups the user is a member of
   foodPreferences    FoodPreference[] // Food preferences of the user
   alcoholPreferences AlcoholPreference[] // Alcohol preferences of the user
   waterPreferences   WaterPreference[] // Water preferences of the user
-  apiCallCount       Int               @default(0)
-  hasPaidForIncrease Boolean           @default(false)
+  apiCallCount       Int                 @default(0)
+  hasPaidForIncrease Boolean             @default(false)
   lastApiCall        DateTime?
-  mealList           String            @default("[]")
+  mealList           String              @default("[]")
 }
 
 model Group {
-  id                 String            @id @default(cuid())
+  id                 String              @id @default(cuid())
   name               String
   ownerId            String
-  owner              User              @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
+  owner              User                @relation("GroupOwner", fields: [ownerId], references: [clerkUserId])
   members            GroupMembership[]
   foodPreferences    FoodPreference[]
   alcoholPreferences AlcoholPreference[]
   waterPreferences   WaterPreference[]
   menuItemVotes      MenuItemVote[]
-  breakfast          String @default("0")
+  breakfast          String              @default("0")
   lunch              String
   dinner             String
   people             String
-  sameBreakfast      Boolean @default(false)
-  mealList           String?            // JSON del menu generato per il gruppo
+  sameBreakfast      Boolean             @default(false)
+  mealList           String? // JSON del menu generato per il gruppo
 }
 
 model FoodPreference {
@@ -86,13 +84,50 @@ model GroupMembership {
 
 // Un voto per (gruppo, utente, pasto). Un utente può dare un solo voto per pasto.
 model MenuItemVote {
-  id          String @id @default(cuid())
-  groupId     String
-  group       Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  userId      String // Clerk user id
-  mealTypeId  String // es. "colazioni", "pranzi", "cene"
-  mealId      String // id del pasto nel menu, es. "colazione1"
-  value       Int    // 1-5 stelle
+  id         String @id @default(cuid())
+  groupId    String
+  group      Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  userId     String // Clerk user id
+  mealTypeId String // es. "colazioni", "pranzi", "cene"
+  mealId     String // id del pasto nel menu, es. "colazione1"
+  value      Int // 1-5 stelle
 
   @@unique([groupId, userId, mealTypeId, mealId])
+}
+
+// Cambusa Express: lista della spesa condivisa, senza registrazione.
+// Gli ospiti sono riconosciuti da un token casuale salvato in un cookie.
+model ExpressList {
+  id           String        @id @default(cuid())
+  name         String
+  people       Int?
+  creatorToken String
+  createdAt    DateTime      @default(now())
+  items        ExpressItem[]
+}
+
+model ExpressItem {
+  id          String        @id @default(cuid())
+  listId      String
+  list        ExpressList   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  text        String
+  category    String
+  addedByName String
+  addedBy     String // token dell'ospite che l'ha aggiunto
+  checked     Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  votes       ExpressVote[]
+
+  @@index([listId])
+}
+
+// Un voto per (prodotto, ospite): +1 o -1.
+model ExpressVote {
+  id     String      @id @default(cuid())
+  itemId String
+  item   ExpressItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  voter  String
+  value  Int
+
+  @@unique([itemId, voter])
 }

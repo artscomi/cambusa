@@ -10,7 +10,9 @@ const isPublicRoute = createRouteMatcher([
   "/sitemap.xml",
   "/sitemap-0.xml",
   "/robots.txt",
-  "/blog(.*)"
+  "/blog(.*)",
+  // Cambusa Express: liste condivise senza registrazione
+  "/express(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
