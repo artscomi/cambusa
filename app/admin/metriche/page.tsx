@@ -51,7 +51,7 @@ async function isAdmin() {
 
 async function getListStats(days: number | null): Promise<ListStats> {
   const since = days
-    ? Prisma.sql`WHERE l."createdAt" >= now() - make_interval(days => ${days})`
+    ? Prisma.sql`WHERE l."createdAt" >= now() - (${days} * interval '1 day')`
     : Prisma.empty;
   const rows = await prisma.$queryRaw<Record<string, unknown>[]>`
     WITH per_list AS (
