@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -17,7 +24,10 @@ import {
   Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { categorizeExpressItem, EXPRESS_CATEGORIES } from "@/lib/express/categorize";
+import {
+  categorizeExpressItem,
+  EXPRESS_CATEGORIES,
+} from "@/lib/express/categorize";
 import {
   addExpressItem,
   deleteExpressItem,
@@ -77,6 +87,8 @@ export function ExpressListView({
   const [canNativeShare, setCanNativeShare] = useState(false);
   const [inviteOpen, setInviteOpen] = useState(false);
   const inviteRef = useRef<HTMLDivElement>(null);
+  // Su desktop l'invito sta nel pannello di sinistra invece che nel pulsante flottante
+  const inviteCardRef = useRef<HTMLDivElement>(null);
   const [freshIds, setFreshIds] = useState<Set<string>>(new Set());
   const busy = useRef(0);
   const seenIds = useRef(new Set(initialList.items.map((i) => i.id)));
@@ -102,7 +114,6 @@ export function ExpressListView({
     setCanNativeShare(typeof navigator.share === "function");
   }, [initialList.id]);
 
-
   useEffect(() => {
     if (!notice) return;
     const t = setTimeout(() => setNotice(null), 4000);
@@ -114,7 +125,9 @@ export function ExpressListView({
     // Non sovrascrivere mentre un'azione è in corso (aggiornamento ottimistico)
     if (!fresh || busy.current !== 0) return;
     // Evidenzia per qualche secondo i prodotti appena aggiunti dagli altri
-    const arrived = fresh.items.filter((i) => !seenIds.current.has(i.id) && !i.mine);
+    const arrived = fresh.items.filter(
+      (i) => !seenIds.current.has(i.id) && !i.mine,
+    );
     fresh.items.forEach((i) => seenIds.current.add(i.id));
     if (arrived.length > 0) {
       setFreshIds((s) => new Set([...s, ...arrived.map((i) => i.id)]));
@@ -173,12 +186,16 @@ export function ExpressListView({
 
     const events = ["pointerdown", "keydown", "scroll", "touchstart"] as const;
     // In cattura: lo scorrimento avviene in un contenitore interno e non arriverebbe alla finestra
-    events.forEach((e) => window.addEventListener(e, onActivity, { passive: true, capture: true }));
+    events.forEach((e) =>
+      window.addEventListener(e, onActivity, { passive: true, capture: true }),
+    );
     document.addEventListener("visibilitychange", onVisible);
     schedule();
     return () => {
       window.clearTimeout(timer);
-      events.forEach((e) => window.removeEventListener(e, onActivity, { capture: true }));
+      events.forEach((e) =>
+        window.removeEventListener(e, onActivity, { capture: true }),
+      );
       document.removeEventListener("visibilitychange", onVisible);
     };
   }, [refresh]);
@@ -186,7 +203,9 @@ export function ExpressListView({
   /** Esegue un'azione con aggiornamento ottimistico, poi riallinea con il server. */
   const run = async <T,>(
     optimistic: (items: ExpressItemView[]) => ExpressItemView[],
-    action: () => Promise<{ ok: true; data?: T } | { ok: false; error: string }>,
+    action: () => Promise<
+      { ok: true; data?: T } | { ok: false; error: string }
+    >,
   ): Promise<T | undefined> => {
     busy.current += 1;
     setError(null);
@@ -205,7 +224,11 @@ export function ExpressListView({
     return data;
   };
 
-  const vote = (item: ExpressItemView, value: 1 | -1, nameNow: string = guestName) => {
+  const vote = (
+    item: ExpressItemView,
+    value: 1 | -1,
+    nameNow: string = guestName,
+  ) => {
     if (!nameNow) {
       afterNameRef.current = (name) => void vote(item, value, name);
       setNameSheetOpen(true);
@@ -218,7 +241,8 @@ export function ExpressListView({
           if (i.id !== item.id) return i;
           const next = i.myVote === value ? 0 : value;
           const up = i.up - (i.myVote === 1 ? 1 : 0) + (next === 1 ? 1 : 0);
-          const down = i.down - (i.myVote === -1 ? 1 : 0) + (next === -1 ? 1 : 0);
+          const down =
+            i.down - (i.myVote === -1 ? 1 : 0) + (next === -1 ? 1 : 0);
           return { ...i, myVote: next, up, down, score: up - down };
         }),
       () => voteExpressItem({ itemId: item.id, value, guestName: nameNow }),
@@ -228,13 +252,19 @@ export function ExpressListView({
   const toggleChecked = (item: ExpressItemView) => {
     if (!item.checked) trackEvent("express_item_checked");
     return run(
-      (items) => items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)),
-      () => toggleExpressItemChecked({ itemId: item.id, checked: !item.checked }),
+      (items) =>
+        items.map((i) =>
+          i.id === item.id ? { ...i, checked: !i.checked } : i,
+        ),
+      () =>
+        toggleExpressItemChecked({ itemId: item.id, checked: !item.checked }),
     );
   };
 
   // Conferma di rimozione: modale come quella della lista della spesa del menu
-  const [itemToRemove, setItemToRemove] = useState<ExpressItemView | null>(null);
+  const [itemToRemove, setItemToRemove] = useState<ExpressItemView | null>(
+    null,
+  );
   const remove = (item: ExpressItemView) => setItemToRemove(item);
   const cancelRemove = () => setItemToRemove(null);
   const confirmRemove = () => {
@@ -250,7 +280,8 @@ export function ExpressListView({
   // Esc chiude la modale
   useEffect(() => {
     if (!itemToRemove) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setItemToRemove(null);
+    const onKey = (e: KeyboardEvent) =>
+      e.key === "Escape" && setItemToRemove(null);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [itemToRemove]);
@@ -299,7 +330,8 @@ export function ExpressListView({
     setItemText("");
     const data = await run(
       (items) => [...items, ...temp],
-      () => addExpressItem({ listId: list.id, text: texts.join(", "), guestName }),
+      () =>
+        addExpressItem({ listId: list.id, text: texts.join(", "), guestName }),
     );
     if (data) {
       trackEvent("express_item_added", {
@@ -332,9 +364,9 @@ export function ExpressListView({
   /** Prodotto in cima allo schermo: serve a tenere ferma la vista mentre la lista cambia. */
   const anchorRef = useRef<{ id: string; top: number } | null>(null);
   const captureAnchor = () => {
-    const first = [...document.querySelectorAll<HTMLElement>("li[data-item-id]")].find(
-      (li) => li.getBoundingClientRect().top >= 80,
-    );
+    const first = [
+      ...document.querySelectorAll<HTMLElement>("li[data-item-id]"),
+    ].find((li) => li.getBoundingClientRect().top >= 80);
     anchorRef.current = first
       ? { id: first.dataset.itemId!, top: first.getBoundingClientRect().top }
       : null;
@@ -362,9 +394,10 @@ export function ExpressListView({
   // Mentre un pannello è aperto la pagina sotto non scorre
   useEffect(() => {
     if (!addSheetOpen && !nameSheetOpen) return;
-    const targets = [document.body, document.getElementById("app-main-scroll")].filter(
-      (el): el is HTMLElement => !!el,
-    );
+    const targets = [
+      document.body,
+      document.getElementById("app-main-scroll"),
+    ].filter((el): el is HTMLElement => !!el);
     const previous = targets.map((el) => el.style.overflow);
     targets.forEach((el) => (el.style.overflow = "hidden"));
     return () => targets.forEach((el, i) => (el.style.overflow = previous[i]));
@@ -375,7 +408,9 @@ export function ExpressListView({
   useLayoutEffect(() => {
     const anchor = anchorRef.current;
     if (!anchor) return;
-    const el = document.querySelector<HTMLElement>(`[data-item-id="${anchor.id}"]`);
+    const el = document.querySelector<HTMLElement>(
+      `[data-item-id="${anchor.id}"]`,
+    );
     if (!el) return;
     const delta = el.getBoundingClientRect().top - anchor.top;
     if (Math.abs(delta) < 1) return;
@@ -388,7 +423,9 @@ export function ExpressListView({
   useEffect(() => {
     if (addSheetOpen || highlightTexts.length === 0) return;
     const wanted = new Set(highlightTexts.map(normalize));
-    const found = list.items.filter((i) => wanted.has(normalize(i.text)) && !i.id.startsWith("tmp-"));
+    const found = list.items.filter(
+      (i) => wanted.has(normalize(i.text)) && !i.id.startsWith("tmp-"),
+    );
     if (found.length === 0) return; // ancora in salvataggio: riprova al prossimo aggiornamento
     setHighlightTexts([]);
     const ids = found.map((i) => i.id);
@@ -402,7 +439,6 @@ export function ExpressListView({
     }, NEW_HIGHLIGHT_MS);
   }, [addSheetOpen, highlightTexts, list.items]);
 
-
   const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
@@ -410,7 +446,9 @@ export function ExpressListView({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError("Non riesco a copiare il link: copialo dalla barra degli indirizzi");
+      setError(
+        "Non riesco a copiare il link: copialo dalla barra degli indirizzi",
+      );
     }
   };
 
@@ -425,7 +463,12 @@ export function ExpressListView({
   useEffect(() => {
     if (!inviteOpen) return;
     const close = (e: MouseEvent) => {
-      if (!inviteRef.current?.contains(e.target as Node)) setInviteOpen(false);
+      const t = e.target as Node;
+      if (
+        !inviteRef.current?.contains(t) &&
+        !inviteCardRef.current?.contains(t)
+      )
+        setInviteOpen(false);
     };
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
@@ -436,18 +479,28 @@ export function ExpressListView({
     try {
       // Testo e link in un unico messaggio: così il testo viene prima e il link dopo
       // (passandoli separati, app come WhatsApp mettono il link in testa)
-      await navigator.share({ title: list.name, text: `${shareText}\n${shareUrl}` });
+      await navigator.share({
+        title: list.name,
+        text: `${shareText}\n${shareUrl}`,
+      });
       trackEvent("express_invite", { method: "native_share" });
     } catch {
       // condivisione annullata
     }
   };
 
-  const toBuy = useMemo(() => list.items.filter((i) => !i.checked), [list.items]);
-  const bought = useMemo(() => list.items.filter((i) => i.checked), [list.items]);
+  const toBuy = useMemo(
+    () => list.items.filter((i) => !i.checked),
+    [list.items],
+  );
+  const bought = useMemo(
+    () => list.items.filter((i) => i.checked),
+    [list.items],
+  );
   /** Prodotti che chi guarda non ha ancora votato. */
   const toVote = useMemo(
-    () => toBuy.filter((i) => i.myVote === 0 && !i.id.startsWith("tmp-")).length,
+    () =>
+      toBuy.filter((i) => i.myVote === 0 && !i.id.startsWith("tmp-")).length,
     [toBuy],
   );
   const byCategory = useMemo(
@@ -458,7 +511,10 @@ export function ExpressListView({
         // "Il più votato" del reparto: solo se ha almeno 2 punti ed è l'unico in testa
         const best = Math.max(...all.map((i) => i.score));
         const leaders = all.filter((i) => i.score === best);
-        const topId = all.length > 1 && best >= 2 && leaders.length === 1 ? leaders[0].id : null;
+        const topId =
+          all.length > 1 && best >= 2 && leaders.length === 1
+            ? leaders[0].id
+            : null;
         return { category, items, topId };
       }).filter((g) => g.items.length > 0),
     [toBuy],
@@ -472,247 +528,366 @@ export function ExpressListView({
   // Una lista vuota non si condivide: il pulsante "Invita" compare dopo il primo prodotto
   const hasItems = list.items.length > 0;
 
-  return (
-    <div className={cn("space-y-6 sm:pb-0", hasItems ? "pb-24" : "pb-6")}>
-      {/* Intestazione */}
-      <header className="text-center">
-        <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
-          Cambusa Express
-        </p>
-        <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
-          {list.name}
-        </h1>
-        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600">
-          <span className="inline-flex items-center gap-1.5">
-            <Users className="h-4 w-4 text-primary" aria-hidden />
-            {list.contributors === 1 ? "1 partecipante" : `${list.contributors} partecipanti`}
-            {list.people ? ` su ${list.people}` : ""}
-          </span>
-          <span aria-hidden>·</span>
-          <span>
-            {toBuy.length === 1 ? "1 da comprare" : `${toBuy.length} da comprare`}
-            {bought.length > 0 ? `, ${bought.length} presi` : ""}
-          </span>
-        </div>
-      </header>
-
-      {/* Nome ospite oppure campo per aggiungere prodotti */}
-      <section
-        aria-label="Aggiungi prodotti"
+  /** Menu "Invita la crew" (WhatsApp / Copia link) quando il telefono non ha la condivisione nativa. */
+  const inviteMenu = (position: string) =>
+    inviteOpen && !canNativeShare ? (
+      <div
         className={cn(
-          "scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5",
-          // Con la lista piena si aggiunge dalla modale ("+ Aggiungi")
-          hasItems && "hidden",
+          "absolute z-30 w-56",
+          position,
+          " overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]",
         )}
       >
-        {!nameReady ? (
-          <div className="h-[4.5rem]" aria-hidden />
-        ) : guestName ? (
-          <form onSubmit={submitAdd} className="space-y-2">
-            <label htmlFor="express-item" className="block text-sm font-semibold text-gray-800">
-              Cosa vuoi a bordo, {guestName}?
-            </label>
-            <div className="flex gap-2">
-              <input
-                id="express-item"
-                ref={inputRef}
-                className={inputClass}
-                placeholder="Es. pomodori, birra x24, Nutella"
-                value={itemText}
-                maxLength={300}
-                onChange={(e) => setItemText(e.target.value)}
-                enterKeyHint="send"
-                autoComplete="off"
-              />
-              <button
-                type="submit"
-                disabled={!itemText.trim()}
-                aria-label="Aggiungi"
-                className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-accent px-4 font-semibold text-white transition hover:bg-accent-light disabled:opacity-50"
-              >
-                <Plus className="h-5 w-5" aria-hidden />
-                <span className="hidden sm:inline">Aggiungi</span>
-              </button>
-            </div>
-            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-gray-500">
-              <span>Puoi aggiungerne più di uno separandoli con una virgola.</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setNameDraft(guestName);
-                  setGuestName("");
-                }}
-                className="underline-offset-2 hover:underline"
-              >
-                Non sei {guestName}?
-              </button>
-            </div>
-
-            {suggestions.length > 0 && (
-              <div className="pt-2">
-                <p className="mb-2 text-xs font-semibold text-gray-600">Aggiungi al volo:</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestions.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => void addProducts(s)}
-                      className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/[0.04] px-3 py-1.5 text-sm font-medium text-primary transition hover:border-primary hover:bg-primary/10"
-                    >
-                      <Plus className="h-3.5 w-3.5" aria-hidden />
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </form>
-        ) : (
-          <form onSubmit={confirmName} className="space-y-2">
-            <label htmlFor="express-guest" className="block text-sm font-semibold text-gray-800">
-              Come ti chiami? Così la crew sa chi ha proposto cosa
-            </label>
-            <div className="flex gap-2">
-              <input
-                id="express-guest"
-                className={inputClass}
-                placeholder="Il tuo nome"
-                value={nameDraft}
-                maxLength={30}
-                onChange={(e) => setNameDraft(e.target.value)}
-                autoComplete="given-name"
-              />
-              <button
-                type="submit"
-                className="inline-flex shrink-0 items-center justify-center rounded-xl bg-primary px-5 font-semibold text-white transition hover:bg-primary-light"
-              >
-                Entra
-              </button>
-            </div>
-            <p className="text-xs text-gray-500">Puoi già votare i prodotti qui sotto anche senza nome.</p>
-          </form>
-        )}
-        {error && (
-          <p role="alert" className="mt-2 text-sm font-medium text-red-600">
-            {error}
-          </p>
-        )}
-        {notice && (
-          <p role="status" className="mt-2 text-sm font-medium text-emerald-700">
-            {notice}
-          </p>
-        )}
-      </section>
-
-      {/* Lista per reparto */}
-      {list.items.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-gray-300 bg-white/60 p-8 text-center text-gray-500">
-          La lista è vuota: aggiungi il primo prodotto!
-        </p>
-      ) : (
-        <div className="space-y-5">
-          {guestName && toVote > 0 && (
-            <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
-              {toVote === 1 ? "1 prodotto da votare per te" : `${toVote} prodotti da votare per te`}
-            </p>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => {
+            trackEvent("express_invite", { method: "whatsapp" });
+            setInviteOpen(false);
+          }}
+          className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+        >
+          <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />
+          Invia su WhatsApp
+        </a>
+        <button
+          type="button"
+          onClick={copyLink}
+          className="flex w-full items-center gap-2.5 border-t border-gray-100 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
+        >
+          {copied ? (
+            <Check className="h-4 w-4 text-emerald-600" aria-hidden />
+          ) : (
+            <Copy className="h-4 w-4 text-primary" aria-hidden />
           )}
+          {copied ? "Link copiato!" : "Copia link"}
+        </button>
+      </div>
+    ) : null;
 
-          {byCategory.map(({ category, items, topId }) => (
-            <section key={category} aria-label={category}>
-              <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
-                {category}
-              </h2>
-              <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
-                {items.map((item) => (
-                  <ItemRow
-                    key={item.id}
-                    item={item}
-                    isNew={freshIds.has(item.id)}
-                    isTop={item.id === topId}
-                    onVote={vote}
-                    onToggle={toggleChecked}
-                    onDelete={remove}
-                  />
-                ))}
-              </ul>
-            </section>
-          ))}
-
-          {toBuy.length === 0 && (
-            <p className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center font-medium text-emerald-800">
-              Hai preso tutto! Buona navigazione ⛵
-            </p>
-          )}
-
-          {bought.length > 0 && (
-            <section aria-label="Già presi">
-              <button
-                type="button"
-                onClick={() => setShowChecked((v) => !v)}
-                aria-expanded={showChecked}
-                className="mb-2 flex w-full items-center gap-1 px-1 text-xs font-bold uppercase tracking-wider text-gray-500"
-              >
-                Già presi ({bought.length})
-                <ChevronDown
-                  className={cn("h-4 w-4 transition-transform", showChecked && "rotate-180")}
-                  aria-hidden
-                />
-              </button>
-              {showChecked && (
-                <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
-                  {bought.map((item) => (
-                    <ItemRow
-                      key={item.id}
-                      item={item}
-                      isNew={false}
-                      isTop={false}
-                      onVote={vote}
-                      onToggle={toggleChecked}
-                      onDelete={remove}
-                    />
-                  ))}
-                </ul>
-              )}
-            </section>
-          )}
-        </div>
+  return (
+    <div
+      className={cn(
+        "space-y-6 sm:pb-0",
+        // Desktop: pannello fisso a sinistra, reparti a destra
+        "lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start lg:gap-8 lg:space-y-0 lg:pb-0",
+        hasItems ? "pb-24" : "pb-6",
       )}
+    >
+      <aside data-express-layout className="space-y-6 lg:sticky lg:top-24 lg:space-y-4">
+        {/* Intestazione */}
+        <header className="text-center lg:text-left">
+          <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
+            Cambusa Express
+          </p>
+          <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
+            {list.name}
+          </h1>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600 lg:justify-start">
+            <span className="inline-flex items-center gap-1.5">
+              <Users className="h-4 w-4 text-primary" aria-hidden />
+              {list.contributors === 1
+                ? "1 partecipante"
+                : `${list.contributors} partecipanti`}
+              {list.people ? ` su ${list.people}` : ""}
+            </span>
+            <span aria-hidden>·</span>
+            <span>
+              {toBuy.length === 1
+                ? "1 da comprare"
+                : `${toBuy.length} da comprare`}
+              {bought.length > 0 ? `, ${bought.length} presi` : ""}
+            </span>
+          </div>
+        </header>
 
-      {/* Passaggio al menu completo: una riga compatta su telefono */}
-      <Link
-        href="/"
-        className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 sm:hidden"
-      >
-        <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
-        <span className="min-w-0 flex-1 text-sm text-gray-700">
-          Volete anche il <strong>menu della settimana</strong>?
-        </span>
-        <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
-          Crea con l&apos;AI
-          <ArrowRight className="h-4 w-4" aria-hidden />
-        </span>
-      </Link>
-      <section className="hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] to-transparent p-5 text-center sm:block sm:p-6">
-        <Sparkles className="mx-auto h-6 w-6 text-primary" aria-hidden />
-        <p className="mt-2 font-semibold text-gray-900">Volete anche il menu della settimana?</p>
-        <p className="mx-auto mt-1 max-w-md text-sm text-gray-600">
-          Cambusa crea con l&apos;AI colazioni, pranzi e cene per tutta la crew,
-          con la lista della spesa già pronta.
-        </p>
+        {/* Nome ospite oppure campo per aggiungere prodotti */}
+        <section
+          aria-label="Aggiungi prodotti"
+          className={cn(
+            "scroll-mt-24 rounded-2xl border border-gray-200 bg-white p-4 sm:p-5",
+            // Con la lista piena si aggiunge dalla modale ("+ Aggiungi"); su desktop resta nel pannello
+            hasItems && "hidden lg:block",
+          )}
+        >
+          {!nameReady ? (
+            <div className="h-[4.5rem]" aria-hidden />
+          ) : guestName ? (
+            <form onSubmit={submitAdd} className="space-y-2">
+              <label
+                htmlFor="express-item"
+                className="block text-sm font-semibold text-gray-800"
+              >
+                Cosa vuoi a bordo, {guestName}?
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="express-item"
+                  ref={inputRef}
+                  className={inputClass}
+                  placeholder="Es. pomodori, birra x24, Nutella"
+                  value={itemText}
+                  maxLength={300}
+                  onChange={(e) => setItemText(e.target.value)}
+                  enterKeyHint="send"
+                  autoComplete="off"
+                />
+                <button
+                  type="submit"
+                  disabled={!itemText.trim()}
+                  aria-label="Aggiungi"
+                  className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl bg-accent px-4 font-semibold text-white transition hover:bg-accent-light disabled:opacity-50"
+                >
+                  <Plus className="h-5 w-5" aria-hidden />
+                  <span className="hidden sm:inline lg:hidden">Aggiungi</span>
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-xs text-gray-500">
+                <span>
+                  Puoi aggiungerne più di uno separandoli con una virgola.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNameDraft(guestName);
+                    setGuestName("");
+                  }}
+                  className="underline-offset-2 hover:underline"
+                >
+                  Non sei {guestName}?
+                </button>
+              </div>
+
+              {suggestions.length > 0 && (
+                <div className="pt-2">
+                  <p className="mb-2 text-xs font-semibold text-gray-600">
+                    Aggiungi al volo:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {suggestions.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => void addProducts(s)}
+                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-primary/40 bg-primary/[0.04] px-3 py-1.5 text-sm font-medium text-primary transition hover:border-primary hover:bg-primary/10"
+                      >
+                        <Plus className="h-3.5 w-3.5" aria-hidden />
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </form>
+          ) : (
+            <form onSubmit={confirmName} className="space-y-2">
+              <label
+                htmlFor="express-guest"
+                className="block text-sm font-semibold text-gray-800"
+              >
+                Come ti chiami? Così la crew sa chi ha proposto cosa
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="express-guest"
+                  className={inputClass}
+                  placeholder="Il tuo nome"
+                  value={nameDraft}
+                  maxLength={30}
+                  onChange={(e) => setNameDraft(e.target.value)}
+                  autoComplete="given-name"
+                />
+                <button
+                  type="submit"
+                  className="inline-flex shrink-0 items-center justify-center rounded-xl bg-primary px-5 font-semibold text-white transition hover:bg-primary-light"
+                >
+                  Entra
+                </button>
+              </div>
+              <p className="text-xs text-gray-500">
+                Puoi già votare i prodotti qui sotto anche senza nome.
+              </p>
+            </form>
+          )}
+          {error && (
+            <p role="alert" className="mt-2 text-sm font-medium text-red-600">
+              {error}
+            </p>
+          )}
+          {notice && (
+            <p
+              role="status"
+              className="mt-2 text-sm font-medium text-emerald-700"
+            >
+              {notice}
+            </p>
+          )}
+        </section>
+
+        {guestName && toVote > 0 && (
+          <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">
+            {toVote === 1
+              ? "1 prodotto da votare per te"
+              : `${toVote} prodotti da votare per te`}
+          </p>
+        )}
+
+        {/* Desktop: invito nel pannello */}
+        {hasItems && (
+          <div ref={inviteCardRef} className="relative hidden lg:block">
+            <button
+              type="button"
+              onClick={invite}
+              aria-expanded={canNativeShare ? undefined : inviteOpen}
+              className="flex w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white p-3 text-left transition hover:border-accent-40"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                <Share2 className="h-5 w-5" aria-hidden />
+              </span>
+              <span>
+                <span className="block font-semibold text-gray-900">
+                  Invita la crew
+                </span>
+                <span className="block text-xs text-gray-500">
+                  WhatsApp o link da copiare
+                </span>
+              </span>
+            </button>
+            {inviteMenu("left-0 top-full mt-2")}
+          </div>
+        )}
+
+        {/* Desktop: invito al menu con l'AI, compatto nel pannello */}
         <Link
           href="/"
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-light"
+          className="hidden items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 lg:flex"
         >
-          Genera il menu con l&apos;AI
-          <ArrowRight className="h-4 w-4" aria-hidden />
+          <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+          <span className="min-w-0 flex-1 text-sm text-gray-700">
+            Volete anche il <strong>menu della settimana</strong>?
+          </span>
+          <ArrowRight className="h-4 w-4 shrink-0 text-primary" aria-hidden />
         </Link>
-      </section>
+      </aside>
+
+      <div className="space-y-6">
+        {/* Lista per reparto */}
+        {list.items.length === 0 ? (
+          <p className="rounded-2xl border border-dashed border-gray-300 bg-white/60 p-8 text-center text-gray-500">
+            La lista è vuota: aggiungi il primo prodotto!
+          </p>
+        ) : (
+          <div className="space-y-5">
+            {/* Desktop: reparti su due colonne */}
+            <div className="space-y-5 lg:columns-2 lg:gap-5 lg:space-y-0">
+              {byCategory.map(({ category, items, topId }) => (
+                <section
+                  key={category}
+                  aria-label={category}
+                  className="lg:mb-7 lg:break-inside-avoid"
+                >
+                  <h2 className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-gray-500">
+                    {category}
+                  </h2>
+                  <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+                    {items.map((item) => (
+                      <ItemRow
+                        key={item.id}
+                        item={item}
+                        isNew={freshIds.has(item.id)}
+                        isTop={item.id === topId}
+                        onVote={vote}
+                        onToggle={toggleChecked}
+                        onDelete={remove}
+                      />
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+
+            {toBuy.length === 0 && (
+              <p className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-center font-medium text-emerald-800">
+                Hai preso tutto! Buona navigazione ⛵
+              </p>
+            )}
+
+            {bought.length > 0 && (
+              <section aria-label="Già presi">
+                <button
+                  type="button"
+                  onClick={() => setShowChecked((v) => !v)}
+                  aria-expanded={showChecked}
+                  className="mb-2 flex w-full items-center gap-1 px-1 text-xs font-bold uppercase tracking-wider text-gray-500"
+                >
+                  Già presi ({bought.length})
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      showChecked && "rotate-180",
+                    )}
+                    aria-hidden
+                  />
+                </button>
+                {showChecked && (
+                  <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
+                    {bought.map((item) => (
+                      <ItemRow
+                        key={item.id}
+                        item={item}
+                        isNew={false}
+                        isTop={false}
+                        onVote={vote}
+                        onToggle={toggleChecked}
+                        onDelete={remove}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+          </div>
+        )}
+
+        {/* Passaggio al menu completo: una riga compatta su telefono */}
+        <Link
+          href="/"
+          className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/[0.05] px-4 py-3 sm:hidden"
+        >
+          <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+          <span className="min-w-0 flex-1 text-sm text-gray-700">
+            Volete anche il <strong>menu della settimana</strong>?
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-primary">
+            Crea con l&apos;AI
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </span>
+        </Link>
+        <section className="hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.08] to-transparent p-5 text-center sm:block sm:p-6 lg:hidden">
+          <Sparkles className="mx-auto h-6 w-6 text-primary" aria-hidden />
+          <p className="mt-2 font-semibold text-gray-900">
+            Volete anche il menu della settimana?
+          </p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-gray-600">
+            Cambusa crea con l&apos;AI colazioni, pranzi e cene per tutta la
+            crew, con la lista della spesa già pronta.
+          </p>
+          <Link
+            href="/"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary-light"
+          >
+            Genera il menu con l&apos;AI
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </section>
+      </div>
 
       {/* Invita la crew: pulsante tondo flottante in basso a sinistra, solo icona */}
       {hasItems && !addSheetOpen && !nameSheetOpen && (
         <div
           ref={inviteRef}
-          className="fixed bottom-5 left-5 z-30"
+          className="fixed bottom-5 left-5 z-30 lg:hidden"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <button
@@ -725,35 +900,7 @@ export function ExpressListView({
           >
             <Share2 className="h-6 w-6" aria-hidden />
           </button>
-              {inviteOpen && !canNativeShare && (
-            <div className="absolute bottom-full left-0 z-30 mb-3 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white text-left shadow-[0_16px_40px_rgba(13,32,49,0.14)]">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => {
-                  trackEvent("express_invite", { method: "whatsapp" });
-                  setInviteOpen(false);
-                }}
-                className="flex items-center gap-2.5 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
-              >
-                <Share2 className="h-4 w-4 text-[#25D366]" aria-hidden />
-                Invia su WhatsApp
-              </a>
-              <button
-                type="button"
-                onClick={copyLink}
-                className="flex w-full items-center gap-2.5 border-t border-gray-100 px-4 py-3 font-semibold text-gray-800 hover:bg-gray-50"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4 text-emerald-600" aria-hidden />
-                ) : (
-                  <Copy className="h-4 w-4 text-primary" aria-hidden />
-                )}
-                {copied ? "Link copiato!" : "Copia link"}
-              </button>
-            </div>
-          )}
+          {inviteMenu("bottom-full left-0 mb-3")}
         </div>
       )}
 
@@ -762,7 +909,7 @@ export function ExpressListView({
         <button
           type="button"
           onClick={openAddSheet}
-          className="fixed bottom-5 right-5 z-30 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-accent px-6 text-base font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] transition hover:bg-accent-light active:scale-95"
+          className="fixed bottom-5 right-5 z-30 inline-flex min-h-[56px] items-center gap-2 rounded-full bg-accent px-6 text-base font-semibold text-white shadow-[0_10px_30px_rgb(var(--accent-rgb),0.4)] transition hover:bg-accent-light active:scale-95 lg:hidden"
           style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <Plus className="h-6 w-6" aria-hidden />
@@ -784,7 +931,10 @@ export function ExpressListView({
             className="w-full max-w-md space-y-3 rounded-2xl bg-white p-5 shadow-[0_20px_60px_rgba(13,32,49,0.25)]"
           >
             <div className="flex items-center justify-between">
-              <p id="express-add-sheet-title" className="font-semibold text-gray-900">
+              <p
+                id="express-add-sheet-title"
+                className="font-semibold text-gray-900"
+              >
                 Cosa vuoi a bordo, {guestName}?
               </p>
               <button
@@ -820,7 +970,10 @@ export function ExpressListView({
             {(error || notice) && (
               <p
                 role={error ? "alert" : "status"}
-                className={cn("text-sm font-medium", error ? "text-red-600" : "text-emerald-700")}
+                className={cn(
+                  "text-sm font-medium",
+                  error ? "text-red-600" : "text-emerald-700",
+                )}
               >
                 {error ?? notice}
               </p>
@@ -876,7 +1029,10 @@ export function ExpressListView({
             <p className="text-xs font-bold uppercase tracking-[0.15em] text-primary/80">
               Sei a bordo di «{list.name}»
             </p>
-            <label htmlFor="express-guest-sheet" className="block text-lg font-semibold text-gray-900">
+            <label
+              htmlFor="express-guest-sheet"
+              className="block text-lg font-semibold text-gray-900"
+            >
               Come ti chiami?
             </label>
             <p className="-mt-2 text-sm text-gray-500">
@@ -892,7 +1048,10 @@ export function ExpressListView({
               autoComplete="given-name"
               autoFocus
             />
-            <button type="submit" className="w-full rounded-xl bg-primary py-3 font-semibold text-white">
+            <button
+              type="submit"
+              className="w-full rounded-xl bg-primary py-3 font-semibold text-white"
+            >
               Entra nella lista
             </button>
           </form>
@@ -914,12 +1073,15 @@ export function ExpressListView({
             onClick={(e) => e.stopPropagation()}
             className="mx-4 max-w-md rounded-lg bg-white p-6"
           >
-            <h3 id="express-remove-title" className="mb-4 text-lg font-semibold">
+            <h3
+              id="express-remove-title"
+              className="mb-4 text-lg font-semibold"
+            >
               Conferma rimozione
             </h3>
             <p className="mb-6 text-gray-600">
-              Sei sicuro di voler rimuovere <strong>&quot;{itemToRemove.text}&quot;</strong> dalla
-              lista?
+              Sei sicuro di voler rimuovere{" "}
+              <strong>&quot;{itemToRemove.text}&quot;</strong> dalla lista?
             </p>
             <div className="flex justify-end gap-3">
               <button
@@ -941,7 +1103,6 @@ export function ExpressListView({
           </motion.div>
         </div>
       )}
-
     </div>
   );
 }
@@ -973,10 +1134,18 @@ function ItemRow({
         aria-busy="true"
         className="flex items-center gap-2.5 px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3"
       >
-        <span className="h-6 w-6 shrink-0 animate-pulse rounded-md bg-gray-200" aria-hidden />
+        <span
+          className="h-6 w-6 shrink-0 animate-pulse rounded-md bg-gray-200"
+          aria-hidden
+        />
         <div className="min-w-0 flex-1">
-          <p className="break-words font-medium leading-snug text-gray-900">{item.text}</p>
-          <span className="mt-1.5 block h-2.5 w-24 animate-pulse rounded-full bg-gray-200" aria-hidden />
+          <p className="break-words font-medium leading-snug text-gray-900">
+            {item.text}
+          </p>
+          <span
+            className="mt-1.5 block h-2.5 w-24 animate-pulse rounded-full bg-gray-200"
+            aria-hidden
+          />
         </div>
         <div className="flex shrink-0 items-center gap-1" aria-hidden>
           <span className="h-8 w-[2.6rem] animate-pulse rounded-lg bg-gray-200" />
@@ -999,7 +1168,11 @@ function ItemRow({
         type="button"
         role="checkbox"
         aria-checked={item.checked}
-        aria-label={item.checked ? `Togli la spunta a ${item.text}` : `Spunta ${item.text}`}
+        aria-label={
+          item.checked
+            ? `Togli la spunta a ${item.text}`
+            : `Spunta ${item.text}`
+        }
         onClick={() => onToggle(item)}
         disabled={pending}
         className="-m-2 flex shrink-0 items-center justify-center p-2"
@@ -1007,10 +1180,14 @@ function ItemRow({
         <span
           className={cn(
             "flex h-6 w-6 items-center justify-center rounded-md border-2 transition",
-            item.checked ? "border-emerald-500 bg-emerald-500 text-white" : "border-gray-300 hover:border-primary",
+            item.checked
+              ? "border-emerald-500 bg-emerald-500 text-white"
+              : "border-gray-300 hover:border-primary",
           )}
         >
-          {item.checked && <Check className="h-4 w-4" strokeWidth={3} aria-hidden />}
+          {item.checked && (
+            <Check className="h-4 w-4" strokeWidth={3} aria-hidden />
+          )}
         </span>
       </button>
 
@@ -1024,8 +1201,14 @@ function ItemRow({
           {item.text}
         </p>
         <p className="truncate text-xs text-gray-500">
-          {isNew ? <span className="font-semibold text-amber-700">Nuovo · </span> : null}
-          {isTop ? <span className="font-semibold text-amber-600">⭐ Il più votato · </span> : null}
+          {isNew ? (
+            <span className="font-semibold text-amber-700">Nuovo · </span>
+          ) : null}
+          {isTop ? (
+            <span className="font-semibold text-amber-600">
+              ⭐ Il più votato ·{" "}
+            </span>
+          ) : null}
           {item.mine ? "proposto da te" : `proposto da ${item.addedByName}`}
         </p>
         {notWanted && !item.checked && (

@@ -166,3 +166,13 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* Lista Express su desktop: il pannello di sinistra resta agganciato mentre si scorre.
+   "overflow: hidden" su body e contenitore principale impedirebbe lo sticky;
+   "clip" taglia allo stesso modo ciò che sborda ma non blocca l'aggancio. */
+@media (min-width: 1024px) {
+  body:has([data-express-layout]),
+  #app-main-scroll:has([data-express-layout]) {
+    overflow: clip;
+  }
+}
