@@ -581,36 +581,36 @@ export function ExpressListView({
       className={cn(
         "space-y-6 sm:pb-0",
         // Desktop: pannello fisso a sinistra, reparti a destra
-        "lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start lg:gap-8 lg:space-y-0 lg:pb-0",
+        "lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:items-start lg:gap-x-8 lg:gap-y-4 lg:space-y-0 lg:pb-0",
         hasItems ? "pb-24" : "pb-6",
       )}
     >
-      <aside data-express-layout className="space-y-6 lg:sticky lg:top-24 lg:space-y-4">
-        {/* Intestazione */}
-        <header className="text-center lg:text-left">
-          <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
-            Cambusa Express
-          </p>
-          <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
-            {list.name}
-          </h1>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600 lg:justify-start">
-            <span className="inline-flex items-center gap-1.5">
-              <Users className="h-4 w-4 text-primary" aria-hidden />
-              {list.contributors === 1
-                ? "1 partecipante"
-                : `${list.contributors} partecipanti`}
-              {list.people ? ` su ${list.people}` : ""}
-            </span>
-            <span aria-hidden>·</span>
-            <span>
-              {toBuy.length === 1
-                ? "1 da comprare"
-                : `${toBuy.length} da comprare`}
-              {bought.length > 0 ? `, ${bought.length} presi` : ""}
-            </span>
-          </div>
-        </header>
+      {/* Intestazione */}
+      <header className="text-center lg:col-start-1 lg:row-start-1 lg:text-left">
+        <p className="font-subtitle text-[11px] font-bold uppercase tracking-[0.2em] text-primary/80">
+          Cambusa Express
+        </p>
+        <h1 className="mt-2 break-words font-display text-3xl font-bold leading-tight text-primary sm:text-4xl">
+          {list.name}
+        </h1>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-gray-600 lg:justify-start">
+          <span className="inline-flex items-center gap-1.5">
+            <Users className="h-4 w-4 text-primary" aria-hidden />
+            {list.contributors === 1
+              ? "1 partecipante"
+              : `${list.contributors} partecipanti`}
+            {list.people ? ` su ${list.people}` : ""}
+          </span>
+          <span aria-hidden>·</span>
+          <span>
+            {toBuy.length === 1
+              ? "1 da comprare"
+              : `${toBuy.length} da comprare`}
+            {bought.length > 0 ? `, ${bought.length} presi` : ""}
+          </span>
+        </div>
+      </header>
+      <aside data-express-layout className="space-y-6 lg:col-start-1 lg:row-start-2 lg:sticky lg:top-24 lg:space-y-4">
 
         {/* Nome ospite oppure campo per aggiungere prodotti */}
         <section
@@ -782,7 +782,7 @@ export function ExpressListView({
         </Link>
       </aside>
 
-      <div className="space-y-6">
+      <div className="space-y-6 lg:col-start-2 lg:row-start-2">
         {/* Lista per reparto */}
         {list.items.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-gray-300 bg-white/60 p-8 text-center text-gray-500">
