@@ -115,8 +115,8 @@ export default function Home() {
                 className="mx-auto mb-6 max-w-3xl px-2 text-lg leading-relaxed text-white/95 sm:mb-8 sm:text-xl lg:text-2xl"
                 role="doc-subtitle"
               >
-                Crea il menu perfetto per tutto l&apos;equipaggio con l&apos;aiuto
-                dell&apos;intelligenza artificiale. Siete pronti a salpare? ⛵
+                Crea il menu perfetto per tutto l&apos;equipaggio. Siete pronti
+                a salpare? ⛵
               </motion.p>
 
               <motion.div
