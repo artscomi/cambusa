@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
@@ -186,13 +187,27 @@ export function ExpressListView({
     );
   };
 
-  const remove = (item: ExpressItemView) => {
-    if (!window.confirm(`Eliminare "${item.text}" dalla lista?`)) return;
+  // Conferma di rimozione: modale come quella della lista della spesa del menu
+  const [itemToRemove, setItemToRemove] = useState<ExpressItemView | null>(null);
+  const remove = (item: ExpressItemView) => setItemToRemove(item);
+  const cancelRemove = () => setItemToRemove(null);
+  const confirmRemove = () => {
+    const item = itemToRemove;
+    setItemToRemove(null);
+    if (!item) return;
     void run(
       (items) => items.filter((i) => i.id !== item.id),
       () => deleteExpressItem({ itemId: item.id }),
     );
   };
+
+  // Esc chiude la modale
+  useEffect(() => {
+    if (!itemToRemove) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setItemToRemove(null);
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [itemToRemove]);
 
   const confirmName = (e: React.FormEvent) => {
     e.preventDefault();
@@ -750,6 +765,49 @@ export function ExpressListView({
               Entra e aggiungi prodotti
             </button>
           </form>
+        </div>
+      )}
+
+      {/* Modale di conferma rimozione */}
+      {itemToRemove && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={cancelRemove}
+        >
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="express-remove-title"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={(e) => e.stopPropagation()}
+            className="mx-4 max-w-md rounded-lg bg-white p-6"
+          >
+            <h3 id="express-remove-title" className="mb-4 text-lg font-semibold">
+              Conferma rimozione
+            </h3>
+            <p className="mb-6 text-gray-600">
+              Sei sicuro di voler rimuovere <strong>&quot;{itemToRemove.text}&quot;</strong> dalla
+              lista?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelRemove}
+                autoFocus
+                className="rounded-lg px-4 py-2 text-gray-600 transition-colors hover:bg-gray-100"
+              >
+                Annulla
+              </button>
+              <button
+                type="button"
+                onClick={confirmRemove}
+                className="rounded-lg bg-red-500 px-4 py-2 text-white transition-colors hover:bg-red-600"
+              >
+                Rimuovi
+              </button>
+            </div>
+          </motion.div>
         </div>
       )}
 
