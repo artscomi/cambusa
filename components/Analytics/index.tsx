@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useCookieConsent } from "@/hooks/useCookieConsent";
 import { GA_TRACKING_ID } from "@/lib/gtag";
+import { isInternalVisitor } from "@/lib/internalTraffic";
 
 declare global {
   interface Window {
@@ -17,6 +18,8 @@ export const Analytics: React.FC = () => {
 
   useEffect(() => {
     if (!isLoaded || !isMounted) return;
+    // Browser dell'admin: niente GA, Clarity e Hotjar (vedi lib/internalTraffic)
+    if (isInternalVisitor()) return;
 
     // Carica gli script una sola volta, appena c'è il consenso (anche senza ricaricare la pagina)
     if (analyticsAllowed && !document.querySelector('script[src*="googletagmanager"]')) {
