@@ -6,6 +6,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PageContainer } from "@/components/PageContainer";
 import { MarkInternalVisitor } from "@/components/Analytics/MarkInternalVisitor";
+import { GA_EVENTS, getGaStats, type GaResult } from "@/lib/googleAnalytics";
 
 /**
  * Dashboard privata con i numeri chiave per capire se Cambusa risponde a un
@@ -133,11 +134,12 @@ export default async function MetrichePage({
 
   const period =
     PERIODS.find((p) => p.key === searchParams.periodo) ?? PERIODS[1];
-  const [stats, returning, weekly, accounts] = await Promise.all([
+  const [stats, returning, weekly, accounts, ga] = await Promise.all([
     getListStats(period.days),
     getReturningCreators(),
     getWeekly(),
     getAccountStats(),
+    getGaStats(period.days),
   ]);
 
   const funnel = [
@@ -289,6 +291,9 @@ export default async function MetrichePage({
           </section>
         </div>
 
+        {/* Google Analytics */}
+        <GaSection ga={ga} days={period.days} />
+
         {/* Ritorno e account */}
         <section aria-label="Ritorno e account" className="space-y-3">
           <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500">
@@ -346,5 +351,128 @@ function Tile({
         </p>
       )}
     </div>
+  );
+}
+
+function GaSection({ ga, days }: { ga: GaResult; days: number | null }) {
+  const title = (
+    <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+      Dal sito (Google Analytics) ·{" "}
+      {days ? `ultimi ${days} giorni` : "da sempre"}
+    </h2>
+  );
+
+  if (ga.status !== "ok") {
+    return (
+      <section aria-label="Google Analytics" className="space-y-3">
+        {title}
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-5 text-sm text-gray-600">
+          {ga.status === "not_configured" ? (
+            <>
+              Google Analytics non è ancora collegato: servono le variabili
+              d&apos;ambiente <code>GA_PROPERTY_ID</code> e{" "}
+              <code>GA_SERVICE_ACCOUNT_JSON</code> su Vercel.
+            </>
+          ) : (
+            <>Non riesco a leggere i dati di Google Analytics: {ga.message}</>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  const { totals, events, sources, pages } = ga.data;
+  const maxSource = Math.max(1, ...sources.map((s) => s.sessions));
+
+  return (
+    <section aria-label="Google Analytics" className="space-y-3">
+      {title}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Tile
+          label="Visitatori"
+          value={totals.users}
+          note={`${totals.newUsers} nuovi`}
+        />
+        <Tile label="Visite (sessioni)" value={totals.sessions} />
+        <Tile
+          label="Visite coinvolte"
+          value={`${Math.round(totals.engagementRate * 100)}%`}
+          note="restano 10+ secondi o fanno un'azione"
+        />
+        <Tile
+          label="Eventi chiave"
+          value={totals.keyEvents}
+          note="quelli segnati con la stella in GA"
+        />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <h3 className="font-sans text-lg font-semibold text-gray-900">
+            Azioni sul sito
+          </h3>
+          {events.length ? (
+            <ul className="mt-4 space-y-2 text-sm">
+              {events.map((e) => (
+                <li key={e.name} className="flex justify-between gap-3">
+                  <span className="text-gray-800" title={e.name}>
+                    {GA_EVENTS[e.name] ?? e.name}
+                  </span>
+                  <span className="font-semibold tabular-nums text-gray-900">
+                    {e.count}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 text-sm text-gray-500">Nessuna azione nel periodo.</p>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <h3 className="font-sans text-lg font-semibold text-gray-900">
+            Da dove arrivano
+          </h3>
+          <ul className="mt-4 space-y-3 text-sm">
+            {sources.map((s) => (
+              <li key={s.source}>
+                <div className="flex justify-between gap-3">
+                  <span className="truncate text-gray-800">
+                    {s.source === "(direct)" ? "Diretto" : s.source}
+                  </span>
+                  <span className="font-semibold tabular-nums text-gray-900">
+                    {s.sessions}
+                  </span>
+                </div>
+                <div className="mt-1 h-1.5 rounded-full bg-gray-100">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${(s.sessions / maxSource) * 100}%` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-5">
+          <h3 className="font-sans text-lg font-semibold text-gray-900">
+            Pagine più viste
+          </h3>
+          <ul className="mt-4 space-y-2 text-sm">
+            {pages.map((p) => (
+              <li key={p.path} className="flex justify-between gap-3">
+                <span className="truncate text-gray-800" title={p.path}>
+                  {p.path}
+                </span>
+                <span className="font-semibold tabular-nums text-gray-900">
+                  {p.views}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 }
