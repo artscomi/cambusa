@@ -4,8 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { itIT } from '@clerk/localizations';
 import Image from "next/image";
 import { baloo, bebas, montserrat } from "@/styles/fonts";
-import Script from "next/script";
-import { Analytics } from "@vercel/analytics/react";
+import { SiteAnalytics } from "@/components/Analytics/SiteAnalytics";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -61,11 +60,6 @@ export default function RootLayout({
           <link rel="preconnect" href="https://analytics.ahrefs.com" />
           <link rel="dns-prefetch" href="https://analytics.ahrefs.com" />
           
-          <Script
-            src="https://analytics.ahrefs.com/analytics.js"
-            data-key="0936IsFm5X3AsXRbCcwqZw"
-            strategy="afterInteractive"
-          />
           <meta
             name="google-site-verification"
             content="jxyENPJP2buWH0c24EdNAvA0ewUp2e-ZJghVYeOL_aU"
@@ -109,8 +103,8 @@ export default function RootLayout({
 
             <Footer />
           </CookieConsentProvider>
-          {/* Vercel Web Analytics: visite senza cookie, attivo anche senza consenso */}
-          <Analytics />
+          {/* Vercel Web Analytics e Ahrefs (spenti sui browser segnati come traffico interno) */}
+          <SiteAnalytics />
         </body>
         <SpeedInsights />
       </html>

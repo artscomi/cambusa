@@ -5,6 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { PageContainer } from "@/components/PageContainer";
+import { MarkInternalVisitor } from "@/components/Analytics/MarkInternalVisitor";
 
 /**
  * Dashboard privata con i numeri chiave per capire se Cambusa risponde a un
@@ -160,6 +161,9 @@ export default async function MetrichePage({
             <h1 className="mt-1 font-display text-3xl font-bold text-primary">
               Metriche
             </h1>
+            <div className="mt-1">
+              <MarkInternalVisitor />
+            </div>
           </div>
           <nav
             aria-label="Periodo"
